@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QNG-Ökobilanz Tool – Erster Prototyp</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+    h1 { margin-bottom: 8px; }
+    p.subtitle { color: #4b5563; margin-top: 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .button {
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #111827;
+      color: white;
+    }
+    .result-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .result {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 15px;
+      border: 1px solid #e2e8f0;
+    }
+    .result strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 8px;
+    }
+    .status-ok { color: #15803d; font-weight: bold; }
+    .status-bad { color: #b91c1c; font-weight: bold; }
+    .hint {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    .list {
+      padding-left: 18px;
+      margin: 8px 0 0 0;
+      color: #374151;
+      font-size: 14px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>QNG-Ökobilanz Tool</h1>
+    <p class="subtitle">Erster HTML-Prototyp mit einfacher Logik für Sprint 2</p>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>1. Eingaben</h2>
+          <div class="form-grid">
+            <div>
+              <label for="projectName">Projektname</label>
+              <input id="projectName" type="text" value="Mehrfamilienhaus Augsburg" />
+            </div>
+            <div>
+              <label for="qngLevel">QNG-Zielniveau</label>
+              <select id="qngLevel">
+                <option value="plus">QNG-PLUS</option>
+                <option value="premium">QNG-PREMIUM</option>
+              </select>
+            </div>
+            <div>
+              <label for="constructionType">Bauweise</label>
+              <select id="constructionType">
+                <option value="massiv">Massivbauweise</option>
+                <option value="holz">Holzbauweise</option>
+              </select>
+            </div>
+            <div>
+              <label for="heatingSystem">Heizungsanlage</label>
+              <select id="heatingSystem">
+                <option value="pellet">Nahwärme / Pelletkessel</option>
+                <option value="fernwaerme">Fernwärme</option>
+                <option value="waermepumpe">Wärmepumpe</option>
+              </select>
+            </div>
+            <div>
+              <label for="ventilationSystem">Lüftungsanlage</label>
+              <select id="ventilationSystem">
+                <option value="wrg">Zu-/Abluft mit WRG</option>
+                <option value="abluft">Abluftanlage</option>
+                <option value="keine">Keine Lüftungsanlage</option>
+              </select>
+            </div>
+            <div>
+              <label for="pvArea">PV-Fläche [m²]</label>
+              <input id="pvArea" type="number" value="300" min="0" />
+            </div>
+            <div>
+              <label for="batteryStorage">Batteriespeicher</label>
+              <select id="batteryStorage">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+              </select>
+            </div>
+            <div>
+              <label for="garage">Tiefgarage</label>
+              <select id="garage">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+              </select>
+            </div>
+          </div>
+          <button class="button" onclick="calculateResult()">Berechnung starten</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>2. Ergebnisse</h2>
+          <div class="result-boxes">
+            <div class="result">
+              <span>GWP</span>
+              <strong id="gwpResult">-</strong>
+            </div>
+            <div class="result">
+              <span>QP,ne</span>
+              <strong id="qpneResult">-</strong>
+            </div>
+          </div>
+          <p id="statusResult" class="hint">Noch keine Berechnung durchgeführt.</p>
+          <p class="hint"><strong>Projekt:</strong> <span id="projectResult">-</span></p>
+        </div>
+
+        <div class="card">
+          <h2>3. Logik-Hinweise</h2>
+          <p class="hint">
+            Dieser erste Prototyp arbeitet bewusst mit einer vereinfachten Logik.
+            Er dient als erste funktionierende Pipeline für Sprint 2.
+          </p>
+          <ul id="hintList" class="list">
+            <li>Nach der Berechnung erscheinen hier kurze Hinweise.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calculateResult() {
+      const projectName = document.getElementById('projectName').value;
+      const qngLevel = document.getElementById('qngLevel').value;
+      const constructionType = document.getElementById('constructionType').value;
+      const heatingSystem = document.getElementById('heatingSystem').value;
+      const ventilationSystem = document.getElementById('ventilationSystem').value;
+      const pvArea = Number(document.getElementById('pvArea').value);
+      const batteryStorage = document.getElementById('batteryStorage').value;
+      const garage = document.getElementById('garage').value;
+
+      // Basiswerte (vereinfachte Dummy-Logik für Sprint 2)
+      let gwp = 24.0;
+      let qpne = 96.0;
+      const hints = [];
+
+      if (constructionType === 'holz') {
+        gwp -= 2.5;
+        qpne -= 4;
+        hints.push('Holzbauweise verbessert die Ökobilanz im Vergleich zur Massivbauweise.');
+      } else {
+        hints.push('Massivbauweise wird als Referenzvariante verwendet.');
+      }
+
+      if (heatingSystem === 'waermepumpe') {
+        gwp -= 1.5;
+        qpne -= 8;
+        hints.push('Wärmepumpe reduziert den Primärenergiebedarf.');
+      } else if (heatingSystem === 'fernwaerme') {
+        gwp -= 0.8;
+        qpne -= 4;
+        hints.push('Fernwärme verbessert die Werte moderat.');
+      } else {
+        hints.push('Pellet / Nahwärme bleibt als Ausgangsannahme bestehen.');
+      }
+
+      if (ventilationSystem === 'wrg') {
+        qpne -= 3;
+        hints.push('Lüftung mit WRG verbessert die energetische Performance.');
+      } else if (ventilationSystem === 'keine') {
+        qpne += 2;
+        hints.push('Ohne Lüftungsanlage wird der Wert leicht verschlechtert.');
+      }
+
+      if (pvArea > 0) {
+        const pvBonus = Math.min(pvArea / 100, 5);
+        gwp -= pvBonus * 0.4;
+        qpne -= pvBonus * 2;
+        hints.push('Die PV-Fläche verbessert die Ergebniswerte.');
+      }
+
+      if (batteryStorage === 'ja') {
+        gwp -= 0.6;
+        qpne -= 1.5;
+        hints.push('Ein Batteriespeicher bringt einen zusätzlichen kleinen Vorteil.');
+      }
+
+      if (garage === 'ja') {
+        gwp += 1.2;
+        qpne += 2.5;
+        hints.push('Eine Tiefgarage verschlechtert die Bilanz in diesem einfachen Modell.');
+      }
+
+      gwp = Math.max(gwp, 0).toFixed(2);
+      qpne = Math.max(qpne, 0).toFixed(2);
+
+      let statusText = '';
+      let statusClass = '';
+
+      if (qngLevel === 'plus') {
+        const ok = Number(gwp) <= 24 && Number(qpne) <= 96;
+        statusText = ok ? 'QNG-PLUS wird erfüllt.' : 'QNG-PLUS wird aktuell nicht erfüllt.';
+        statusClass = ok ? 'status-ok' : 'status-bad';
+      } else {
+        const ok = Number(gwp) <= 20 && Number(qpne) <= 64;
+        statusText = ok ? 'QNG-PREMIUM wird erfüllt.' : 'QNG-PREMIUM wird aktuell nicht erfüllt.';
+        statusClass = ok ? 'status-ok' : 'status-bad';
+      }
+
+      document.getElementById('projectResult').textContent = projectName || '-';
+      document.getElementById('gwpResult').textContent = gwp;
+      document.getElementById('qpneResult').textContent = qpne;
+
+      const statusEl = document.getElementById('statusResult');
+      statusEl.textContent = statusText;
+      statusEl.className = statusClass;
+
+      const hintList = document.getElementById('hintList');
+      hintList.innerHTML = '';
+      hints.forEach(hint => {
+        const li = document.createElement('li');
+        li.textContent = hint;
+        hintList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -34,29 +34,29 @@ Input → Processing → Output
 - GitHub für Versionsverwaltung und Sprint-Planung
 
 ## Erste Datenstruktur
-### Building
-- project_name
-- qng_level
-- bgf
-- an_geg
-- nrf_total
-- nrf_heated
-- underground_parking
+### Gebäudedaten
+- Projektname
+- QNG-Zielniveau
+- Brutto-Grundfläche des Gebäudes
+- Gebäudenutzfläche nach GEG
+- Gesamte Nettoraumfläche
+- Beheizte Nettoraumfläche
+- Tiefgarage vorhanden
 
-### Scenario
-- energy_standard
-- construction_type
-- heating_system
-- ventilation_system
-- pv_area
-- battery_storage
-- garage_area
+### Szenariodaten
+- Energiestandard
+- Bauweise
+- Heizungsanlage
+- Lüftungsanlage
+- Photovoltaikfläche
+- Batteriespeicher
+- Fläche der Tiefgarage
 
-### Result
-- gwp
-- qp_ne
-- qng_status
-- notes
+### Ergebnisdaten
+- Treibhauspotenzial (GWP)
+- Nicht erneuerbarer Primärenergiebedarf (QP,ne)
+- QNG-Status
+- Hinweise / Kommentare
 
 ## Projektstruktur
 ```text

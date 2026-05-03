@@ -1,3 +1,5 @@
+# qngapp/views.py
+
 from django.shortcuts import render
 
 from .calculations import calculate_qng_result
@@ -28,7 +30,17 @@ def index(request):
             heating=request.POST.get("heating"),
             ventilation=request.POST.get("ventilation"),
             qng_level=request.POST.get("qng_level"),
+
+            # 🔥 NEU (wichtig für deine Berechnung)
+            an_geg=request.POST.get("an_geg", "6201"),
+            nrf_heated=request.POST.get(
+                "nrf_heated",
+                request.POST.get("nrf_total", "5282")
+            ),
+            pv_area=request.POST.get("pv_area", "300"),
+            battery_storage=request.POST.get("battery_storage", "nein"),
         )
+
         context["result"] = result
 
     return render(request, "qngapp/index.html", context)

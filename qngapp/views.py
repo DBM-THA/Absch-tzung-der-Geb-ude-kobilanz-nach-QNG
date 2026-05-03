@@ -11,11 +11,19 @@ from .qng_data import (
 
 def building_view(request):
     if request.method == "POST":
+        nrf_heated = request.POST.get("nrf_heated", "5282")
+        nrf_tg = request.POST.get("nrf_tg", "0")
+
+        try:
+            nrf_total = float(nrf_heated.replace(",", ".")) + float(nrf_tg.replace(",", "."))
+        except ValueError:
+            nrf_total = 0
+
         request.session["building_data"] = {
             "project_name": request.POST.get("project_name", "Beispielgebäude"),
-            "nrf_total": request.POST.get("nrf_total", "5282"),
-            "nrf_tg": request.POST.get("nrf_tg", "0"),
-            "nrf_heated": request.POST.get("nrf_heated", request.POST.get("nrf_total", "5282")),
+            "nrf_total": str(nrf_total),
+            "nrf_tg": nrf_tg,
+            "nrf_heated": nrf_heated,
             "an_geg": request.POST.get("an_geg", "6201"),
             "building_type": request.POST.get("building_type"),
             "energy_standard": request.POST.get("energy_standard"),

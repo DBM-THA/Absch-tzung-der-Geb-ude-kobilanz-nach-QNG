@@ -321,15 +321,36 @@
 </div>
 
 <script>
-    // Automatisches Absenden bei Änderungen
     const form = document.getElementById("scenario-form");
     let timeout = null;
 
+    function saveScrollPosition() {
+        localStorage.setItem("scenarioScrollPosition", window.scrollY);
+    }
+
+    function restoreScrollPosition() {
+        const scrollPosition = localStorage.getItem("scenarioScrollPosition");
+
+        if (scrollPosition !== null) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+    }
+
+    window.addEventListener("load", restoreScrollPosition);
+
     form.querySelectorAll("input, select").forEach((field) => {
-        field.addEventListener("change", () => form.submit());
+        field.addEventListener("change", () => {
+            saveScrollPosition();
+            form.submit();
+        });
+
         field.addEventListener("input", () => {
             clearTimeout(timeout);
-            timeout = setTimeout(() => form.submit(), 800);
+
+            timeout = setTimeout(() => {
+                saveScrollPosition();
+                form.submit();
+            }, 800);
         });
     });
 </script>

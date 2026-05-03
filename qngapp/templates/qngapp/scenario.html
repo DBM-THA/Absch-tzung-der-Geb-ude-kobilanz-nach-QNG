@@ -145,30 +145,36 @@
             <label>Heizung</label>
             <select name="heating">
                 {% for item in heating_systems %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 
             <label>Lüftung</label>
             <select name="ventilation">
                 {% for item in ventilation_systems %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 
             <label>PV Fläche</label>
-            <input type="number" name="pv_area" value="300">
+            <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
 
             <label>Batterie</label>
             <select name="battery_storage">
-                <option value="nein">Nein</option>
-                <option value="ja">Ja</option>
+                <option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
+                <option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
             </select>
 
             <label>QNG Level</label>
             <select name="qng_level">
                 {% for item in qng_levels %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 

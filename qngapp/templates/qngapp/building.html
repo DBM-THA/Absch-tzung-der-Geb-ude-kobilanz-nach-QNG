@@ -53,6 +53,11 @@
             color: #666;
             font-size: 14px;
         }
+
+        .small {
+            font-size: 13px;
+            color: #888;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +65,7 @@
 <div class="container">
     <h1>Gebäudedaten konfigurieren</h1>
     <p class="hint">
-        NRF gesamt wird automatisch aus beheizter Fläche + Tiefgarage berechnet.
+        Die Nettogrundfläche (NRF) des Gebäudes wird automatisch aus beheizter Fläche und Tiefgarage berechnet.
     </p>
 
     <form method="post">
@@ -69,14 +74,29 @@
         <label>Projektname</label>
         <input type="text" name="project_name" value="Beispielgebäude">
 
-        <label>NRF Tiefgarage [m²]</label>
+        <label>
+            Nettogrundfläche – Tiefgarage (NRF TG) [m²]
+        </label>
         <input type="number" step="0.01" name="nrf_tg" value="0">
+        <div class="small">
+            Fläche der Tiefgarage, die nicht beheizt wird.
+        </div>
 
-        <label>Beheizte NRF [m²]</label>
+        <label>
+            Beheizte Nettogrundfläche (NRF beheizt) [m²]
+        </label>
         <input type="number" step="0.01" name="nrf_heated" value="5282">
+        <div class="small">
+            Alle beheizten Räume des Gebäudes (Wohnflächen etc.).
+        </div>
 
-        <label>AN GEG [m²]</label>
+        <label>
+            Energiebezugsfläche nach GEG (A<sub>N</sub>) [m²]
+        </label>
         <input type="number" step="0.01" name="an_geg" value="6201">
+        <div class="small">
+            Fläche zur Berechnung des Energiebedarfs gemäß Gebäudeenergiegesetz.
+        </div>
 
         <label>Bauweise</label>
         <select name="building_type">

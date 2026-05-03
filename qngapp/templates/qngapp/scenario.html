@@ -12,7 +12,7 @@ body {
     padding: 40px;
 
     background:
-        linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+        linear-gradient(rgba(18,63,50,0.2), rgba(255,255,255,0.35)),
         url("{% static 'images/hintergrund.jpg' %}");
 
     background-size: cover;
@@ -20,20 +20,30 @@ body {
     background-attachment: fixed;
 }
 
+/* ===== ANIMATION ===== */
+.card {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ===== TITEL ===== */
 .page h1 {
     color: #0f2f26;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    background: rgba(255,255,255,0.6);
+    text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.65);
     display: inline-block;
-    padding: 10px 18px;
-    border-radius: 12px;
-}
-
-.hint {
-    color: #1c3d33;
-    font-weight: 500;
-    margin-bottom: 20px;
+    padding: 12px 20px;
+    border-radius: 14px;
 }
 
 /* ===== LAYOUT ===== */
@@ -50,18 +60,18 @@ body {
 
 /* ===== CARDS ===== */
 .card {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(6px);
+    background: rgba(248, 252, 249, 0.82);
+    backdrop-filter: blur(14px);
     padding: 28px;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.18);
     margin-bottom: 22px;
-    color: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.55);
+    transition: transform 0.25s ease;
 }
 
-h2 {
-    color: #123f32;
-    font-weight: 600;
+.card:hover {
+    transform: translateY(-5px);
 }
 
 /* ===== SIDEBAR ===== */
@@ -71,11 +81,10 @@ h2 {
 }
 
 .info-box {
-    background: rgba(230,245,236,0.8);
+    background: rgba(219, 239, 226, 0.7);
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 14px;
     margin-top: 10px;
-    font-size: 14px;
 }
 
 /* ===== INPUTS ===== */
@@ -89,19 +98,7 @@ input, select {
     width: 100%;
     padding: 12px;
     margin-top: 6px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-}
-
-/* ===== BUTTON ===== */
-.back-link {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: #666;
-    color: white;
-    text-decoration: none;
+    border-radius: 12px;
 }
 
 /* ===== ERGEBNIS ===== */
@@ -112,44 +109,24 @@ input, select {
 }
 
 .result-box {
-    background: rgba(230,245,236,0.95);
+    background: rgba(219, 239, 226, 0.8);
     padding: 28px;
-    border-radius: 18px;
+    border-radius: 20px;
     text-align: center;
 }
 
 .number {
-    font-size: 42px;
+    font-size: 44px;
     font-weight: bold;
     color: #123f32;
+    transition: 0.3s;
 }
 
-.status-ok {
-    color: green;
-    font-weight: bold;
-}
-
-.status-bad {
-    color: darkred;
-    font-weight: bold;
-}
-
-/* ===== BALKEN ===== */
-.chart-row {
-    margin-top: 22px;
-}
-
-.chart-label {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
+/* ===== BALKEN GRENZWERTE ===== */
 .bar-bg {
     width: 100%;
-    height: 28px;
-    background: #ddd;
+    height: 26px;
+    background: rgba(0,0,0,0.08);
     border-radius: 999px;
     overflow: hidden;
 }
@@ -157,40 +134,48 @@ input, select {
 .bar-fill {
     height: 100%;
     background: #1f7a4d;
+    transition: width 0.6s ease;
 }
 
-.bar-fill.bad {
-    background: #9b1c1c;
+/* ===== NEUES FEATURE: DETAIL BARCHART ===== */
+.category-chart {
+    margin-top: 20px;
 }
+
+.cat-row {
+    margin-bottom: 12px;
+}
+
+.cat-label {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.cat-bar {
+    height: 16px;
+    border-radius: 999px;
+}
+
+/* Farben je Kategorie */
+.kg300 { background: #1f7a4d; }
+.kg400 { background: #3ca374; }
+.pv { background: #6cc24a; }
+.energy { background: #f2b705; }
+.user { background: #e5533d; }
 
 /* ===== TABLE ===== */
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: right;
-}
-
-th:first-child, td:first-child {
-    text-align: left;
+td, th {
+    padding: 10px;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 950px) {
     .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        position: static;
-    }
-
-    .result-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -201,25 +186,20 @@ th:first-child, td:first-child {
 
 <div class="page">
 <h1>Szenarien testen</h1>
-<p class="hint">Links konfigurieren – rechts live Ergebnis.</p>
 
 <div class="layout">
 
-<!-- ===== LINKS ===== -->
+<!-- LINKS -->
 <div class="sidebar">
 
 <div class="card">
 <h2>Gebäudedaten</h2>
-
 <strong>{{ building.project_name }}</strong>
 
-<div class="info-box">Nettogrundfläche gesamt: {{ building.nrf_total }} m²</div>
-<div class="info-box">Nettogrundfläche Tiefgarage: {{ building.nrf_tg }} m²</div>
-<div class="info-box">Beheizte Nettogrundfläche: {{ building.nrf_heated }} m²</div>
-<div class="info-box">Bauweise: {{ building.building_type }}</div>
-<div class="info-box">Energiestandard: {{ building.energy_standard }}</div>
+<div class="info-box">NRF gesamt: {{ building.nrf_total }}</div>
+<div class="info-box">NRF TG: {{ building.nrf_tg }}</div>
+<div class="info-box">Beheizt: {{ building.nrf_heated }}</div>
 
-<a class="back-link" href="{% url 'building' %}">Gebäudedaten ändern</a>
 </div>
 
 <div class="card">
@@ -228,49 +208,29 @@ th:first-child, td:first-child {
 <form method="post" id="scenario-form">
 {% csrf_token %}
 
-<label>Heizungsanlage</label>
+<label>Heizung</label>
 <select name="heating">
 {% for item in heating_systems %}
-<option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>
-{{ item }}
-</option>
+<option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>{{ item }}</option>
 {% endfor %}
 </select>
 
-<label>Lüftungsanlage</label>
+<label>Lüftung</label>
 <select name="ventilation">
 {% for item in ventilation_systems %}
-<option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>
-{{ item }}
-</option>
+<option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>{{ item }}</option>
 {% endfor %}
 </select>
 
-<label>Photovoltaik-Fläche [m²]</label>
+<label>PV Fläche</label>
 <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
 
-<label>PV-Batteriespeicher</label>
-<select name="battery_storage">
-<option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
-<option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
-</select>
-
-<label>QNG-Zielanforderung</label>
-<select name="qng_level">
-{% for item in qng_levels %}
-<option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>
-{{ item }}
-</option>
-{% endfor %}
-</select>
-
-<button type="submit" style="display:none;"></button>
 </form>
 
 </div>
 </div>
 
-<!-- ===== RECHTS ===== -->
+<!-- RECHTS -->
 <div>
 
 {% if result %}
@@ -278,85 +238,59 @@ th:first-child, td:first-child {
 <h2>Ergebnis</h2>
 
 <div class="result-grid">
-
 <div class="result-box">
-<div>Primärenergiebedarf QP,ne</div>
+<div>QP</div>
 <div class="number">{{ result.total.ac_qp_rel }}</div>
-<div>kWhPEne / m²NRF·a</div>
-<p>
-Grenzwert: {{ result.total.qp_limit }} →
-<span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
-{{ result.total.qp_status }}
-</span>
-</p>
 </div>
 
 <div class="result-box">
-<div>Treibhauspotenzial GWP</div>
+<div>GWP</div>
 <div class="number">{{ result.total.ac_gwp_rel }}</div>
-<div>kg CO₂-Äq. / m²NRF·a</div>
-<p>
-Grenzwert: {{ result.total.gwp_limit }} →
-<span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
-{{ result.total.gwp_status }}
-</span>
-</p>
 </div>
-
 </div>
 </div>
 
+<!-- GRENZWERT BALKEN -->
 <div class="card">
-<h2>Vergleich mit QNG-Grenzwerten</h2>
+<h2>Grenzwerte</h2>
 
-<div class="chart-row">
-<div class="chart-label">
-<span>QP,ne</span>
-<span>{{ result.total.ac_qp_rel }} / {{ result.total.qp_limit }}</span>
-</div>
 <div class="bar-bg">
-<div class="bar-fill {% if result.total.qp_status != 'erfüllt' %}bad{% endif %}"
-style="width: {% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%;">
-</div>
-</div>
-</div>
-
-<div class="chart-row">
-<div class="chart-label">
-<span>GWP</span>
-<span>{{ result.total.ac_gwp_rel }} / {{ result.total.gwp_limit }}</span>
-</div>
-<div class="bar-bg">
-<div class="bar-fill {% if result.total.gwp_status != 'erfüllt' %}bad{% endif %}"
-style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %}%;">
-</div>
+<div class="bar-fill"
+style="width:{% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%">
 </div>
 </div>
 
 </div>
 
+<!-- NEU: DETAIL BARCHART -->
 <div class="card">
-<h2>Ergebnis-Aufschlüsselung</h2>
+<h2>Beitragsanalyse</h2>
 
-<table>
-<tr>
-<th>Teilbereich</th>
-<th>QP,ne</th>
-<th>GWP</th>
-</tr>
+<div class="category-chart">
 
 {% for part in result.parts %}
-<tr>
-<td>{{ part.name }}</td>
-<td>{{ part.ac_qp_rel|floatformat:2 }}</td>
-<td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
-</tr>
+<div class="cat-row">
+<div class="cat-label">{{ part.name }} ({{ part.ac_qp_rel|floatformat:1 }})</div>
+<div class="bar-bg">
+<div class="cat-bar 
+{% if '300' in part.name %}kg300
+{% elif '400' in part.name %}kg400
+{% elif 'Photovoltaik' in part.name %}pv
+{% elif 'Energie' in part.name %}energy
+{% else %}user
+{% endif %}"
+style="width: {{ part.ac_qp_rel|floatformat:0 }}%;">
+</div>
+</div>
+</div>
 {% endfor %}
 
-</table>
+</div>
+
 </div>
 
 {% endif %}
+
 </div>
 
 </div>
@@ -364,15 +298,9 @@ style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %
 
 <script>
 const form = document.getElementById("scenario-form");
-let timeout = null;
 
-form.querySelectorAll("input, select").forEach((field) => {
-    field.addEventListener("change", () => form.submit());
-
-    field.addEventListener("input", () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => form.submit(), 600);
-    });
+form.querySelectorAll("input, select").forEach((el)=>{
+    el.addEventListener("change", ()=>form.submit());
 });
 </script>
 

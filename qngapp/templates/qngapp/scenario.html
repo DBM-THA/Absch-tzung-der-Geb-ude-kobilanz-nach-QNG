@@ -124,57 +124,55 @@
 
     <div class="card">
         <h1>Szenarien testen</h1>
-        <p>
-            Grundlage ist das Gebäude: <strong>{{ building.project_name }}</strong>
-        </p>
+        <p><strong>{{ building.project_name }}</strong></p>
 
         <div class="summary">
-            <div class="box">NRF gesamt: <strong>{{ building.nrf_total }} m²</strong></div>
-            <div class="box">NRF Tiefgarage: <strong>{{ building.nrf_tg }} m²</strong></div>
-            <div class="box">Bauweise: <strong>{{ building.building_type }}</strong></div>
-            <div class="box">Energiestandard: <strong>{{ building.energy_standard }}</strong></div>
+            <div class="box">NRF: {{ building.nrf_total }} m²</div>
+            <div class="box">TG: {{ building.nrf_tg }} m²</div>
+            <div class="box">Bauweise: {{ building.building_type }}</div>
+            <div class="box">Standard: {{ building.energy_standard }}</div>
         </div>
 
-        <a class="back-link" href="{% url 'building' %}">Gebäudedaten ändern</a>
+        <a class="back-link" href="{% url 'building' %}">Zurück</a>
     </div>
 
     <div class="card">
-        <h2>Szenario konfigurieren</h2>
+        <h2>Szenario</h2>
 
-        <form method="post">
+        <form method="post" id="scenario-form">
             {% csrf_token %}
 
-            <label>Heizungsanlage</label>
+            <label>Heizung</label>
             <select name="heating">
                 {% for item in heating_systems %}
                     <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
             </select>
 
-            <label>Lüftungsanlage</label>
+            <label>Lüftung</label>
             <select name="ventilation">
                 {% for item in ventilation_systems %}
                     <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
             </select>
 
-            <label>PV-Fläche [m²]</label>
-            <input type="number" step="0.01" name="pv_area" value="300">
+            <label>PV Fläche</label>
+            <input type="number" name="pv_area" value="300">
 
-            <label>PV-Batteriespeicher</label>
+            <label>Batterie</label>
             <select name="battery_storage">
                 <option value="nein">Nein</option>
                 <option value="ja">Ja</option>
             </select>
 
-            <label>QNG-Zielanforderung</label>
+            <label>QNG Level</label>
             <select name="qng_level">
                 {% for item in qng_levels %}
                     <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
             </select>
 
-            <button type="submit">Szenario berechnen</button>
+            <button type="submit" style="display:none;">Berechnen</button>
         </form>
     </div>
 
@@ -186,70 +184,66 @@
             <div class="result-box">
                 <div>QP,ne</div>
                 <div class="number">{{ result.total.ac_qp_rel }}</div>
-                <div>kWhPEne / m²NRF·a</div>
                 <div>
-                    Grenzwert: {{ result.total.qp_limit }}
-                    —
-                    {% if result.total.qp_status == "erfüllt" %}
-                        <span class="status-ok">{{ result.total.qp_status }}</span>
-                    {% else %}
-                        <span class="status-bad">{{ result.total.qp_status }}</span>
-                    {% endif %}
+                    {{ result.total.qp_limit }} →
+                    <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                        {{ result.total.qp_status }}
+                    </span>
                 </div>
             </div>
 
             <div class="result-box">
-                <div>GWP100</div>
+                <div>GWP</div>
                 <div class="number">{{ result.total.ac_gwp_rel }}</div>
-                <div>kg CO₂-Äq. / m²NRF·a</div>
                 <div>
-                    Grenzwert: {{ result.total.gwp_limit }}
-                    —
-                    {% if result.total.gwp_status == "erfüllt" %}
-                        <span class="status-ok">{{ result.total.gwp_status }}</span>
-                    {% else %}
-                        <span class="status-bad">{{ result.total.gwp_status }}</span>
-                    {% endif %}
+                    {{ result.total.gwp_limit }} →
+                    <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                        {{ result.total.gwp_status }}
+                    </span>
                 </div>
             </div>
         </div>
 
-        <h2>Aufschlüsselung</h2>
+        <h2>Details</h2>
 
         <table>
-            <thead>
-                <tr>
-                    <th>Teilbereich</th>
-                    <th>QP,ne</th>
-                    <th>GWP</th>
-                    <th>Modul D QP,ne</th>
-                    <th>Modul D GWP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for part in result.parts %}
-                <tr>
-                    <td>{{ part.name }}</td>
-                    <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
-                    <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
-                    <td>{{ part.d_qp_rel|floatformat:2 }}</td>
-                    <td>{{ part.d_gwp_rel|floatformat:2 }}</td>
-                </tr>
-                {% endfor %}
-
-                <tr>
-                    <td>{{ result.module_d2.name }}</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>{{ result.module_d2.d_qp_rel|floatformat:2 }}</td>
-                    <td>{{ result.module_d2.d_gwp_rel|floatformat:2 }}</td>
-                </tr>
-            </tbody>
+            <tr>
+                <th>Teil</th>
+                <th>QP</th>
+                <th>GWP</th>
+            </tr>
+            {% for part in result.parts %}
+            <tr>
+                <td>{{ part.name }}</td>
+                <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
+                <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
     {% endif %}
 
 </div>
+
+<script>
+    const form = document.getElementById("scenario-form");
+    let timeout = null;
+
+    form.querySelectorAll("input, select").forEach((field) => {
+
+        field.addEventListener("change", () => {
+            form.submit();
+        });
+
+        field.addEventListener("input", () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                form.submit();
+            }, 700);
+        });
+
+    });
+</script>
 
 </body>
 </html>

@@ -100,3 +100,70 @@ QNG_LIMITS = {
         "gwp": 20,
     },
 }
+# Endenergiebedarf je Kombination, bezogen auf AN_GEG = 6201 m² aus Excel
+END_ENERGY_BASE_AN_GEG = 6201
+
+END_ENERGY_DEMANDS = {
+    ("Zu-/Abluftanlage mit WRG", "Nahwärme, Pelletkessel"): {
+        "heating": 26749,
+        "hot_water": 177635,
+        "auxiliary": 10862,
+    },
+    ("Zu-/Abluftanlage mit WRG", "Fernwärme"): {
+        "heating": 21775,
+        "hot_water": 177635,
+        "auxiliary": 10963,
+    },
+    ("Zu-/Abluftanlage mit WRG", "Luft-Wasser-Wärmepumpe"): {
+        "heating": 7818,
+        "hot_water": 64491,
+        "auxiliary": 12968,
+    },
+    ("Zu-/Abluftanlage mit WRG", "Grundwasser-Wärmepumpe"): {
+        "heating": 3687,
+        "hot_water": 54884,
+        "auxiliary": 11302,
+    },
+    ("Abluftanlage ohne WRG", "Nahwärme, Pelletkessel"): {
+        "heating": 106509,
+        "hot_water": 177611,
+        "auxiliary": 4619,
+    },
+    ("Abluftanlage ohne WRG", "Fernwärme"): {
+        "heating": 105786,
+        "hot_water": 177611,
+        "auxiliary": 4542,
+    },
+    ("Abluftanlage ohne WRG", "Luft-Wasser-Wärmepumpe"): {
+        "heating": 37843,
+        "hot_water": 64481,
+        "auxiliary": 4361,
+    },
+    ("Abluftanlage ohne WRG", "Grundwasser-Wärmepumpe"): {
+        "heating": 17186,
+        "hot_water": 54877,
+        "auxiliary": 4428,
+    },
+}
+
+
+ENERGY_FACTORS = {
+    "Nutzung - 1 kWh nationaler Netzstrommix": {
+        "qp": 1.8616763889,
+        "gwp": 0.53203,
+    },
+    "Nutzung - 1kWh Fernwärme aus Biomasse (fest) ohne KWK": {
+        "qp": 0.0713205722,
+        "gwp": 0.02533312,
+    },
+}
+
+
+DEFAULT_ENERGY_CARRIERS = {
+    "heating": "Nutzung - 1kWh Fernwärme aus Biomasse (fest) ohne KWK",
+    "hot_water": "Nutzung - 1kWh Fernwärme aus Biomasse (fest) ohne KWK",
+    "auxiliary": "Nutzung - 1 kWh nationaler Netzstrommix",
+}
+
+
+USER_ELECTRICITY_KWH_PER_M2 = 20

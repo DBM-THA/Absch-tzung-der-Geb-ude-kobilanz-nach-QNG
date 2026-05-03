@@ -3,29 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Szenarien testen</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f7f5;
             margin: 0;
             padding: 40px;
+            background:
+                linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)),
+                url("https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1600");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .container {
-            max-width: 1000px;
+        .page {
+            max-width: 1250px;
             margin: auto;
         }
 
-        .card {
-            background: white;
-            padding: 28px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
+        h1, h2 {
+            color: #123f32;
         }
 
-        h1, h2 {
-            color: #1f4d3a;
+        .layout {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 28px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            margin-bottom: 22px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 30px;
         }
 
         label {
@@ -38,38 +56,26 @@
             width: 100%;
             padding: 12px;
             margin-top: 6px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid #ccc;
         }
 
-        button, .back-link {
-            display: inline-block;
-            margin-top: 28px;
-            padding: 14px 22px;
-            border: none;
+        .info-box {
+            background: rgba(230,245,236,0.7);
+            padding: 12px;
             border-radius: 10px;
-            background: #1f7a4d;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
+            margin-top: 10px;
+            font-size: 14px;
         }
 
         .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 16px;
+            border-radius: 10px;
             background: #777;
-            margin-left: 8px;
-        }
-
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .box {
-            background: #eef5f0;
-            padding: 16px;
-            border-radius: 12px;
+            color: white;
+            text-decoration: none;
         }
 
         .result-grid {
@@ -79,32 +85,16 @@
         }
 
         .result-box {
-            background: #e9f6ee;
-            padding: 22px;
-            border-radius: 14px;
+            background: rgba(230,245,236,0.9);
+            padding: 28px;
+            border-radius: 18px;
             text-align: center;
         }
 
         .number {
-            font-size: 32px;
+            font-size: 42px;
             font-weight: bold;
-            color: #1f4d3a;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 18px;
-        }
-
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: right;
-        }
-
-        th:first-child, td:first-child {
-            text-align: left;
+            color: #123f32;
         }
 
         .status-ok {
@@ -116,139 +106,255 @@
             color: darkred;
             font-weight: bold;
         }
+
+        .chart-row {
+            margin-top: 22px;
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 28px;
+            background: #e3e3e3;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: #1f7a4d;
+            border-radius: 999px;
+        }
+
+        .bar-fill.bad {
+            background: #9b1c1c;
+        }
+
+        .limit-text {
+            font-size: 13px;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: right;
+        }
+
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+
+        .hint {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 950px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="page">
+    <h1>Szenarien testen</h1>
+    <p class="hint">Links konfigurieren – rechts live Ergebnis.</p>
 
-    <div class="card">
-        <h1>Szenarien testen</h1>
-        <p><strong>{{ building.project_name }}</strong></p>
+    <div class="layout">
 
-        <div class="summary">
-            <div class="box">NRF: {{ building.nrf_total }} m²</div>
-            <div class="box">TG: {{ building.nrf_tg }} m²</div>
-            <div class="box">Bauweise: {{ building.building_type }}</div>
-            <div class="box">Standard: {{ building.energy_standard }}</div>
+        <div class="sidebar">
+
+            <div class="card">
+                <h2>Gebäudedaten</h2>
+                <strong>{{ building.project_name }}</strong>
+
+                <div class="info-box">Nettogrundfläche gesamt: {{ building.nrf_total }} m²</div>
+                <div class="info-box">Nettogrundfläche Tiefgarage: {{ building.nrf_tg }} m²</div>
+                <div class="info-box">Beheizte Nettogrundfläche: {{ building.nrf_heated }} m²</div>
+                <div class="info-box">Bauweise: {{ building.building_type }}</div>
+                <div class="info-box">Energiestandard: {{ building.energy_standard }}</div>
+
+                <a class="back-link" href="{% url 'building' %}">Gebäudedaten ändern</a>
+            </div>
+
+            <div class="card">
+                <h2>Szenario</h2>
+
+                <form method="post" id="scenario-form">
+                    {% csrf_token %}
+
+                    <label>Heizungsanlage</label>
+                    <select name="heating">
+                        {% for item in heating_systems %}
+                        <option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Lüftungsanlage</label>
+                    <select name="ventilation">
+                        {% for item in ventilation_systems %}
+                        <option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Photovoltaik-Fläche [m²]</label>
+                    <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
+
+                    <label>PV-Batteriespeicher</label>
+                    <select name="battery_storage">
+                        <option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
+                        <option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
+                    </select>
+
+                    <label>QNG-Zielanforderung</label>
+                    <select name="qng_level">
+                        {% for item in qng_levels %}
+                        <option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" style="display:none;"></button>
+                </form>
+            </div>
+
         </div>
 
-        <a class="back-link" href="{% url 'building' %}">Zurück</a>
-    </div>
+        <div>
 
-    <div class="card">
-        <h2>Szenario</h2>
+            {% if result %}
+            <div class="card">
+                <h2>Ergebnis</h2>
 
-        <form method="post" id="scenario-form">
-            {% csrf_token %}
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div>Primärenergiebedarf QP,ne</div>
+                        <div class="number">{{ result.total.ac_qp_rel }}</div>
+                        <div>kWhPEne / m²NRF·a</div>
+                        <p>
+                            Grenzwert: {{ result.total.qp_limit }} →
+                            <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                                {{ result.total.qp_status }}
+                            </span>
+                        </p>
+                    </div>
 
-            <label>Heizung</label>
-            <select name="heating">
-                {% for item in heating_systems %}
-                    <option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>
-                        {{ item }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <label>Lüftung</label>
-            <select name="ventilation">
-                {% for item in ventilation_systems %}
-                    <option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>
-                        {{ item }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <label>PV Fläche</label>
-            <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
-
-            <label>Batterie</label>
-            <select name="battery_storage">
-                <option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
-                <option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
-            </select>
-
-            <label>QNG Level</label>
-            <select name="qng_level">
-                {% for item in qng_levels %}
-                    <option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>
-                        {{ item }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <button type="submit" style="display:none;">Berechnen</button>
-        </form>
-    </div>
-
-    {% if result %}
-    <div class="card">
-        <h2>Ergebnis</h2>
-
-        <div class="result-grid">
-            <div class="result-box">
-                <div>QP,ne</div>
-                <div class="number">{{ result.total.ac_qp_rel }}</div>
-                <div>
-                    {{ result.total.qp_limit }} →
-                    <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
-                        {{ result.total.qp_status }}
-                    </span>
+                    <div class="result-box">
+                        <div>Treibhauspotenzial GWP</div>
+                        <div class="number">{{ result.total.ac_gwp_rel }}</div>
+                        <div>kg CO₂-Äq. / m²NRF·a</div>
+                        <p>
+                            Grenzwert: {{ result.total.gwp_limit }} →
+                            <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                                {{ result.total.gwp_status }}
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="result-box">
-                <div>GWP</div>
-                <div class="number">{{ result.total.ac_gwp_rel }}</div>
-                <div>
-                    {{ result.total.gwp_limit }} →
-                    <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
-                        {{ result.total.gwp_status }}
-                    </span>
+            <div class="card">
+                <h2>Vergleich mit QNG-Grenzwerten</h2>
+
+                <div class="chart-row">
+                    <div class="chart-label">
+                        <span>QP,ne</span>
+                        <span>{{ result.total.ac_qp_rel }} / {{ result.total.qp_limit }}</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill {% if result.total.qp_status != 'erfüllt' %}bad{% endif %}"
+                             style="width: {% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%;">
+                        </div>
+                    </div>
+                    <div class="limit-text">100 % entspricht dem QNG-Grenzwert.</div>
+                </div>
+
+                <div class="chart-row">
+                    <div class="chart-label">
+                        <span>GWP</span>
+                        <span>{{ result.total.ac_gwp_rel }} / {{ result.total.gwp_limit }}</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill {% if result.total.gwp_status != 'erfüllt' %}bad{% endif %}"
+                             style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %}%;">
+                        </div>
+                    </div>
+                    <div class="limit-text">100 % entspricht dem QNG-Grenzwert.</div>
                 </div>
             </div>
+
+            <div class="card">
+                <h2>Ergebnis-Aufschlüsselung</h2>
+
+                <table>
+                    <tr>
+                        <th>Teilbereich</th>
+                        <th>QP,ne</th>
+                        <th>GWP</th>
+                    </tr>
+
+                    {% for part in result.parts %}
+                    <tr>
+                        <td>{{ part.name }}</td>
+                        <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
+                        <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endif %}
+
         </div>
 
-        <h2>Details</h2>
-
-        <table>
-            <tr>
-                <th>Teil</th>
-                <th>QP</th>
-                <th>GWP</th>
-            </tr>
-            {% for part in result.parts %}
-            <tr>
-                <td>{{ part.name }}</td>
-                <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
-                <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
-            </tr>
-            {% endfor %}
-        </table>
     </div>
-    {% endif %}
-
 </div>
 
 <script>
-    const form = document.getElementById("scenario-form");
-    let timeout = null;
+const form = document.getElementById("scenario-form");
+let timeout = null;
 
-    form.querySelectorAll("input, select").forEach((field) => {
-
-        field.addEventListener("change", () => {
-            form.submit();
-        });
-
-        field.addEventListener("input", () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                form.submit();
-            }, 700);
-        });
-
+form.querySelectorAll("input, select").forEach((field) => {
+    field.addEventListener("change", () => {
+        form.submit();
     });
+
+    field.addEventListener("input", () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            form.submit();
+        }, 700);
+    });
+});
 </script>
 
 </body>

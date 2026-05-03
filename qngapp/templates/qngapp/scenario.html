@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,22 +7,17 @@
 
     <style>
         body {
-            body {
-    body {
-    body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 40px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
 
-    background:
-        linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
-        url("{% static 'qngapp/images/hintergrund.jfif' %}");
+            background:
+                linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
+                url("{% static 'qngapp/images/hintergrund.jfif' %}");
 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-}
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
         .page {
@@ -65,6 +61,7 @@
             margin-top: 6px;
             border-radius: 10px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         .info-box {
@@ -187,15 +184,12 @@
 </head>
 
 <body>
-
 <div class="page">
     <h1>Szenarien testen</h1>
     <p class="hint">Links konfigurieren – rechts live Ergebnis.</p>
 
     <div class="layout">
-
         <div class="sidebar">
-
             <div class="card">
                 <h2>Gebäudedaten</h2>
                 <strong>{{ building.project_name }}</strong>
@@ -254,11 +248,9 @@
                     <button type="submit" style="display:none;"></button>
                 </form>
             </div>
-
         </div>
 
         <div>
-
             {% if result %}
             <div class="card">
                 <h2>Ergebnis</h2>
@@ -340,9 +332,7 @@
                 </table>
             </div>
             {% endif %}
-
         </div>
-
     </div>
 </div>
 

@@ -1,120 +1,204 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Gebäudedaten</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7f5;
-            margin: 0;
-            padding: 40px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gebäudedaten | QNG-Check</title>
 
-        .container {
-            max-width: 850px;
-            margin: auto;
-            background: white;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        h1 {
-            color: #1f4d3a;
-        }
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 40px 20px;
 
-        label {
-            display: block;
-            margin-top: 18px;
-            font-weight: bold;
-        }
+    background:
+        linear-gradient(rgba(10,30,25,0.45), rgba(10,30,25,0.45)),
+        url("{% static 'images/hintergrund.jpg' %}");
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #1a2e26;
+}
 
-        button {
-            margin-top: 28px;
-            padding: 14px 22px;
-            border: none;
-            border-radius: 10px;
-            background: #1f7a4d;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+.page {
+    max-width: 900px;
+    margin: auto;
+}
 
-        .hint {
-            color: #666;
-            font-size: 14px;
-        }
+/* Titel */
+h1 {
+    color: #fff;
+    font-size: 2.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
 
-        .small {
-            font-size: 13px;
-            color: #888;
-        }
-    </style>
+.hint {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 30px;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(16px);
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* Inputs */
+label {
+    display: block;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4a635a;
+    text-transform: uppercase;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border-radius: 12px;
+    border: 1.5px solid #dce5e1;
+    background: white;
+    font-size: 1rem;
+    transition: all 0.25s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #1f7a4d;
+    box-shadow: 0 0 0 4px rgba(31,122,77,0.1);
+}
+
+/* Info Text */
+.small {
+    font-size: 13px;
+    color: #5f6f68;
+    margin-top: 6px;
+}
+
+/* Button */
+button {
+    margin-top: 30px;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: #1f7a4d;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 18px rgba(31,122,77,0.25);
+}
+
+button:hover {
+    background: #16633d;
+    transform: translateY(-2px);
+}
+
+/* Kleine Box für automatische Berechnung */
+.auto-box {
+    background: rgba(31,122,77,0.08);
+    border: 1px solid rgba(31,122,77,0.15);
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="page">
+
     <h1>Gebäudedaten konfigurieren</h1>
     <p class="hint">
-        Die Nettogrundfläche (NRF) des Gebäudes wird automatisch aus beheizter Fläche und Tiefgarage berechnet.
+        Geben Sie die grundlegenden Gebäudedaten ein. Die Gesamt-Nettogrundfläche wird automatisch berechnet.
     </p>
 
-    <form method="post">
-        {% csrf_token %}
+    <div class="card">
 
-        <label>Projektname</label>
-        <input type="text" name="project_name" value="Beispielgebäude">
+        <form method="post">
+            {% csrf_token %}
 
-        <label>
-            Nettogrundfläche – Tiefgarage (NRF TG) [m²]
-        </label>
-        <input type="number" step="0.01" name="nrf_tg" value="0">
-        <div class="small">
-            Fläche der Tiefgarage, die nicht beheizt wird.
-        </div>
+            <label>Projektname</label>
+            <input type="text" name="project_name" value="Beispielgebäude">
 
-        <label>
-            Beheizte Nettogrundfläche (NRF beheizt) [m²]
-        </label>
-        <input type="number" step="0.01" name="nrf_heated" value="5282">
-        <div class="small">
-            Alle beheizten Räume des Gebäudes (Wohnflächen etc.).
-        </div>
+            <label>Nettogrundfläche Tiefgarage [m²]</label>
+            <input type="number" step="0.01" name="nrf_tg" id="nrf_tg" value="0">
+            <div class="small">
+                Fläche der unbeheizten Tiefgarage.
+            </div>
 
-        <label>
-            Energiebezugsfläche nach GEG (A<sub>N</sub>) [m²]
-        </label>
-        <input type="number" step="0.01" name="an_geg" value="6201">
-        <div class="small">
-            Fläche zur Berechnung des Energiebedarfs gemäß Gebäudeenergiegesetz.
-        </div>
+            <label>Beheizte Nettogrundfläche [m²]</label>
+            <input type="number" step="0.01" name="nrf_heated" id="nrf_heated" value="5282">
+            <div class="small">
+                Alle beheizten Räume des Gebäudes.
+            </div>
 
-        <label>Bauweise</label>
-        <select name="building_type">
-            {% for item in building_types %}
-                <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
+            <!-- Automatische Anzeige -->
+            <div class="auto-box">
+                Gesamt-Nettogrundfläche: 
+                <strong><span id="nrf_total">5282</span> m²</strong>
+            </div>
 
-        <label>Energiestandard</label>
-        <select name="energy_standard">
-            {% for item in energy_standards %}
-                <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
+            <label>Energiebezugsfläche nach GEG (Aₙ) [m²]</label>
+            <input type="number" step="0.01" name="an_geg" value="6201">
+            <div class="small">
+                Grundlage für Energiebedarfsberechnung.
+            </div>
 
-        <button type="submit">Weiter zu Szenarien</button>
-    </form>
+            <label>Bauweise</label>
+            <select name="building_type">
+                {% for item in building_types %}
+                    <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Energiestandard</label>
+            <select name="energy_standard">
+                {% for item in energy_standards %}
+                    <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Weiter zu Szenarien →</button>
+
+        </form>
+
+    </div>
+
 </div>
+
+<script>
+// automatische NRF Berechnung
+const tg = document.getElementById("nrf_tg");
+const heated = document.getElementById("nrf_heated");
+const total = document.getElementById("nrf_total");
+
+function updateNRF() {
+    const value = (parseFloat(tg.value) || 0) + (parseFloat(heated.value) || 0);
+    total.innerText = value.toFixed(0);
+}
+
+tg.addEventListener("input", updateNRF);
+heated.addEventListener("input", updateNRF);
+</script>
 
 </body>
 </html>

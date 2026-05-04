@@ -13,6 +13,18 @@ erfüllt.
 
 ---
 
+## Beispielansicht
+
+### Gebäudedaten
+
+![Gebäudedaten](qngapp/static/images/building.jpg)
+
+### Szenario & Ergebnis
+
+![Szenario](qngapp/static/images/scenario.jpg)
+
+---
+
 ## Ziel des Projekts
 
 * Übertragung komplexer Excel-Berechnungen in ein verständliches Webtool

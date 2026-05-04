@@ -1,66 +1,107 @@
-# Absch-tzung-der-Geb-ude-kobilanz-nach-QNG
-Python-basierter Web-Prototyp zur Abschätzung der Gebäudeökobilanz von Wohngebäuden nach QNG-Anforderungen.
+# QNG-Check – Abschätzung der Gebäudeökobilanz
 
-## Projektziel
-Ziel des Projekts ist die Entwicklung eines ersten digitalen Werkzeugs, mit dem zentrale Gebäudedaten und Variantenparameter eingegeben, verarbeitet und als vereinfachte Ergebniswerte dargestellt werden können.
+## Projektbeschreibung
 
-## Sprint 2 – Aktueller Stand
-Im zweiten Sprint wurde der Schritt von der ersten Idee zu einem kleinen funktionsfähigen System umgesetzt.
+Dieses Projekt ist ein Web-Tool zur vereinfachten Abschätzung der Gebäudeökobilanz nach dem **QNG-Standard (Qualitätssiegel Nachhaltiges Gebäude)**.
 
-Aktuell vorhanden:
-- minimales Django-Setup
-- erste Benutzeroberfläche
-- einfache Eingabe von Projekt- und Variantenparametern
-- vereinfachte Python-Logik zur Berechnung
-- Ausgabe von GWP, QP,ne und QNG-Status
-- erste funktionierende End-to-End-Pipeline
+Ziel ist es, frühzeitig im Planungsprozess eine Einschätzung zu ermöglichen, ob ein Gebäude die Anforderungen an:
 
-## Konzept
-### Goal
-Entwicklung eines webbasierten Prototyps zur vereinfachten Abschätzung der Gebäudeökobilanz nach QNG-Anforderungen.
+* Primärenergiebedarf (QP,ne)
+* Treibhauspotenzial (GWP)
 
-### Data Flow
-Input → Processing → Output
+erfüllt.
 
-- **Input:** Gebäudedaten und Variantenparameter
-- **Processing:** vereinfachte regelbasierte Logik
-- **Output:** GWP, QP,ne und QNG-Status
+---
 
-### Tech Decision
-- Django als Web-Framework
-- HTML/CSS für die Benutzeroberfläche
-- Python für die Logik
-- Excel-Tool als fachliche Grundlage
-- GitHub für Versionsverwaltung und Sprint-Planung
+## Ziel des Projekts
 
-## Erste Datenstruktur
+* Übertragung komplexer Excel-Berechnungen in ein verständliches Webtool
+* Schnelle Szenarioanalyse ermöglichen
+* Transparenz über Einflussfaktoren schaffen
+
+---
+
+## Funktionsumfang
+
 ### Gebäudedaten
-- Projektname
-- QNG-Zielniveau
-- Brutto-Grundfläche des Gebäudes
-- Gebäudenutzfläche nach GEG
-- Gesamte Nettoraumfläche
-- Beheizte Nettoraumfläche
-- Tiefgarage vorhanden
 
-### Szenariodaten
-- Energiestandard
-- Bauweise
-- Heizungsanlage
-- Lüftungsanlage
-- Photovoltaikfläche
-- Batteriespeicher
-- Fläche der Tiefgarage
+* Eingabe von:
 
-### Ergebnisdaten
-- Treibhauspotenzial (GWP)
-- Nicht erneuerbarer Primärenergiebedarf (QP,ne)
-- QNG-Status
-- Hinweise / Kommentare
+  * Nettogrundfläche (beheizt + Tiefgarage)
+  * Energiebezugsfläche (Aₙ nach GEG)
+  * Bauweise
+  * Energiestandard
 
-## Projektstruktur
-```text
-manage.py
-qng_project/
-qngapp/
-qngapp/templates/qngapp/index.html
+### Szenarioanalyse
+
+* Auswahl von:
+
+  * Heizsystem
+  * Lüftungssystem
+  * PV-Fläche
+  * Batteriespeicher
+  * QNG-Level (PLUS / PREMIUM)
+
+### Ergebnis
+
+* Berechnung von:
+
+  * QP,ne
+  * GWP
+* Vergleich mit QNG-Grenzwerten
+* Grafische Darstellung (Balkendiagramm)
+* Aufschlüsselung nach Teilbereichen
+
+---
+
+## Testing (Sprint 3)
+
+Erste Teststrategie wurde definiert:
+
+* Vergleich mit Referenzwerten aus dem Excel-Tool
+* Variation von Parametern (z. B. PV-Fläche)
+* Überprüfung der Grenzwerte (QNG-PLUS / PREMIUM)
+* Plausibilitätsprüfung der Ergebnisse
+* Test der automatischen Flächenberechnung
+
+---
+
+## Technologien
+
+* Python / Django
+* HTML / CSS
+* GitHub / GitHub Actions
+
+---
+
+## Projektstatus
+
+| Bereich          | Status       |
+| ---------------- | ------------ |
+| GUI              | umgesetzt    |
+| Datenstruktur    | umgesetzt    |
+| Berechnungslogik | erster Stand |
+| Testing          | gestartet    |
+| Validierung      | ausstehend   |
+
+---
+
+## Nächste Schritte
+
+* Validierung mit realen QNG-Daten
+* Erweiterung der Berechnungslogik
+* Verbesserung der Benutzerführung
+* Aufbau automatisierter Tests
+
+
+---
+
+## Was ist QNG?
+
+Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
+
+Bewertet werden unter anderem:
+
+* Energieeffizienz
+* CO₂-Emissionen
+* Ressourceneinsatz

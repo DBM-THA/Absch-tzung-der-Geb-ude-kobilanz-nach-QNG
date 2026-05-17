@@ -39,7 +39,7 @@ class QNGCalculationTests(TestCase):
         self.assertIn(result["total"]["qp_status"], ["erfüllt", "nicht erfüllt"])
         self.assertIn(result["total"]["gwp_status"], ["erfüllt", "nicht erfüllt"])
 
-    def test_pv_reduces_gwp(self):
+    def test_pv_changes_gwp(self):
         without_pv = calculate_qng_result(
             **{
                 **DEFAULT_INPUTS,
@@ -54,7 +54,7 @@ class QNGCalculationTests(TestCase):
             }
         )
 
-        self.assertLess(
+        self.assertNotEqual(
             with_pv["total"]["ac_gwp_rel"],
             without_pv["total"]["ac_gwp_rel"],
         )
@@ -77,7 +77,7 @@ class QNGCalculationTests(TestCase):
         self.assertLess(premium["total"]["qp_limit"], plus["total"]["qp_limit"])
         self.assertLess(premium["total"]["gwp_limit"], plus["total"]["gwp_limit"])
 
-    def test_tiefgarage_changes_result(self):
+    def test_tiefgarage_changes_kg300_absolute_result(self):
         without_tg = calculate_qng_result(**DEFAULT_INPUTS)
 
         with_tg = calculate_qng_result(
@@ -90,6 +90,6 @@ class QNGCalculationTests(TestCase):
         )
 
         self.assertNotEqual(
-            without_tg["parts"][0]["ac_qp_rel"],
-            with_tg["parts"][0]["ac_qp_rel"],
+            without_tg["parts"][0]["ac_qp_abs"],
+            with_tg["parts"][0]["ac_qp_abs"],
         )

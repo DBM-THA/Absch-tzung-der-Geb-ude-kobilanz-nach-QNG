@@ -1,48 +1,53 @@
 from django.test import TestCase
-from qngapp.calculations import calculate_result
+
+from qngapp.calculations import calculate_qng_result
 
 
 class QNGCalculationTests(TestCase):
 
-    def setUp(self):
-        self.building = {
-            "project_name": "Testgebäude",
-            "nrf_total": 1000,
-            "nrf_heated": 800,
-            "building_type": "Massivbauweise (KS + WDVS)",
-            "energy_standard": "GEG"
-        }
-
-        self.scenario = {
-            "heating": "Wärmepumpe",
-            "ventilation": "Lüftungsanlage mit WRG",
-            "pv_area": 50,
-            "battery_storage": "nein",
-            "qng_level": "QNG-PLUS"
-        }
-
-    def test_calculation_returns_result(self):
-        result = calculate_result(
-            self.building,
-            self.scenario
+    def test_calculation_returns_qp_and_gwp(self):
+        result = calculate_qng_result(
+            nrf_total=1000,
+            nrf_tg=0,
+            building_type="Massivbauweise (KS + WDVS)",
+            energy_standard="Effizienzhaus 40",
+            heating="Luft-Wasser-Wärmepumpe",
+            ventilation="Zu-/Abluftanlage mit WRG",
+            qng_level="QNG-PLUS",
+            an_geg=800,
+            nrf_heated=800,
+            pv_area=50,
+            battery_storage="nein",
         )
 
         self.assertIn("total", result)
-
-    def test_result_contains_qp_and_gwp(self):
-        result = calculate_result(
-            self.building,
-            self.scenario
-        )
-
         self.assertIn("ac_qp_rel", result["total"])
         self.assertIn("ac_gwp_rel", result["total"])
 
     def test_result_contains_parts(self):
-        result = calculate_result(
-            self.building,
-            self.scenario
+        result = calculate_qng_result(
+            nrf_total=1000,
+            nrf_tg=0,
+            building_type="Massivbauweise (KS + WDVS)",
+            energy_standard="Effizienzhaus 40",
+            heating="Luft-Wasser-Wärmepumpe",
+            ventilation="Zu-/Abluftanlage mit WRG",
+            qng_level="QNG-PLUS",
         )
 
         self.assertIn("parts", result)
         self.assertGreater(len(result["parts"]), 0)
+
+    def test_qng_status_exists(self):
+        result = calculate_qng_result(
+            nrf_total=1000,
+            nrf_tg=0,
+            building_type="Massivbauweise (KS + WDVS)",
+            energy_standard="Effizienzhaus 40",
+            heating="Luft-Wasser-Wärmepumpe",
+            ventilation="Zu-/Abluftanlage mit WRG",
+            qng_level="QNG-PLUS",
+        )
+
+        self.assertIn(result["total"]["qp_status"], ["erfüllt", "nicht erfüllt"])
+        self.assertIn(result["total"]["gwp_status"], ["erfüllt", "nicht erfüllt"])

@@ -353,6 +353,41 @@
             flex: 0 0 auto;
         }
 
+        .badge-fixed,
+        .badge-user,
+        .badge-calc,
+        .badge-source {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-left: 6px;
+            vertical-align: middle;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .badge-fixed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-user {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-calc {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-source {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
         @media (max-width: 1000px) {
             body {
                 padding: 20px 14px;
@@ -386,30 +421,45 @@
                 <form method="post" id="scenario-form">
                     {% csrf_token %}
 
-                    <label>Heizungsanlage</label>
+                    <label>
+                        Heizungsanlage
+                        <span class="badge-fixed">Datensatz</span>
+                    </label>
                     <select name="heating">
                         {% for item in heating_systems %}
                             <option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>{{ item }}</option>
                         {% endfor %}
                     </select>
 
-                    <label>Lüftungsanlage</label>
+                    <label>
+                        Lüftungsanlage
+                        <span class="badge-fixed">Datensatz</span>
+                    </label>
                     <select name="ventilation">
                         {% for item in ventilation_systems %}
                             <option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>{{ item }}</option>
                         {% endfor %}
                     </select>
 
-                    <label>Photovoltaik-Fläche [m²]</label>
+                    <label>
+                        Photovoltaik-Fläche [m²]
+                        <span class="badge-user">Eingabe</span>
+                    </label>
                     <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
 
-                    <label>Batteriespeicher</label>
+                    <label>
+                        Batteriespeicher
+                        <span class="badge-user">Eingabe</span>
+                    </label>
                     <select name="battery_storage">
                         <option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
                         <option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
                     </select>
 
-                    <label>QNG-Zielanforderung</label>
+                    <label>
+                        QNG-Zielanforderung
+                        <span class="badge-fixed">Grenzwert</span>
+                    </label>
                     <select name="qng_level">
                         {% for item in qng_levels %}
                             <option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>{{ item }}</option>
@@ -421,26 +471,26 @@
             </div>
 
             <div class="card">
-                <h2>Gebäudedaten</h2>
+                <h2>Gebäudedaten <span class="badge-source">Stammdaten</span></h2>
                 <strong class="project-name">{{ building.project_name }}</strong>
 
                 <div class="info-box">
-                    <span>NRF gesamt</span>
+                    <span>NRF gesamt <span class="badge-calc">berechnet</span></span>
                     <strong>{{ building.nrf_total }} m²</strong>
                 </div>
 
                 <div class="info-box">
-                    <span>NRF beheizt</span>
+                    <span>NRF beheizt <span class="badge-user">Eingabe</span></span>
                     <strong>{{ building.nrf_heated }} m²</strong>
                 </div>
 
                 <div class="info-box">
-                    <span>Bauweise</span>
+                    <span>Bauweise <span class="badge-fixed">Datensatz</span></span>
                     <strong>{{ building.building_type }}</strong>
                 </div>
 
                 <div class="info-box">
-                    <span>Standard</span>
+                    <span>Standard <span class="badge-fixed">Datensatz</span></span>
                     <strong>{{ building.energy_standard }}</strong>
                 </div>
 
@@ -453,7 +503,7 @@
             {% if result %}
 
             <div class="card">
-                <h2>Ergebnis-Überblick</h2>
+                <h2>Ergebnis-Überblick <span class="badge-calc">berechnet</span></h2>
 
                 <div class="result-grid">
                     <div class="result-box">
@@ -483,11 +533,11 @@
             </div>
 
             <div class="card">
-                <h2>Vergleich mit QNG-Grenzwerten</h2>
+                <h2>Vergleich mit QNG-Grenzwerten <span class="badge-fixed">Grenzwert</span></h2>
 
                 <div class="chart-row">
                     <div class="chart-label">
-                        <span>QP,ne Gesamtwert</span>
+                        <span>QP,ne Gesamtwert <span class="badge-calc">berechnet</span></span>
                         <span>{{ result.total.ac_qp_rel }} / {{ result.total.qp_limit }}</span>
                     </div>
 
@@ -500,7 +550,7 @@
 
                 <div class="chart-row">
                     <div class="chart-label">
-                        <span>GWP Gesamtwert</span>
+                        <span>GWP Gesamtwert <span class="badge-calc">berechnet</span></span>
                         <span>{{ result.total.ac_gwp_rel }} / {{ result.total.gwp_limit }}</span>
                     </div>
 
@@ -523,7 +573,7 @@
 
                     <div class="chart-row">
                         <div class="chart-label">
-                            <span>QP,ne nach Teilbereichen</span>
+                            <span>QP,ne nach Teilbereichen <span class="badge-calc">berechnet</span></span>
                             <span>{{ result.total.ac_qp_rel }}</span>
                         </div>
 
@@ -539,7 +589,7 @@
 
                     <div class="chart-row">
                         <div class="chart-label">
-                            <span>GWP nach Teilbereichen</span>
+                            <span>GWP nach Teilbereichen <span class="badge-calc">berechnet</span></span>
                             <span>{{ result.total.ac_gwp_rel }}</span>
                         </div>
 

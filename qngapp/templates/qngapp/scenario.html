@@ -475,47 +475,62 @@
                 <p class="small-text">Die Farben zeigen, welche Teilbereiche zum Ergebnis beitragen.</p>
 
                 <div class="chart-row">
-                    <div class="chart-label">
-                        <span>QP,ne nach Teilbereichen</span>
-                        <span>{{ result.total.ac_qp_rel }}</span>
-                    </div>
+    <div class="chart-label">
+        <span>QP,ne nach Teilbereichen</span>
+        <span>{{ result.total.ac_qp_rel }}</span>
+    </div>
 
-                    <div class="stacked-bar">
-                        {% for part in result.parts %}
-                            <div class="segment color-{{ forloop.counter }}"
-                                 title="{{ part.name }}: {{ part.ac_qp_rel|floatformat:2 }}"
-                                 style="width: {% widthratio part.ac_qp_rel result.total.ac_qp_rel 100 %}%;">
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+    <div class="stacked-bar">
+        {% for part in result.parts %}
+            <div class="segment color-{{ forloop.counter }}"
+                 title="{{ part.name }}: {{ part.ac_qp_rel|floatformat:2 }}"
+                 style="
+                    width: {% widthratio part.ac_qp_rel result.total.ac_qp_rel 100 %}%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:white;
+                    font-size:0.85rem;
+                    font-weight:700;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+                 ">
 
-                <div class="chart-row">
-                    <div class="chart-label">
-                        <span>GWP nach Teilbereichen</span>
-                        <span>{{ result.total.ac_gwp_rel }}</span>
-                    </div>
-
-                    <div class="stacked-bar">
-                        {% for part in result.parts %}
-                            <div class="segment color-{{ forloop.counter }}"
-                                 title="{{ part.name }}: {{ part.ac_gwp_rel|floatformat:2 }}"
-                                 style="width: {% widthratio part.ac_gwp_rel result.total.ac_gwp_rel 100 %}%;">
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="legend">
-                    {% for part in result.parts %}
-                        <div class="legend-item">
-                            <span class="dot color-{{ forloop.counter }}"></span>
-                            <span>{{ part.name }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
+                 {% if part.ac_qp_rel > 3 %}
+                    {{ part.ac_qp_rel|floatformat:2 }}
+                 {% endif %}
             </div>
+        {% endfor %}
+    </div>
+</div>
 
+                <<div class="chart-row">
+    <div class="chart-label">
+        <span>GWP nach Teilbereichen</span>
+        <span>{{ result.total.ac_gwp_rel }}</span>
+    </div>
+
+    <div class="stacked-bar">
+        {% for part in result.parts %}
+            <div class="segment color-{{ forloop.counter }}"
+                 title="{{ part.name }}: {{ part.ac_gwp_rel|floatformat:2 }}"
+                 style="
+                    width: {% widthratio part.ac_gwp_rel result.total.ac_gwp_rel 100 %}%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:white;
+                    font-size:0.85rem;
+                    font-weight:700;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+                 ">
+
+                 {% if part.ac_gwp_rel > 1 %}
+                    {{ part.ac_gwp_rel|floatformat:2 }}
+                 {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
             <div class="card" style="padding-bottom: 10px;">
                 <h2>Aufschlüsselung nach Teilbereichen</h2>
 

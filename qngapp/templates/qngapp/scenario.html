@@ -14,7 +14,7 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            padding: 40px 20px;
+            padding: 24px 18px;
             color: #1a2e26;
             background:
                 linear-gradient(rgba(10, 30, 25, 0.50), rgba(10, 30, 25, 0.50)),
@@ -22,67 +22,67 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            line-height: 1.6;
+            line-height: 1.45;
         }
 
         .page {
-            max-width: 1300px;
+            max-width: 1350px;
             margin: auto;
         }
 
         h1 {
             color: #ffffff;
-            font-size: 2.6rem;
+            font-size: 2.25rem;
             font-weight: 800;
-            margin: 0 0 8px 0;
+            margin: 0 0 4px 0;
             text-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
         .hint {
             color: rgba(255,255,255,0.9);
-            margin-bottom: 36px;
-            font-size: 1.1rem;
+            margin: 0 0 20px 0;
+            font-size: 1rem;
         }
 
         .layout {
             display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 32px;
+            grid-template-columns: 370px 1fr;
+            gap: 22px;
             align-items: start;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.90);
+            background: rgba(255, 255, 255, 0.91);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-            margin-bottom: 24px;
+            padding: 22px;
+            border-radius: 22px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+            margin-bottom: 18px;
             border: 1px solid rgba(255,255,255,0.45);
         }
 
         h2 {
             color: #0f2f26;
             margin-top: 0;
-            font-size: 1.35rem;
+            font-size: 1.18rem;
             font-weight: 800;
             border-bottom: 2px solid rgba(31, 122, 77, 0.15);
-            padding-bottom: 12px;
-            margin-bottom: 22px;
+            padding-bottom: 9px;
+            margin-bottom: 14px;
         }
 
         .small-text {
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             color: #64746d;
-            margin-top: -10px;
-            margin-bottom: 18px;
+            margin-top: -6px;
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-top: 18px;
-            font-size: 0.78rem;
+            margin-top: 12px;
+            font-size: 0.72rem;
             font-weight: 700;
             color: #4a635a;
             text-transform: uppercase;
@@ -91,12 +91,12 @@
 
         input, select {
             width: 100%;
-            padding: 14px;
-            margin-top: 8px;
-            border-radius: 12px;
+            padding: 11px 12px;
+            margin-top: 6px;
+            border-radius: 11px;
             border: 1.5px solid #dce5e1;
             background: white;
-            font-size: 1rem;
+            font-size: 0.92rem;
             box-sizing: border-box;
             transition: all 0.3s;
         }
@@ -110,10 +110,10 @@
         .info-box {
             background: rgba(31, 122, 77, 0.08);
             border: 1px solid rgba(31, 122, 77, 0.12);
-            padding: 14px;
-            border-radius: 14px;
-            margin-top: 10px;
-            font-size: 14px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 13px;
             font-weight: 600;
             color: #1a4d35;
             display: flex;
@@ -127,17 +127,17 @@
         }
 
         .project-name {
-            font-size: 1.15rem;
+            font-size: 1rem;
             color: #1f7a4d;
             font-weight: 800;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: block;
         }
 
         .back-link {
             display: block;
-            margin-top: 24px;
-            padding: 14px;
+            margin-top: 16px;
+            padding: 12px;
             border-radius: 12px;
             background: #1f7a4d;
             color: white;
@@ -146,6 +146,7 @@
             font-weight: 700;
             transition: transform 0.2s, background 0.2s;
             box-shadow: 0 4px 12px rgba(31, 122, 77, 0.2);
+            font-size: 0.92rem;
         }
 
         .back-link:hover {
@@ -156,32 +157,32 @@
         .result-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 16px;
         }
 
         .result-box {
-            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.45));
+            background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.48));
             border: 1px solid white;
-            padding: 26px;
-            border-radius: 22px;
+            padding: 18px;
+            border-radius: 20px;
             text-align: center;
         }
 
         .number {
-            font-size: 3.4rem;
+            font-size: 2.65rem;
             font-weight: 800;
             color: #0f2f26;
             line-height: 1;
-            margin: 12px 0;
+            margin: 8px 0;
             letter-spacing: -2px;
         }
 
         .status-ok,
         .status-bad {
             font-weight: 800;
-            padding: 5px 10px;
+            padding: 4px 9px;
             border-radius: 999px;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
         }
 
         .status-ok {
@@ -195,20 +196,21 @@
         }
 
         .chart-row {
-            margin-top: 24px;
+            margin-top: 14px;
         }
 
         .chart-label {
             display: flex;
             justify-content: space-between;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 7px;
             gap: 16px;
+            font-size: 0.9rem;
         }
 
         .bar-bg {
             width: 100%;
-            height: 26px;
+            height: 20px;
             background: rgba(0,0,0,0.07);
             border-radius: 999px;
             overflow: hidden;
@@ -228,11 +230,11 @@
         .stacked-bar {
             display: flex;
             width: 100%;
-            height: 30px;
+            height: 22px;
             background: rgba(0,0,0,0.07);
             border-radius: 999px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 7px;
         }
 
         .segment {
@@ -249,12 +251,51 @@
         .color-7 { background: #ec4899; }
         .color-8 { background: #64748b; }
 
+        details {
+            margin-top: 0;
+        }
+
+        summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            color: #0f2f26;
+            font-size: 1.18rem;
+            border-bottom: 2px solid rgba(31, 122, 77, 0.15);
+            padding-bottom: 9px;
+            margin-bottom: 14px;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .summary-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            background: rgba(31, 122, 77, 0.10);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #1f7a4d;
+            font-weight: 800;
+            transition: transform 0.2s;
+        }
+
+        details[open] .summary-arrow {
+            transform: rotate(180deg);
+        }
+
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 16px;
-            margin-top: 16px;
-            font-size: 0.85rem;
+            gap: 7px 13px;
+            margin-top: 12px;
+            font-size: 0.78rem;
             color: #41544d;
             font-weight: 600;
         }
@@ -262,12 +303,12 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
         }
 
         .dot {
-            width: 11px;
-            height: 11px;
+            width: 10px;
+            height: 10px;
             border-radius: 999px;
             display: inline-block;
         }
@@ -275,20 +316,21 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 14px;
+            font-size: 0.86rem;
         }
 
         th {
             text-align: left;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             color: #6b7280;
             text-transform: uppercase;
-            padding: 12px;
+            padding: 8px 10px;
             border-bottom: 2px solid #e5e7eb;
         }
 
         td {
-            padding: 15px 12px;
+            padding: 9px 10px;
             border-bottom: 1px solid #f3f4f6;
             font-weight: 600;
         }
@@ -301,17 +343,21 @@
         .component-name {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 9px;
         }
 
         .mini-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 999px;
             flex: 0 0 auto;
         }
 
         @media (max-width: 1000px) {
+            body {
+                padding: 20px 14px;
+            }
+
             .layout {
                 grid-template-columns: 1fr;
             }
@@ -327,14 +373,12 @@
 
 <div class="page">
     <h1>Szenarien testen</h1>
-    <p class="hint">Passen Sie die Szenario-Parameter an und vergleichen Sie die Ergebnisse mit den QNG-Grenzwerten.</p>
+    <p class="hint">Parameter anpassen und direkt mit den QNG-Grenzwerten vergleichen.</p>
 
     <div class="layout">
 
-        <!-- ===== LEFT SIDEBAR ===== -->
         <aside class="sidebar">
 
-            <!-- SZENARIO JETZT OBEN -->
             <div class="card">
                 <h2>Szenario-Daten</h2>
                 <p class="small-text">Hier werden die wichtigsten Annahmen für die Berechnung angepasst.</p>
@@ -376,7 +420,6 @@
                 </form>
             </div>
 
-            <!-- GEBÄUDEDATEN JETZT UNTEN -->
             <div class="card">
                 <h2>Gebäudedaten</h2>
                 <strong class="project-name">{{ building.project_name }}</strong>
@@ -406,7 +449,6 @@
 
         </aside>
 
-        <!-- ===== RIGHT CONTENT ===== -->
         <main>
             {% if result %}
 
@@ -417,7 +459,7 @@
                     <div class="result-box">
                         <div style="font-weight:700; color:#4b5563;">Primärenergiebedarf</div>
                         <div class="number">{{ result.total.ac_qp_rel }}</div>
-                        <div style="font-size:0.9rem; margin-bottom:12px;">
+                        <div style="font-size:0.82rem; margin-bottom:10px;">
                             kWh<sub>PEne</sub> / m²<sub>NRF</sub>·a
                         </div>
 
@@ -429,7 +471,7 @@
                     <div class="result-box">
                         <div style="font-weight:700; color:#4b5563;">Treibhauspotenzial</div>
                         <div class="number">{{ result.total.ac_gwp_rel }}</div>
-                        <div style="font-size:0.9rem; margin-bottom:12px;">
+                        <div style="font-size:0.82rem; margin-bottom:10px;">
                             kg CO₂-Äq. / m²<sub>NRF</sub>·a
                         </div>
 
@@ -471,93 +513,80 @@
             </div>
 
             <div class="card">
-                <h2>Unterkategorien im Balkendiagramm</h2>
-                <p class="small-text">Die Farben zeigen, welche Teilbereiche zum Ergebnis beitragen.</p>
+                <details>
+                    <summary>
+                        Unterkategorien & Aufschlüsselung
+                        <span class="summary-arrow">⌄</span>
+                    </summary>
 
-                <div class="chart-row">
-    <div class="chart-label">
-        <span>QP,ne nach Teilbereichen</span>
-        <span>{{ result.total.ac_qp_rel }}</span>
-    </div>
+                    <p class="small-text">Farben und Tabelle zeigen, welche Teilbereiche zum Ergebnis beitragen.</p>
 
-    <div class="stacked-bar">
-        {% for part in result.parts %}
-            <div class="segment color-{{ forloop.counter }}"
-                 title="{{ part.name }}: {{ part.ac_qp_rel|floatformat:2 }}"
-                 style="
-                    width: {% widthratio part.ac_qp_rel result.total.ac_qp_rel 100 %}%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:white;
-                    font-size:0.85rem;
-                    font-weight:700;
-                    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
-                 ">
+                    <div class="chart-row">
+                        <div class="chart-label">
+                            <span>QP,ne nach Teilbereichen</span>
+                            <span>{{ result.total.ac_qp_rel }}</span>
+                        </div>
 
-                 {% if part.ac_qp_rel > 3 %}
-                    {{ part.ac_qp_rel|floatformat:2 }}
-                 {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-</div>
-
-                <<div class="chart-row">
-    <div class="chart-label">
-        <span>GWP nach Teilbereichen</span>
-        <span>{{ result.total.ac_gwp_rel }}</span>
-    </div>
-
-    <div class="stacked-bar">
-        {% for part in result.parts %}
-            <div class="segment color-{{ forloop.counter }}"
-                 title="{{ part.name }}: {{ part.ac_gwp_rel|floatformat:2 }}"
-                 style="
-                    width: {% widthratio part.ac_gwp_rel result.total.ac_gwp_rel 100 %}%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:white;
-                    font-size:0.85rem;
-                    font-weight:700;
-                    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
-                 ">
-
-                 {% if part.ac_gwp_rel > 1 %}
-                    {{ part.ac_gwp_rel|floatformat:2 }}
-                 {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-</div>
-            <div class="card" style="padding-bottom: 10px;">
-                <h2>Aufschlüsselung nach Teilbereichen</h2>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Komponente</th>
-                            <th>QP,ne</th>
-                            <th>GWP</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for part in result.parts %}
-                        <tr>
-                            <td>
-                                <div class="component-name">
-                                    <span class="mini-dot color-{{ forloop.counter }}"></span>
-                                    <span>{{ part.name }}</span>
+                        <div class="stacked-bar">
+                            {% for part in result.parts %}
+                                <div class="segment color-{{ forloop.counter }}"
+                                     title="{{ part.name }}: {{ part.ac_qp_rel|floatformat:2 }}"
+                                     style="width: {% widthratio part.ac_qp_rel result.total.ac_qp_rel 100 %}%;">
                                 </div>
-                            </td>
-                            <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
-                            <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
-                        </tr>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="chart-row">
+                        <div class="chart-label">
+                            <span>GWP nach Teilbereichen</span>
+                            <span>{{ result.total.ac_gwp_rel }}</span>
+                        </div>
+
+                        <div class="stacked-bar">
+                            {% for part in result.parts %}
+                                <div class="segment color-{{ forloop.counter }}"
+                                     title="{{ part.name }}: {{ part.ac_gwp_rel|floatformat:2 }}"
+                                     style="width: {% widthratio part.ac_gwp_rel result.total.ac_gwp_rel 100 %}%;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        {% for part in result.parts %}
+                            <div class="legend-item">
+                                <span class="dot color-{{ forloop.counter }}"></span>
+                                <span>{{ part.name }}</span>
+                            </div>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Komponente</th>
+                                <th>QP,ne</th>
+                                <th>GWP</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for part in result.parts %}
+                            <tr>
+                                <td>
+                                    <div class="component-name">
+                                        <span class="mini-dot color-{{ forloop.counter }}"></span>
+                                        <span>{{ part.name }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
+                                <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
             </div>
 
             {% endif %}

@@ -132,6 +132,35 @@ button:hover {
     margin-top: 15px;
     font-weight: 500;
 }
+
+/* ===== BADGES ===== */
+
+.badge-fixed,
+.badge-user,
+.badge-calc {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.badge-fixed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-user {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-calc {
+    background: #fef3c7;
+    color: #92400e;
+}
 </style>
 </head>
 
@@ -151,14 +180,22 @@ button:hover {
         <form method="post">
             {% csrf_token %}
 
-            <label>Projektname</label>
+            <label>
+                Projektname
+                <span class="badge-user">Eingabe</span>
+            </label>
+
             <input
                 type="text"
                 name="project_name"
                 value="{{ form_data.project_name }}"
             >
 
-            <label>Nettogrundfläche Tiefgarage [m²]</label>
+            <label>
+                Nettogrundfläche Tiefgarage [m²]
+                <span class="badge-user">Eingabe</span>
+            </label>
+
             <input
                 type="number"
                 step="0.01"
@@ -171,7 +208,11 @@ button:hover {
                 Fläche der unbeheizten Tiefgarage.
             </div>
 
-            <label>Beheizte Nettogrundfläche [m²]</label>
+            <label>
+                Beheizte Nettogrundfläche [m²]
+                <span class="badge-user">Eingabe</span>
+            </label>
+
             <input
                 type="number"
                 step="0.01"
@@ -186,13 +227,18 @@ button:hover {
 
             <!-- Automatische Anzeige -->
             <div class="auto-box">
-                Gesamt-Nettogrundfläche:
+                Gesamt-Nettogrundfläche
+                <span class="badge-calc">berechnet</span>
+                :
                 <strong>
                     <span id="nrf_total">5282</span> m²
                 </strong>
             </div>
 
-            <label>Energiebezugsfläche nach GEG (Aₙ) [m²]</label>
+            <label>
+                Energiebezugsfläche nach GEG (Aₙ) [m²]
+                <span class="badge-user">Eingabe</span>
+            </label>
 
             <input
                 type="number"
@@ -212,7 +258,10 @@ button:hover {
                 </div>
             {% endif %}
 
-            <label>Bauweise</label>
+            <label>
+                Bauweise
+                <span class="badge-fixed">Datensatz</span>
+            </label>
 
             <select name="building_type">
                 {% for item in building_types %}
@@ -222,7 +271,10 @@ button:hover {
                 {% endfor %}
             </select>
 
-            <label>Energiestandard</label>
+            <label>
+                Energiestandard
+                <span class="badge-fixed">Datensatz</span>
+            </label>
 
             <select name="energy_standard">
                 {% for item in energy_standards %}

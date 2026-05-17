@@ -74,6 +74,7 @@ input, select {
     background: white;
     font-size: 1rem;
     transition: all 0.25s;
+    box-sizing: border-box;
 }
 
 input:focus, select:focus {
@@ -87,6 +88,18 @@ input:focus, select:focus {
     font-size: 13px;
     color: #5f6f68;
     margin-top: 6px;
+}
+
+/* Warning Box */
+.warning-box {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
 }
 
 /* Button */
@@ -127,8 +140,10 @@ button:hover {
 <div class="page">
 
     <h1>Gebäudedaten konfigurieren</h1>
+
     <p class="hint">
-        Geben Sie die grundlegenden Gebäudedaten ein. Die Gesamt-Nettogrundfläche wird automatisch berechnet.
+        Geben Sie die grundlegenden Gebäudedaten ein.
+        Die Gesamt-Nettogrundfläche wird automatisch berechnet.
     </p>
 
     <div class="card">
@@ -137,47 +152,89 @@ button:hover {
             {% csrf_token %}
 
             <label>Projektname</label>
-            <input type="text" name="project_name" value="Beispielgebäude">
+            <input
+                type="text"
+                name="project_name"
+                value="{{ form_data.project_name }}"
+            >
 
             <label>Nettogrundfläche Tiefgarage [m²]</label>
-            <input type="number" step="0.01" name="nrf_tg" id="nrf_tg" value="0">
+            <input
+                type="number"
+                step="0.01"
+                name="nrf_tg"
+                id="nrf_tg"
+                value="{{ form_data.nrf_tg }}"
+            >
+
             <div class="small">
                 Fläche der unbeheizten Tiefgarage.
             </div>
 
             <label>Beheizte Nettogrundfläche [m²]</label>
-            <input type="number" step="0.01" name="nrf_heated" id="nrf_heated" value="5282">
+            <input
+                type="number"
+                step="0.01"
+                name="nrf_heated"
+                id="nrf_heated"
+                value="{{ form_data.nrf_heated }}"
+            >
+
             <div class="small">
                 Alle beheizten Räume des Gebäudes.
             </div>
 
             <!-- Automatische Anzeige -->
             <div class="auto-box">
-                Gesamt-Nettogrundfläche: 
-                <strong><span id="nrf_total">5282</span> m²</strong>
+                Gesamt-Nettogrundfläche:
+                <strong>
+                    <span id="nrf_total">5282</span> m²
+                </strong>
             </div>
 
             <label>Energiebezugsfläche nach GEG (Aₙ) [m²]</label>
-            <input type="number" step="0.01" name="an_geg" value="6201">
+
+            <input
+                type="number"
+                step="0.01"
+                name="an_geg"
+                value="{{ form_data.an_geg }}"
+            >
+
             <div class="small">
                 Grundlage für Energiebedarfsberechnung.
+                Aₙ sollte normalerweise größer als die beheizte NRF sein.
             </div>
 
+            {% if an_geg_warning %}
+                <div class="warning-box">
+                    {{ an_geg_warning }}
+                </div>
+            {% endif %}
+
             <label>Bauweise</label>
+
             <select name="building_type">
                 {% for item in building_types %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}">
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 
             <label>Energiestandard</label>
+
             <select name="energy_standard">
                 {% for item in energy_standards %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}">
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 
-            <button type="submit">Weiter zu Szenarien →</button>
+            <button type="submit">
+                Weiter zu Szenarien →
+            </button>
 
         </form>
 
@@ -192,12 +249,17 @@ const heated = document.getElementById("nrf_heated");
 const total = document.getElementById("nrf_total");
 
 function updateNRF() {
-    const value = (parseFloat(tg.value) || 0) + (parseFloat(heated.value) || 0);
+    const value =
+        (parseFloat(tg.value) || 0) +
+        (parseFloat(heated.value) || 0);
+
     total.innerText = value.toFixed(0);
 }
 
 tg.addEventListener("input", updateNRF);
 heated.addEventListener("input", updateNRF);
+
+window.addEventListener("load", updateNRF);
 </script>
 
 </body>

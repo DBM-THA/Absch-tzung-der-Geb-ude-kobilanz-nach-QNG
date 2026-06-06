@@ -96,6 +96,16 @@ class QNGCalculationTests(TestCase):
             with_tg["parts"][0]["ac_qp_abs"],
         )
 
+    def test_empty_pv_area_is_handled(self):
+    result = calculate_qng_result(
+        **{
+            **DEFAULT_INPUTS,
+            "pv_area": "",
+        }
+    )
+
+    self.assertIn("total", result)
+
 
 class QNGDatabaseTests(TestCase):
 

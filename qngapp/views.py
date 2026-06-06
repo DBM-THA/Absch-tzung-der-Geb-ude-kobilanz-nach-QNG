@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .calculations import calculate_qng_result
-from .models import Building, Scenario
+from .models import Building, Scenario, Result
 from .qng_data import (
     KG300_VALUES,
     KG400_SOCKEL_VALUES,
@@ -105,14 +105,7 @@ def scenario_view(request):
 
         request.session["scenario_data"] = scenario_data
 
-        Scenario.objects.create(
-            building=building,
-            heating=scenario_data["heating"],
-            ventilation=scenario_data["ventilation"],
-            pv_area=to_float(scenario_data["pv_area"]),
-            battery_storage=scenario_data["battery_storage"],
-            qng_level=scenario_data["qng_level"],
-        )
+       
 
     result = calculate_qng_result(
         nrf_total=building.nrf_total,
@@ -127,6 +120,25 @@ def scenario_view(request):
         pv_area=scenario_data["pv_area"],
         battery_storage=scenario_data["battery_storage"],
     )
+        if request.method == "POST":
+        scenario = Scenario.objects.create(
+            building=building,
+            heating=scenario_data["heating"],
+            ventilation=scenario_data["ventilation"],
+            pv_area=to_float(scenario_data["pv_area"]),
+            battery_storage=scenario_data["battery_storage"],
+            qng_level=scenario_data["qng_level"],
+        )
+
+        Result.objects.create(
+            scenario=scenario,
+            ac_qp_rel=result["total"]["ac_qp_rel"],
+            ac_gwp_rel=result["total"]["ac_gwp_rel"],
+            qp_limit=result["total"]["qp_limit"],
+            gwp_limit=result["total"]["gwp_limit"],
+            qp_status=result["total"]["qp_status"],
+            gwp_status=result["total"]["gwp_status"],
+        )
 
     building_data = {
         "project_name": building.project_name,

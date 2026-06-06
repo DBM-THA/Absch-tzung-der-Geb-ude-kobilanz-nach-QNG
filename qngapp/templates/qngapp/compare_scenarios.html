@@ -42,11 +42,6 @@ body {
     background: #1f7a4d;
     color: white;
     font-weight: 600;
-    transition: 0.2s;
-}
-
-.navbar a:hover {
-    background: #16633d;
 }
 
 .card {
@@ -85,6 +80,12 @@ th {
 
 tr:nth-child(even) {
     background: #f8f8f8;
+}
+
+.best-value {
+    background: #dcfce7;
+    color: #166534;
+    font-weight: 800;
 }
 
 .status-ok {
@@ -128,6 +129,7 @@ tr:nth-child(even) {
     <div class="card">
         <h1>Szenariovergleich</h1>
         <p><strong>Projekt:</strong> {{ building.project_name }}</p>
+        <p>Die niedrigsten Werte für QP,ne und GWP werden grün markiert.</p>
     </div>
 
     <div class="card">
@@ -184,14 +186,18 @@ tr:nth-child(even) {
             <tr>
                 <td>QP,ne</td>
                 {% for scenario in scenarios %}
-                    <td>{{ scenario.result.ac_qp_rel }}</td>
+                    <td class="{% if scenario.result.ac_qp_rel == best_qp %}best-value{% endif %}">
+                        {{ scenario.result.ac_qp_rel }}
+                    </td>
                 {% endfor %}
             </tr>
 
             <tr>
                 <td>GWP</td>
                 {% for scenario in scenarios %}
-                    <td>{{ scenario.result.ac_gwp_rel }}</td>
+                    <td class="{% if scenario.result.ac_gwp_rel == best_gwp %}best-value{% endif %}">
+                        {{ scenario.result.ac_gwp_rel }}
+                    </td>
                 {% endfor %}
             </tr>
 

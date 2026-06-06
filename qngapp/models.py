@@ -31,3 +31,22 @@ class Scenario(models.Model):
 
     def __str__(self):
         return f"{self.building.project_name} – {self.qng_level}"
+
+
+class Result(models.Model):
+    scenario = models.OneToOneField(
+        Scenario,
+        on_delete=models.CASCADE,
+        related_name="result"
+    )
+
+    ac_qp_rel = models.FloatField(default=0)
+    ac_gwp_rel = models.FloatField(default=0)
+    qp_limit = models.FloatField(default=0)
+    gwp_limit = models.FloatField(default=0)
+    qp_status = models.CharField(max_length=50)
+    gwp_status = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ergebnis: {self.scenario}"

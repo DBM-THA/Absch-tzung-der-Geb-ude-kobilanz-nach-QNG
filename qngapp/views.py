@@ -213,9 +213,16 @@ def compare_scenarios_view(request, project_id):
         .order_by("created_at")
     )
 
+    results = [scenario.result for scenario in scenarios if hasattr(scenario, "result")]
+
+    best_qp = min([result.ac_qp_rel for result in results], default=None)
+    best_gwp = min([result.ac_gwp_rel for result in results], default=None)
+
     return render(request, "qngapp/compare_scenarios.html", {
         "building": building,
         "scenarios": scenarios,
+        "best_qp": best_qp,
+        "best_gwp": best_gwp,
     })
 def delete_scenario_view(request, scenario_id):
     scenario = Scenario.objects.filter(id=scenario_id).first()

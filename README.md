@@ -19,11 +19,17 @@ sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 
 ### Gebäudedaten
 
-![Gebäudedaten](qngapp/static/images/building.jpg)
+![Gebäudedaten](qngapp/static/images/buildingneu.jpg)
 
 ### Szenario & Ergebnis
 
-![Szenario](qngapp/static/images/scenario.jpg)
+![Szenario](qngapp/static/images/scenarioneu.jpg)
+
+### Projekt & Vergleich
+
+![Projekt](qngapp/static/images/project.jpg)
+![Beispiel](qngapp/static/images/beispiel.jpg)
+![Vergleich](qngapp/static/images/vergleich.jpg)
 
 ---
 

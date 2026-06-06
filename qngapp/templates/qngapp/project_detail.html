@@ -196,6 +196,7 @@ tr:nth-child(even){
                     <th>GWP</th>
                     <th>Status</th>
                     <th>Erstellt</th>
+                    <th>Löschen</th>
                 </tr>
 
                 {% for scenario in scenarios %}
@@ -229,10 +230,20 @@ tr:nth-child(even){
                     {% endif %}
 
                     <td>{{ scenario.created_at }}</td>
-                </tr>
-                {% empty %}
+
+                    <td>
+                        <form method="post" action="{% url 'delete_scenario' scenario.id %}">
+                            {% csrf_token %}
+                            <button class="button" type="submit">
+                                Löschen
+                            </button>
+                        </form>
+                    </td>
+                    
+                    </tr>
+                    {% empty %}
                 <tr>
-                    <td colspan="11">Noch keine Szenarien gespeichert.</td>
+                    <td colspan="12">Noch keine Szenarien gespeichert.</td>
                 </tr>
                 {% endfor %}
             </table>

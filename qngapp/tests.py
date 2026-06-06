@@ -97,7 +97,7 @@ class QNGCalculationTests(TestCase):
         )
 
     def test_empty_pv_area_is_handled(self):
-    result = calculate_qng_result(
+        result = calculate_qng_result(
         **{
             **DEFAULT_INPUTS,
             "pv_area": "",

@@ -233,7 +233,7 @@ Bewertet werden unter anderem:
 
 ## Autoren
 
-**Güllühan Bakir**
+**Güllühan Bakir,**
 **Leon Balliet**
 
 Technische Hochschule Augsburg

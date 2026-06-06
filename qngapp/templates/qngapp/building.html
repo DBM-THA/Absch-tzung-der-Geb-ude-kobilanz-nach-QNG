@@ -137,6 +137,31 @@ button:hover {
 .badge-user { background: #dcfce7; color: #166534; }
 .badge-calc { background: #fef3c7; color: #92400e; }
 
+/* ===== NAVIGATION ===== */
+.navbar {
+    max-width: 900px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.navbar a {
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.92);
+    color: #1f7a4d;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.45);
+}
+
+.navbar a:hover {
+    background: #1f7a4d;
+    color: white;
+}
+
 /* ===== TOOLTIPS ===== */
 .tooltip {
     position: relative;
@@ -186,6 +211,21 @@ button:hover {
 </head>
 
 <body>
+    <div class="navbar">
+
+    <a href="{% url 'building' %}">
+        🏠 Neues Projekt
+    </a>
+
+    <a href="{% url 'projects' %}">
+        📂 Projekte
+    </a>
+
+    <a href="{% url 'scenario' %}">
+        ⚙️ Szenarien
+    </a>
+
+    </div>
 
 <div class="page">
 

@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Gespeicherte Projekte</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    padding:40px;
+    background:#f5f5f5;
+}
+
+h1{
+    margin-bottom:30px;
+}
+
+table{
+    width:100%;
+    background:white;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border:1px solid #ddd;
+    text-align:left;
+}
+
+th{
+    background:#1f7a4d;
+    color:white;
+}
+
+tr:nth-child(even){
+    background:#f7f7f7;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Gespeicherte Projekte</h1>
+
+<table>
+
+<tr>
+    <th>Projekt</th>
+    <th>Bauweise</th>
+    <th>Energiestandard</th>
+    <th>NRF</th>
+    <th>Erstellt</th>
+</tr>
+
+{% for project in projects %}
+<tr>
+    <td>{{ project.project_name }}</td>
+    <td>{{ project.building_type }}</td>
+    <td>{{ project.energy_standard }}</td>
+    <td>{{ project.nrf_total }}</td>
+    <td>{{ project.created_at }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

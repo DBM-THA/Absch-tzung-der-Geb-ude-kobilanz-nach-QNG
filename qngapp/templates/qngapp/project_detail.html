@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Projekt öffnen</title>
+</head>
+<body>
+
+<h1>{{ building.project_name }}</h1>
+
+<p><strong>Bauweise:</strong> {{ building.building_type }}</p>
+<p><strong>Energiestandard:</strong> {{ building.energy_standard }}</p>
+<p><strong>NRF gesamt:</strong> {{ building.nrf_total }} m²</p>
+
+<h2>Gespeicherte Szenarien</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Heizung</th>
+        <th>Lüftung</th>
+        <th>PV-Fläche</th>
+        <th>QNG-Level</th>
+        <th>QP,ne</th>
+        <th>GWP</th>
+        <th>Status</th>
+    </tr>
+
+    {% for scenario in scenarios %}
+    <tr>
+        <td>{{ scenario.heating }}</td>
+        <td>{{ scenario.ventilation }}</td>
+        <td>{{ scenario.pv_area }}</td>
+        <td>{{ scenario.qng_level }}</td>
+
+        {% if scenario.result %}
+            <td>{{ scenario.result.ac_qp_rel }}</td>
+            <td>{{ scenario.result.ac_gwp_rel }}</td>
+            <td>{{ scenario.result.qp_status }} / {{ scenario.result.gwp_status }}</td>
+        {% else %}
+            <td>-</td>
+            <td>-</td>
+            <td>kein Ergebnis</td>
+        {% endif %}
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7">Noch keine Szenarien gespeichert.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>
+    <a href="{% url 'projects' %}">← Zurück zur Projektübersicht</a>
+</p>
+
+</body>
+</html>

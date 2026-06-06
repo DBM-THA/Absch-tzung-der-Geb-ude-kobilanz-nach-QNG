@@ -217,3 +217,15 @@ def compare_scenarios_view(request, project_id):
         "building": building,
         "scenarios": scenarios,
     })
+def delete_scenario_view(request, scenario_id):
+    scenario = Scenario.objects.filter(id=scenario_id).first()
+
+    if not scenario:
+        return redirect("projects")
+
+    building_id = scenario.building.id
+
+    if request.method == "POST":
+        scenario.delete()
+
+    return redirect("project_detail", project_id=building_id)

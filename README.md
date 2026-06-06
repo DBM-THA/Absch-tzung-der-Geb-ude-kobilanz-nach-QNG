@@ -33,87 +33,84 @@ erfüllt.
 
 ---
 
-## Funktionsumfang
+# Aktueller Stand (Sprint 4)
+
+## Umgesetzte Funktionen
 
 ### Gebäudedaten
 
-* Eingabe von:
+* Eingabe von Projektname, Energiebezugsfläche (Aₙ), beheizter Nettoraumfläche und Tiefgarage
+* Automatische Berechnung der gesamten Nettoraumfläche
+* Auswahl von Bauweise und Energiestandard
 
-  * Nettogrundfläche (beheizt + Tiefgarage)
-  * Energiebezugsfläche (Aₙ nach GEG)
-  * Bauweise
-  * Energiestandard
+### Szenarien
 
-### Szenarioanalyse
+* Auswahl verschiedener Heizungs- und Lüftungssysteme
+* Berücksichtigung von Photovoltaikfläche und Batteriespeicher
+* Auswahl der QNG-Zielanforderung (QNG-PLUS oder QNG-PREMIUM)
 
-* Auswahl von:
+### Berechnung
 
-  * Heizsystem
-  * Lüftungssystem
-  * PV-Fläche
-  * Batteriespeicher
-  * QNG-Level (PLUS / PREMIUM)
+* Berechnung des nicht erneuerbaren Primärenergiebedarfs (QP,ne)
+* Berechnung des Treibhauspotenzials (GWP)
+* Vergleich mit den jeweiligen QNG-Grenzwerten
+* Aufschlüsselung der Ergebnisse nach Teilbereichen
 
-### Ergebnis
+### Visualisierung
 
-* Berechnung von:
+* Grafische Darstellung der Ergebnisse
+* Farbige Balkendiagramme für die einzelnen Ergebnisbestandteile
+* Übersichtliche Darstellung der QNG-Erfüllung
 
-  * QP,ne
-  * GWP
-* Vergleich mit QNG-Grenzwerten
-* Grafische Darstellung (Balkendiagramm)
-* Aufschlüsselung nach Teilbereichen
+### Testing & Qualitätssicherung
 
----
+* Automatisierte Tests mit Django Test Framework
+* GitHub Actions für Continuous Integration
+* Automatische Ausführung der Tests bei Pull Requests
+* Branch Protection Rules und Status Checks für den Main-Branch
 
-## Testing (Sprint 3)
+### Datenbank & Adminbereich
 
-Erste Teststrategie wurde definiert:
-
-* Vergleich mit Referenzwerten aus dem Excel-Tool
-* Variation von Parametern (z. B. PV-Fläche)
-* Überprüfung der Grenzwerte (QNG-PLUS / PREMIUM)
-* Plausibilitätsprüfung der Ergebnisse
-* Test der automatischen Flächenberechnung
+* Einführung erster Django Models für Building und Scenario
+* Vorbereitung einer relationalen Datenbankstruktur
+* Integration eines Django-Adminbereichs
+* Verwaltung von Gebäuden und Szenarien über das Backend
 
 ---
 
-## Technologien
+## Verwendete Technologien
 
-* Python / Django
+* Python
+* Django
 * HTML / CSS
-* GitHub / GitHub Actions
+* SQLite
+* GitHub
+* GitHub Actions
 
 ---
 
 ## Projektstatus
 
-| Bereich          | Status       |
-| ---------------- | ------------ |
-| GUI              | umgesetzt    |
-| Datenstruktur    | umgesetzt    |
-| Berechnungslogik | erster Stand |
-| Testing          | gestartet    |
-| Validierung      | ausstehend   |
+| Bereich           | Status           |
+| ----------------- | ---------------- |
+| GUI               | Weiterentwickelt |
+| Berechnungslogik  | Funktionsfähig   |
+| Visualisierung    | Umgesetzt        |
+| Testing           | Automatisiert    |
+| GitHub Workflow   | Implementiert    |
+| Datenbankstruktur | Vorbereitet      |
+| Adminbereich      | Implementiert    |
+| Deployment        | In Vorbereitung  |
 
 ---
 
-## Nächste Schritte
+## Nächste Schritte (Sprint 5)
 
-* Validierung mit realen QNG-Daten
-* Erweiterung der Berechnungslogik
-* Verbesserung der Benutzerführung
-* Aufbau automatisierter Tests
+* Kernfunktionalität abschließen
+* Hauptworkflow weiter stabilisieren
+* Tests erweitern
+* Datenbank stärker mit dem Frontend verknüpfen
+* Technische Schulden reduzieren
+* Dokumentation vervollständigen
+* Deployment vorbereiten
 
-
----
-
-## Was ist QNG?
-
-Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
-
-Bewertet werden unter anderem:
-
-* Energieeffizienz
-* CO₂-Emissionen
-* Ressourceneinsatz

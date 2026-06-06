@@ -279,7 +279,10 @@ def calculate_pv(
 # ============================================================
 
 def calculate_b6_1b_self_used_pv(pv_area, battery_storage, nrf_total):
-    pv_area = float(pv_area)
+    try:
+        pv_area = float(str(pv_area).replace(",", "."))
+    except (TypeError, ValueError):
+        pv_area = 0
 
     if pv_area <= 0:
         return {

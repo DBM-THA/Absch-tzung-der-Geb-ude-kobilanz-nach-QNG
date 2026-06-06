@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 
 from .calculations import calculate_qng_result
 from .models import Building, Scenario, Result
@@ -84,7 +84,12 @@ def scenario_view(request):
     if not building_id:
         return redirect("building")
 
-    building = get_object_or_404(Building, id=building_id)
+    building = Building.objects.filter(id=building_id).first()
+
+    if not building:
+        request.session.pop("building_id", None)
+        request.session.pop("scenario_data", None)
+        return redirect("building")
 
     scenario_data = request.session.get("scenario_data", {
         "heating": "Nahwärme, Pelletkessel",
@@ -157,21 +162,46 @@ def scenario_view(request):
         "qng_levels": QNG_LIMITS.keys(),
         "result": result,
     })
+
+
 def project_list_view(request):
     projects = Building.objects.all().order_by("-created_at")
 
-    return render(
-        request,
-        "qngapp/projects.html",
-        {
-            "projects": projects,
-        },
-    )
+    return render(request, "qngapp/projects.html", {
+        "projects": projects,
+    })
+
+
 def project_detail_view(request, project_id):
-    building = get_object_or_404(Building, id=project_id)
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
     scenarios = building.scenarios.all().order_by("-created_at")
 
     return render(request, "qngapp/project_detail.html", {
+        "building": building,
+        "scenarios": scenarios,
+    })
+
+
+def compare_scenarios_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
+    scenario_ids = request.GET.getlist("scenario_ids")
+
+    scenarios = (
+        Scenario.objects
+        .filter(id__in=scenario_ids, building=building)
+        .select_related("result")
+        .order_by("created_at")
+    )
+
+    return render(request, "qngapp/compare_scenarios.html", {
         "building": building,
         "scenarios": scenarios,
     })

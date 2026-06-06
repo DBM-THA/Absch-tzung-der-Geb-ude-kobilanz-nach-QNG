@@ -158,96 +158,59 @@ tr:nth-child(even){
 
     <table>
 
-        <tr>
-            <th>Vergleich</th>
-            <th>ID</th>
-            <th>Heizung</th>
-            <th>Lüftung</th>
-            <th>PV [m²]</th>
-            <th>Batterie</th>
-            <th>QNG</th>
-            <th>QP,ne</th>
-            <th>GWP</th>
-            <th>Status</th>
-            <th>Erstellt</th>
-        </tr>
+    <tr>
+        <th>Vergleich</th>
+        <th>ID</th>
+        <th>Heizung</th>
+        <th>Lüftung</th>
+        <th>PV [m²]</th>
+        <th>Batterie</th>
+        <th>QNG</th>
+        <th>QP,ne</th>
+        <th>GWP</th>
+        <th>Status</th>
+        <th>Erstellt</th>
+    </tr>
 
-        {% for scenario in scenarios %}
-        <tr>
-            <td>
-                <input type="checkbox">
-            </td>
-        
-            <td>{{ scenario.id }}</td>
+    {% for scenario in scenarios %}
+    <tr>
+        <td>
+            <input type="checkbox" name="scenario_ids" value="{{ scenario.id }}">
+        </td>
 
-    <td>{{ scenario.heating }}</td>
+        <td>{{ scenario.id }}</td>
+        <td>{{ scenario.heating }}</td>
+        <td>{{ scenario.ventilation }}</td>
+        <td>{{ scenario.pv_area }}</td>
+        <td>{{ scenario.battery_storage }}</td>
+        <td>{{ scenario.qng_level }}</td>
 
-            <td>
-                <input type="checkbox">
-            </td>
-
-            <td>{{ scenario.heating }}</td>
-
-            <td>{{ scenario.ventilation }}</td>
-
-            <td>{{ scenario.pv_area }}</td>
-
-            <td>{{ scenario.battery_storage }}</td>
-
-            <td>{{ scenario.qng_level }}</td>
-
-            {% if scenario.result %}
-
-                <td>
-                    {{ scenario.result.ac_qp_rel }}
-                </td>
-
-                <td>
-                    {{ scenario.result.ac_gwp_rel }}
-                </td>
-
-                <td>
-
-                    {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
-
-                        <span class="status-ok">
-                            erfüllt
-                        </span>
-
-                    {% else %}
-
-                        <span class="status-bad">
-                            nicht erfüllt
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
-            {% else %}
-
-                <td>-</td>
-                <td>-</td>
-                <td>kein Ergebnis</td>
-
-            {% endif %}
+        {% if scenario.result %}
+            <td>{{ scenario.result.ac_qp_rel }}</td>
+            <td>{{ scenario.result.ac_gwp_rel }}</td>
 
             <td>
-                {{ scenario.created_at }}
+                {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
+                    <span class="status-ok">erfüllt</span>
+                {% else %}
+                    <span class="status-bad">nicht erfüllt</span>
+                {% endif %}
             </td>
+        {% else %}
+            <td>-</td>
+            <td>-</td>
+            <td>kein Ergebnis</td>
+        {% endif %}
 
-        </tr>
-        {% empty %}
+        <td>{{ scenario.created_at }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="11">Noch keine Szenarien gespeichert.</td>
+    </tr>
+    {% endfor %}
 
-        <tr>
-            <td colspan="11">
-                Noch keine Szenarien gespeichert.
-            </td>
-        </tr>
-
-        {% endfor %}
-
-    </table>
+</table>
 
 </div>
 

@@ -278,7 +278,9 @@ button:hover {
 
             <select name="building_type">
                 {% for item in building_types %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}">
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 
@@ -292,7 +294,9 @@ button:hover {
 
             <select name="energy_standard">
                 {% for item in energy_standards %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="{{ item }}">
+                        {{ item }}
+                    </option>
                 {% endfor %}
             </select>
 

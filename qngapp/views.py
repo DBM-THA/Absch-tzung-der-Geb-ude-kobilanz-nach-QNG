@@ -105,8 +105,6 @@ def scenario_view(request):
 
         request.session["scenario_data"] = scenario_data
 
-       
-
     result = calculate_qng_result(
         nrf_total=building.nrf_total,
         nrf_tg=building.nrf_tg,
@@ -120,7 +118,8 @@ def scenario_view(request):
         pv_area=scenario_data["pv_area"],
         battery_storage=scenario_data["battery_storage"],
     )
-        if request.method == "POST":
+
+    if request.method == "POST":
         scenario = Scenario.objects.create(
             building=building,
             heating=scenario_data["heating"],

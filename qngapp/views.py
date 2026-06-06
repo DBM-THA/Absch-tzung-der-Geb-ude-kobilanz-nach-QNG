@@ -144,14 +144,16 @@ def scenario_view(request):
                 qng_level=scenario_data["qng_level"],
             )
 
-            Result.objects.create(
+            Result.objects.update_or_create(
                 scenario=scenario,
-                ac_qp_rel=result["total"]["ac_qp_rel"],
-                ac_gwp_rel=result["total"]["ac_gwp_rel"],
-                qp_limit=result["total"]["qp_limit"],
-                gwp_limit=result["total"]["gwp_limit"],
-                qp_status=result["total"]["qp_status"],
-                gwp_status=result["total"]["gwp_status"],
+                defaults={
+                    "ac_qp_rel": result["total"]["ac_qp_rel"],
+                    "ac_gwp_rel": result["total"]["ac_gwp_rel"],
+                    "qp_limit": result["total"]["qp_limit"],
+                    "gwp_limit": result["total"]["gwp_limit"],
+                    "qp_status": result["total"]["qp_status"],
+                    "gwp_status": result["total"]["gwp_status"],
+                }
             )
 
         Result.objects.create(

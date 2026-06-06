@@ -6,6 +6,25 @@
 <title>Gespeicherte Projekte</title>
 
 <style>
+.navbar{
+    display:flex;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.navbar a{
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:10px;
+    background:#1f7a4d;
+    color:white;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.navbar a:hover{
+    background:#16633d;
+}
 body{
     font-family: Arial, sans-serif;
     padding:40px;
@@ -40,6 +59,21 @@ tr:nth-child(even){
 
 </head>
 <body>
+<div class="navbar">
+
+    <a href="{% url 'building' %}">
+        🏠 Neues Projekt
+    </a>
+
+    <a href="{% url 'projects' %}">
+        📂 Projekte
+    </a>
+
+    <a href="{% url 'scenario' %}">
+        ⚙️ Szenarien
+    </a>
+
+</div>
 
 <h1>Gespeicherte Projekte</h1>
 

@@ -119,6 +119,21 @@ tr:nth-child(even){
     background:#16633d;
 }
 
+.delete-btn{
+    display:inline-block;
+    padding:8px 12px;
+    background:#b91c1c;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#7f1d1d;
+}
+
 .info-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -182,76 +197,80 @@ tr:nth-child(even){
     <div class="card">
         <h2>Gespeicherte Szenarien</h2>
 
-        <form method="get" action="{% url 'compare_scenarios' building.id %}">
-            <table>
-                <tr>
-                    <th>Vergleich</th>
-                    <th>ID</th>
-                    <th>Heizung</th>
-                    <th>Lüftung</th>
-                    <th>PV [m²]</th>
-                    <th>Batterie</th>
-                    <th>QNG</th>
-                    <th>QP,ne</th>
-                    <th>GWP</th>
-                    <th>Status</th>
-                    <th>Erstellt</th>
-                    <th>Löschen</th>
-                </tr>
+        <form method="get" action="{% url 'compare_scenarios' building.id %}" id="compare-form"></form>
 
-                {% for scenario in scenarios %}
-                <tr>
-                    <td>
-                        <input type="checkbox" name="scenario_ids" value="{{ scenario.id }}">
-                    </td>
+        <table>
+            <tr>
+                <th>Vergleich</th>
+                <th>ID</th>
+                <th>Heizung</th>
+                <th>Lüftung</th>
+                <th>PV [m²]</th>
+                <th>Batterie</th>
+                <th>QNG</th>
+                <th>QP,ne</th>
+                <th>GWP</th>
+                <th>Status</th>
+                <th>Erstellt</th>
+                <th>Löschen</th>
+            </tr>
 
-                    <td>{{ scenario.id }}</td>
-                    <td>{{ scenario.heating }}</td>
-                    <td>{{ scenario.ventilation }}</td>
-                    <td>{{ scenario.pv_area }}</td>
-                    <td>{{ scenario.battery_storage }}</td>
-                    <td>{{ scenario.qng_level }}</td>
+            {% for scenario in scenarios %}
+            <tr>
+                <td>
+                    <input
+                        form="compare-form"
+                        type="checkbox"
+                        name="scenario_ids"
+                        value="{{ scenario.id }}"
+                    >
+                </td>
 
-                    {% if scenario.result %}
-                        <td>{{ scenario.result.ac_qp_rel }}</td>
-                        <td>{{ scenario.result.ac_gwp_rel }}</td>
+                <td>{{ scenario.id }}</td>
+                <td>{{ scenario.heating }}</td>
+                <td>{{ scenario.ventilation }}</td>
+                <td>{{ scenario.pv_area }}</td>
+                <td>{{ scenario.battery_storage }}</td>
+                <td>{{ scenario.qng_level }}</td>
 
-                        <td>
-                            {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
-                                <span class="status-ok">erfüllt</span>
-                            {% else %}
-                                <span class="status-bad">nicht erfüllt</span>
-                            {% endif %}
-                        </td>
-                    {% else %}
-                        <td>-</td>
-                        <td>-</td>
-                        <td>kein Ergebnis</td>
-                    {% endif %}
-
-                    <td>{{ scenario.created_at }}</td>
+                {% if scenario.result %}
+                    <td>{{ scenario.result.ac_qp_rel }}</td>
+                    <td>{{ scenario.result.ac_gwp_rel }}</td>
 
                     <td>
-                        <form method="post" action="{% url 'delete_scenario' scenario.id %}">
-                            {% csrf_token %}
-                            <button class="button" type="submit">
-                                Löschen
-                            </button>
-                        </form>
+                        {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
+                            <span class="status-ok">erfüllt</span>
+                        {% else %}
+                            <span class="status-bad">nicht erfüllt</span>
+                        {% endif %}
                     </td>
-                    
-                    </tr>
-                    {% empty %}
-                <tr>
-                    <td colspan="12">Noch keine Szenarien gespeichert.</td>
-                </tr>
-                {% endfor %}
-            </table>
+                {% else %}
+                    <td>-</td>
+                    <td>-</td>
+                    <td>kein Ergebnis</td>
+                {% endif %}
 
-            <button class="button" type="submit">
-                Ausgewählte Szenarien vergleichen
-            </button>
-        </form>
+                <td>{{ scenario.created_at }}</td>
+
+                <td>
+                    <form method="post" action="{% url 'delete_scenario' scenario.id %}">
+                        {% csrf_token %}
+                        <button class="delete-btn" type="submit">
+                            Löschen
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="12">Noch keine Szenarien gespeichert.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <button class="button" type="submit" form="compare-form">
+            Ausgewählte Szenarien vergleichen
+        </button>
     </div>
 
     <a class="button" href="{% url 'projects' %}">

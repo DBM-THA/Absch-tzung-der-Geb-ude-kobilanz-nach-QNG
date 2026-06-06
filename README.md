@@ -1,70 +1,109 @@
-# QNG-Check
-
-Webanwendung zur vereinfachten Abschätzung der Gebäudeökobilanz nach den Anforderungen des Qualitätssiegels Nachhaltiges Gebäude (QNG).
-
-Entwickelt im Rahmen des Moduls Digitalisierungsprojekt an der Technischen Hochschule Augsburg.
-
----
+# QNG-Check – Abschätzung der Gebäudeökobilanz
 
 ## Projektbeschreibung
 
-QNG-Check ermöglicht die schnelle Bewertung verschiedener Gebäudeszenarien hinsichtlich:
+QNG-Check ist eine Webanwendung zur vereinfachten Abschätzung der Gebäudeökobilanz nach den Anforderungen des **Qualitätssiegels Nachhaltiges Gebäude (QNG)**.
 
-- Primärenergiebedarf (QP,ne)
-- Treibhauspotenzial (GWP)
-- QNG-PLUS
-- QNG-PREMIUM
+Die Anwendung unterstützt Planende dabei, bereits in frühen Planungsphasen verschiedene Gebäudeszenarien zu bewerten und hinsichtlich ihrer Nachhaltigkeit zu vergleichen.
 
-Die Anwendung unterstützt den Vergleich unterschiedlicher Varianten für:
+Bewertet werden insbesondere:
 
-- Bauweise
-- Energiestandard
-- Heizsystem
-- Lüftungssystem
-- Photovoltaikfläche
-- Batteriespeicher
+* Primärenergiebedarf (QP,ne)
+* Treibhauspotenzial (GWP)
+
+sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 
 ---
 
-## Funktionen
+## Beispielansicht
 
 ### Gebäudedaten
 
-- Projektname erfassen
-- Bauweise auswählen
-- Energiestandard auswählen
-- Nettogrundflächen eingeben
-- Automatische Berechnung der Gesamt-NRF
+![Gebäudedaten](qngapp/static/images/building.jpg)
 
-### Szenarien
+### Szenario & Ergebnis
 
-- Heizsystem auswählen
-- Lüftungssystem auswählen
-- PV-Fläche eingeben
-- Batteriespeicher festlegen
-- QNG-Level auswählen
+![Szenario](qngapp/static/images/scenario.jpg)
+
+---
+
+## Ziel des Projekts
+
+* Übertragung komplexer Excel-Berechnungen in eine benutzerfreundliche Webanwendung
+* Unterstützung bei der Variantenuntersuchung nachhaltiger Gebäude
+* Transparente Darstellung von Einflussfaktoren auf QP,ne und GWP
+* Vereinfachung der frühen QNG-Bewertung
+
+---
+
+## Funktionsumfang
+
+### Gebäudedaten
+
+Erfassung von:
+
+* Projektname
+* Nettogrundfläche beheizt
+* Nettogrundfläche Tiefgarage
+* Gesamt-Nettogrundfläche (automatisch berechnet)
+* Energiebezugsfläche Aₙ nach GEG
+* Bauweise
+* Energiestandard
+
+### Szenarioanalyse
+
+Auswahl von:
+
+* Heizsystem
+* Lüftungssystem
+* Photovoltaikfläche
+* Batteriespeicher
+* QNG-Level (PLUS / PREMIUM)
 
 ### Ergebnisdarstellung
 
-- Berechnung von QP,ne
-- Berechnung von GWP
-- Vergleich mit QNG-Grenzwerten
-- Statusanzeige „erfüllt“ oder „nicht erfüllt“
-- Aufschlüsselung der Teilbeiträge
+* Berechnung von QP,ne
+* Berechnung von GWP
+* Vergleich mit den QNG-Grenzwerten
+* Grafische Ergebnisdarstellung
+* Aufschlüsselung der Teilbeiträge
 
 ### Projektverwaltung
 
-- Projekte speichern
-- Szenarien speichern
-- Szenarien löschen
-- Projektübersicht anzeigen
+* Projekte speichern
+* Projekte anzeigen
+* Projekte löschen
+* Szenarien speichern
+* Szenarien löschen
 
 ### Szenariovergleich
 
-- Mehrere Szenarien auswählen
-- Direkter Vergleich in Tabellenform
-- Beste QP,ne-Werte hervorheben
-- Beste GWP-Werte hervorheben
+* Vergleich mehrerer Szenarien eines Projekts
+* Hervorhebung der besten Variante
+* Ranking der Szenarien
+* Direkte Gegenüberstellung aller Kennwerte
+
+---
+
+## Automatisierte Tests
+
+Zur Qualitätssicherung wurden automatisierte Tests implementiert.
+
+Getestet werden unter anderem:
+
+* Berechnungslogik für QP,ne und GWP
+* QNG-Grenzwerte
+* Einfluss von Photovoltaik und Tiefgarage
+* Datenbankbeziehungen zwischen Building, Scenario und Result
+* Projekt- und Szenarioverwaltung
+* Fehlerfälle und Weiterleitungen
+* Löschen von Projekten und Szenarien
+
+Tests ausführen:
+
+```bash
+python manage.py test
+```
 
 ---
 
@@ -72,30 +111,26 @@ Die Anwendung unterstützt den Vergleich unterschiedlicher Varianten für:
 
 ### Backend
 
-- Python
-- Django 5
+* Python
+* Django 5
 
 ### Frontend
 
-- HTML
-- CSS
-- JavaScript
+* HTML
+* CSS
+* JavaScript
 
 ### Datenbank
 
-- SQLite
+* SQLite
 
-### Versionsverwaltung
+### Versionsverwaltung & Qualitätssicherung
 
-- Git
-- GitHub
-
-### Qualitätssicherung
-
-- Unit Tests
-- GitHub Actions
-- Pull Requests
-- Branch Protection Rules
+* Git
+* GitHub
+* GitHub Actions
+* Pull Requests
+* Branch Protection Rules
 
 ---
 
@@ -139,28 +174,9 @@ http://127.0.0.1:8000
 
 ---
 
-## Tests ausführen
-
-Alle automatisierten Tests starten:
-
-```bash
-python manage.py test
-```
-
-Getestet werden unter anderem:
-
-- Berechnungslogik
-- QNG-Grenzwerte
-- Projektverwaltung
-- Szenarioverwaltung
-- Fehlerfälle
-- Datenbankbeziehungen
-
----
-
 ## Deployment
 
-Die Anwendung kann lokal mit Django betrieben werden.
+Die Anwendung kann lokal mit Django ausgeführt werden.
 
 Start:
 
@@ -168,40 +184,57 @@ Start:
 python manage.py runserver
 ```
 
-Für Produktivumgebungen wird empfohlen:
+Für zukünftige Produktivumgebungen sind beispielsweise folgende Technologien geeignet:
 
-- Gunicorn
-- Nginx
-- PostgreSQL
+* Gunicorn
+* Nginx
+* PostgreSQL
 
 ---
 
-## Projektstruktur
+## Projektstatus (Sprint 5)
 
-```text
-qng_project/
-│
-├── qngapp/
-│   ├── models.py
-│   ├── views.py
-│   ├── calculations.py
-│   ├── tests.py
-│   └── templates/
-│
-├── static/
-│
-├── manage.py
-│
-└── requirements.txt
-```
+| Bereich                 | Status    |
+| ----------------------- | --------- |
+| GUI                     | umgesetzt |
+| Datenstruktur           | umgesetzt |
+| Berechnungslogik        | umgesetzt |
+| Projektverwaltung       | umgesetzt |
+| Szenariovergleich       | umgesetzt |
+| Automatisierte Tests    | umgesetzt |
+| Workflow-Stabilisierung | umgesetzt |
+| Dokumentation           | umgesetzt |
+| PDF-Export              | Sprint 6  |
+
+---
+
+## Nächste Schritte (Sprint 6)
+
+* PDF-Bericht generieren
+* Erweiterte Diagramme
+* Dashboard mit Projektstatistiken
+* Weitere Optimierung der Benutzerführung
+* Erweiterung der Auswertungsmöglichkeiten
+
+---
+
+## Was ist QNG?
+
+Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
+
+Bewertet werden unter anderem:
+
+* Energieeffizienz
+* CO₂-Emissionen
+* Ressourceneinsatz
+* Lebenszyklusbetrachtung
 
 ---
 
 ## Autoren
 
-Güllühan Bakir
-
-Leon Balliet
+**Güllühan Bakir**
+**Leon Balliet**
 
 Technische Hochschule Augsburg
 

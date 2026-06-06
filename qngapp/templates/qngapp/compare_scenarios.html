@@ -132,6 +132,87 @@ tr:nth-child(even) {
         <p>Die niedrigsten Werte für QP,ne und GWP werden grün markiert.</p>
     </div>
 
+    {% if best_scenario %}
+
+<div class="card best-card">
+    <h2>Beste Variante</h2>
+
+    <p>
+        <strong>Szenario ID {{ best_scenario.id }}</strong>
+        wird aktuell als beste Variante empfohlen.
+    </p>
+
+    <div class="best-grid">
+        <div>
+            <strong>QP,ne</strong><br>
+            {{ best_scenario.result.ac_qp_rel }}
+        </div>
+
+        <div>
+            <strong>GWP</strong><br>
+            {{ best_scenario.result.ac_gwp_rel }}
+        </div>
+
+        <div>
+            <strong>Heizung</strong><br>
+            {{ best_scenario.heating }}
+        </div>
+
+        <div>
+            <strong>Lüftung</strong><br>
+            {{ best_scenario.ventilation }}
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Ranking der Varianten</h2>
+
+    <table>
+        <tr>
+            <th>Platz</th>
+            <th>ID</th>
+            <th>Heizung</th>
+            <th>Lüftung</th>
+            <th>QP,ne</th>
+            <th>GWP</th>
+            <th>Status</th>
+        </tr>
+
+        {% for scenario in ranking %}
+        <tr>
+            <td>
+                {% if forloop.counter == 1 %}
+                    🥇
+                {% elif forloop.counter == 2 %}
+                    🥈
+                {% elif forloop.counter == 3 %}
+                    🥉
+                {% else %}
+                    {{ forloop.counter }}
+                {% endif %}
+            </td>
+
+            <td>{{ scenario.id }}</td>
+            <td>{{ scenario.heating }}</td>
+            <td>{{ scenario.ventilation }}</td>
+            <td>{{ scenario.result.ac_qp_rel }}</td>
+            <td>{{ scenario.result.ac_gwp_rel }}</td>
+
+            <td>
+                {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
+                    <span class="status-ok">erfüllt</span>
+                {% else %}
+                    <span class="status-bad">nicht erfüllt</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endif %}
+
     <div class="card">
 
         {% if scenarios|length < 2 %}

@@ -160,6 +160,7 @@ tr:nth-child(even){
 
         <tr>
             <th>Vergleich</th>
+            <th>ID</th>
             <th>Heizung</th>
             <th>Lüftung</th>
             <th>PV [m²]</th>
@@ -173,6 +174,13 @@ tr:nth-child(even){
 
         {% for scenario in scenarios %}
         <tr>
+            <td>
+                <input type="checkbox">
+            </td>
+        
+            <td>{{ scenario.id }}</td>
+
+    <td>{{ scenario.heating }}</td>
 
             <td>
                 <input type="checkbox">

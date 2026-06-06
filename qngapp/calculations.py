@@ -17,6 +17,17 @@ from .qng_data import (
 
 
 # ============================================================
+# Hilfsfunktion
+# ============================================================
+
+def safe_divide(value, divisor):
+    divisor = float(divisor)
+    if divisor == 0:
+        return 0
+    return value / divisor
+
+
+# ============================================================
 # KG300
 # ============================================================
 
@@ -52,10 +63,10 @@ def calculate_kg300(building_type, nrf_total, nrf_tg):
         "ac_gwp_abs": ac_gwp_abs,
         "d_qp_abs": d_qp_abs,
         "d_gwp_abs": d_gwp_abs,
-        "ac_qp_rel": ac_qp_abs / float(nrf_total),
-        "ac_gwp_rel": ac_gwp_abs / float(nrf_total),
-        "d_qp_rel": d_qp_abs / float(nrf_total),
-        "d_gwp_rel": d_gwp_abs / float(nrf_total),
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
+        "d_qp_rel": safe_divide(d_qp_abs, nrf_total),
+        "d_gwp_rel": safe_divide(d_gwp_abs, nrf_total),
     }
 
 
@@ -68,6 +79,10 @@ def calculate_kg400_sockel(energy_standard):
 
     return {
         "name": "Bauwerksteile KG400 - Sockelbetrag",
+        "ac_qp_abs": 0,
+        "ac_gwp_abs": 0,
+        "d_qp_abs": 0,
+        "d_gwp_abs": 0,
         "ac_qp_rel": values["ac_qp_rel"],
         "ac_gwp_rel": values["ac_gwp_rel"],
         "d_qp_rel": values["d_qp_rel"],
@@ -79,12 +94,7 @@ def calculate_kg400_sockel(energy_standard):
 # KG400 Großgeräte
 # ============================================================
 
-def calculate_kg400_grossgeraete(
-    heating,
-    ventilation,
-    nrf_total,
-    nrf_tg,
-):
+def calculate_kg400_grossgeraete(heating, ventilation, nrf_total, nrf_tg):
     heated_area = max(float(nrf_total) - float(nrf_tg), 0)
 
     heating_values = KG400_GROSSGERAETE_VALUES["heating"][heating]
@@ -123,42 +133,28 @@ def calculate_kg400_grossgeraete(
         "ac_gwp_abs": ac_gwp_abs,
         "d_qp_abs": d_qp_abs,
         "d_gwp_abs": d_gwp_abs,
-        "ac_qp_rel": ac_qp_abs / float(nrf_total),
-        "ac_gwp_rel": ac_gwp_abs / float(nrf_total),
-        "d_qp_rel": d_qp_abs / float(nrf_total),
-        "d_gwp_rel": d_gwp_abs / float(nrf_total),
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
+        "d_qp_rel": safe_divide(d_qp_abs, nrf_total),
+        "d_gwp_rel": safe_divide(d_gwp_abs, nrf_total),
     }
 
 
 # ============================================================
-# B6.1a
+# B6.1a Energiebedarf
 # ============================================================
 
-def calculate_b6_1a(
-    ventilation,
-    heating,
-    an_geg,
-    nrf_total,
-):
+def calculate_b6_1a(ventilation, heating, an_geg, nrf_total):
     demand = END_ENERGY_DEMANDS[(ventilation, heating)]
-
     scale_factor = float(an_geg) / END_ENERGY_BASE_AN_GEG
 
     heating_kwh = demand["heating"] * scale_factor
     hot_water_kwh = demand["hot_water"] * scale_factor
     auxiliary_kwh = demand["auxiliary"] * scale_factor
 
-    heating_factor = ENERGY_FACTORS[
-        DEFAULT_ENERGY_CARRIERS["heating"]
-    ]
-
-    hot_water_factor = ENERGY_FACTORS[
-        DEFAULT_ENERGY_CARRIERS["hot_water"]
-    ]
-
-    auxiliary_factor = ENERGY_FACTORS[
-        DEFAULT_ENERGY_CARRIERS["auxiliary"]
-    ]
+    heating_factor = ENERGY_FACTORS[DEFAULT_ENERGY_CARRIERS["heating"]]
+    hot_water_factor = ENERGY_FACTORS[DEFAULT_ENERGY_CARRIERS["hot_water"]]
+    auxiliary_factor = ENERGY_FACTORS[DEFAULT_ENERGY_CARRIERS["auxiliary"]]
 
     ac_qp_abs = (
         heating_kwh * heating_factor["qp"]
@@ -178,24 +174,19 @@ def calculate_b6_1a(
         "ac_gwp_abs": ac_gwp_abs,
         "d_qp_abs": 0,
         "d_gwp_abs": 0,
-        "ac_qp_rel": ac_qp_abs / float(nrf_total),
-        "ac_gwp_rel": ac_gwp_abs / float(nrf_total),
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
         "d_qp_rel": 0,
         "d_gwp_rel": 0,
     }
 
 
 # ============================================================
-# Nutzerstrom
+# B6.3 Nutzerstrom
 # ============================================================
 
-def calculate_user_electricity(
-    nrf_total,
-):
-    electricity_kwh = (
-        USER_ELECTRICITY_KWH_PER_M2
-        * float(nrf_total)
-    )
+def calculate_user_electricity(nrf_total):
+    electricity_kwh = USER_ELECTRICITY_KWH_PER_M2 * float(nrf_total)
 
     factor = ENERGY_FACTORS[
         "Nutzung - 1 kWh nationaler Netzstrommix"
@@ -210,27 +201,23 @@ def calculate_user_electricity(
         "ac_gwp_abs": ac_gwp_abs,
         "d_qp_abs": 0,
         "d_gwp_abs": 0,
-        "ac_qp_rel": ac_qp_abs / float(nrf_total),
-        "ac_gwp_rel": ac_gwp_abs / float(nrf_total),
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
         "d_qp_rel": 0,
         "d_gwp_rel": 0,
     }
 
 
 # ============================================================
-# PV
+# Photovoltaik Bauteile
 # ============================================================
 
-def calculate_pv(
-    pv_area,
-    battery_storage,
-    nrf_total,
-):
+def calculate_pv(pv_area, battery_storage, nrf_total):
     pv_area = float(pv_area)
 
     if pv_area <= 0:
         return {
-            "name": "Photovoltaik",
+            "name": "Bauwerksteile Photovoltaik",
             "ac_qp_abs": 0,
             "ac_gwp_abs": 0,
             "d_qp_abs": 0,
@@ -242,92 +229,94 @@ def calculate_pv(
         }
 
     if pv_area < 300:
-        ac_qp_abs = (
-            12600
-            * (1 - math.exp(-0.0061 * pv_area))
-        )
-
-        ac_gwp_abs = (
-            3515
-            * (1 - math.exp(-0.0061 * pv_area))
-        )
-
+        ac_qp_abs = 12600 * (1 - math.exp(-0.0061 * pv_area))
+        ac_gwp_abs = 3515 * (1 - math.exp(-0.0061 * pv_area))
         d_qp_abs = -2.0931 * pv_area
         d_gwp_abs = -0.6792 * pv_area
 
     else:
         if battery_storage == "ja":
-            ac_qp_abs = (
-                41125
-                * (
-                    1
-                    - math.exp(
-                        -0.0023 * (pv_area - 89.72)
-                    )
-                )
+            ac_qp_abs = 41125 * (
+                1 - math.exp(-0.0023 * (pv_area - 89.72))
             )
-
-            ac_gwp_abs = (
-                11425
-                * (
-                    1
-                    - math.exp(
-                        -0.0023 * (pv_area - 89.11)
-                    )
-                )
+            ac_gwp_abs = 11425 * (
+                1 - math.exp(-0.0023 * (pv_area - 89.11))
             )
-
-            d_qp_abs = (
-                -2027
-                * (
-                    1
-                    - math.exp(
-                        -0.0022 * (pv_area - 72.7)
-                    )
-                )
+            d_qp_abs = -2027 * (
+                1 - math.exp(-0.0022 * (pv_area - 72.7))
             )
-
-            d_gwp_abs = (
-                -639
-                * (
-                    1
-                    - math.exp(
-                        -0.0022 * (pv_area - 72.21)
-                    )
-                )
+            d_gwp_abs = -639 * (
+                1 - math.exp(-0.0022 * (pv_area - 72.21))
             )
-
         else:
-            ac_qp_abs = (
-                12600
-                * (1 - math.exp(-0.0061 * pv_area))
-            )
-
-            ac_gwp_abs = (
-                3515
-                * (1 - math.exp(-0.0061 * pv_area))
-            )
-
-            d_qp_abs = (
-                -635
-                * (1 - math.exp(-0.0061 * pv_area))
-            )
-
-            d_gwp_abs = (
-                -206
-                * (1 - math.exp(-0.0061 * pv_area))
-            )
+            ac_qp_abs = 12600 * (1 - math.exp(-0.0061 * pv_area))
+            ac_gwp_abs = 3515 * (1 - math.exp(-0.0061 * pv_area))
+            d_qp_abs = -635 * (1 - math.exp(-0.0061 * pv_area))
+            d_gwp_abs = -206 * (1 - math.exp(-0.0061 * pv_area))
 
     return {
-        "name": "Photovoltaik",
+        "name": "Bauwerksteile Photovoltaik",
         "ac_qp_abs": ac_qp_abs,
         "ac_gwp_abs": ac_gwp_abs,
         "d_qp_abs": d_qp_abs,
         "d_gwp_abs": d_gwp_abs,
-        "ac_qp_rel": ac_qp_abs / float(nrf_total),
-        "ac_gwp_rel": ac_gwp_abs / float(nrf_total),
-        "d_qp_rel": d_qp_abs / float(nrf_total),
-        "d_gwp_rel": d_gwp_abs / float(nrf_total),
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
+        "d_qp_rel": safe_divide(d_qp_abs, nrf_total),
+        "d_gwp_rel": safe_divide(d_gwp_abs, nrf_total),
+    }
+
+
+# ============================================================
+# B6.1b eigengenutzter Anteil erneuerbarer Energie
+# ============================================================
+
+def calculate_b6_1b_self_used_pv(pv_area, battery_storage, nrf_total):
+    pv_area = float(pv_area)
+
+    if pv_area <= 0:
+        return {
+            "name": "B6.1b - eigengenutzter Anteil EE",
+            "ac_qp_abs": 0,
+            "ac_gwp_abs": 0,
+            "d_qp_abs": 0,
+            "d_gwp_abs": 0,
+            "ac_qp_rel": 0,
+            "ac_gwp_rel": 0,
+            "d_qp_rel": 0,
+            "d_gwp_rel": 0,
+        }
+
+    # Vereinfachter Ansatz:
+    # ca. 180 kWh Stromertrag pro m² PV-Fläche und Jahr.
+    # Ohne Speicher wird ein geringerer Eigenverbrauch angesetzt,
+    # mit Speicher ein höherer Eigenverbrauch.
+    pv_yield_kwh = pv_area * 180
+
+    if battery_storage == "ja":
+        self_use_factor = 0.75
+    else:
+        self_use_factor = 0.50
+
+    self_used_kwh = pv_yield_kwh * self_use_factor
+
+    grid_factor = ENERGY_FACTORS[
+        "Nutzung - 1 kWh nationaler Netzstrommix"
+    ]
+
+    ac_qp_abs = -self_used_kwh * grid_factor["qp"]
+    ac_gwp_abs = -self_used_kwh * grid_factor["gwp"]
+
+    return {
+        "name": "B6.1b - eigengenutzter Anteil EE",
+        "ac_qp_abs": ac_qp_abs,
+        "ac_gwp_abs": ac_gwp_abs,
+        "d_qp_abs": 0,
+        "d_gwp_abs": 0,
+        "ac_qp_rel": safe_divide(ac_qp_abs, nrf_total),
+        "ac_gwp_rel": safe_divide(ac_gwp_abs, nrf_total),
+        "d_qp_rel": 0,
+        "d_gwp_rel": 0,
     }
 
 
@@ -384,13 +373,20 @@ def calculate_qng_result(
         nrf_total,
     )
 
+    b6_1b = calculate_b6_1b_self_used_pv(
+        pv_area,
+        battery_storage,
+        nrf_total,
+    )
+
     parts = [
         kg300,
         kg400_sockel,
         kg400_gross,
+        pv,
         b6_1a,
         user_electricity,
-        pv,
+        b6_1b,
     ]
 
     total_ac_qp_rel = sum(
@@ -419,22 +415,10 @@ def calculate_qng_result(
     return {
         "parts": parts,
         "total": {
-            "ac_qp_rel": round(
-                total_ac_qp_rel,
-                2,
-            ),
-            "ac_gwp_rel": round(
-                total_ac_gwp_rel,
-                2,
-            ),
-            "d_qp_rel": round(
-                total_d_qp_rel,
-                2,
-            ),
-            "d_gwp_rel": round(
-                total_d_gwp_rel,
-                2,
-            ),
+            "ac_qp_rel": round(total_ac_qp_rel, 2),
+            "ac_gwp_rel": round(total_ac_gwp_rel, 2),
+            "d_qp_rel": round(total_d_qp_rel, 2),
+            "d_gwp_rel": round(total_d_gwp_rel, 2),
             "qp_limit": qp_limit,
             "gwp_limit": gwp_limit,
             "qp_status": (

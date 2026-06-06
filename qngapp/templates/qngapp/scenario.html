@@ -471,20 +471,24 @@
 </head>
 
 <body>
-<div class="navbar">
 
-    <a href="{% url 'building' %}">
-        🏠 Neues Projekt
-    </a>
+<div class="page">
 
-    <a href="{% url 'scenario' %}">
-        ⚙️ Szenarien
-    </a>
-    <a href="{% url 'projects' %}">
-        📂 Projekte
-    </a>
+    <div class="navbar">
 
-</div>
+        <a href="{% url 'building' %}">
+            🏠 Neues Projekt
+        </a>
+
+        <a href="{% url 'scenario' %}">
+            ⚙️ Szenarien
+        </a>
+
+        <a href="{% url 'projects' %}">
+            📂 Projekte
+        </a>
+
+    </div>
 
 <div class="page">
     <h1>Szenarien testen</h1>
@@ -792,6 +796,7 @@
             {% endif %}
         </main>
     </div>
+
 </div>
 
 <script>

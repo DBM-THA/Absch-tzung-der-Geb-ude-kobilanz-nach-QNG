@@ -9,30 +9,78 @@ from .qng_data import (
 )
 
 
+def to_float(value, default=0):
+    try:
+        return float(str(value).replace(",", "."))
+    except (TypeError, ValueError):
+        return default
+
+
 def building_view(request):
+    an_geg_warning = None
+
     if request.method == "POST":
         nrf_heated = request.POST.get("nrf_heated", "5282")
         nrf_tg = request.POST.get("nrf_tg", "0")
+        an_geg = request.POST.get("an_geg", "")
 
-        try:
-            nrf_total = float(nrf_heated.replace(",", ".")) + float(nrf_tg.replace(",", "."))
-        except ValueError:
-            nrf_total = 0
+        nrf_heated_float = to_float(nrf_heated)
+        nrf_tg_float = to_float(nrf_tg)
+
+        # NRF gesamt wird automatisch aus beheizter NRF + Tiefgarage berechnet
+        nrf_total = nrf_heated_float + nrf_tg_float
+
+        # Wenn A_n leer ist, wird automatisch ein Vorschlag gesetzt
+        if an_geg == "":
+            an_geg_float = round(nrf_heated_float * 1.2, 2)
+            an_geg = str(an_geg_float)
+        else:
+            an_geg_float = to_float(an_geg)
+
+        # Plausibilitätsprüfung: A_n sollte normalerweise größer als beheizte NRF sein
+        if an_geg_float < nrf_heated_float:
+            an_geg_warning = (
+                "Die Energiebezugsfläche Aₙ sollte normalerweise größer "
+                "als die beheizte Nettogrundfläche sein."
+            )
+
+            return render(request, "qngapp/building.html", {
+                "building_types": KG300_VALUES.keys(),
+                "energy_standards": KG400_SOCKEL_VALUES.keys(),
+                "an_geg_warning": an_geg_warning,
+                "form_data": {
+                    "project_name": request.POST.get("project_name", "Beispielgebäude"),
+                    "nrf_total": str(nrf_total),
+                    "nrf_tg": nrf_tg,
+                    "nrf_heated": nrf_heated,
+                    "an_geg": an_geg,
+                    "building_type": request.POST.get("building_type"),
+                    "energy_standard": request.POST.get("energy_standard"),
+                }
+            })
 
         request.session["building_data"] = {
             "project_name": request.POST.get("project_name", "Beispielgebäude"),
             "nrf_total": str(nrf_total),
             "nrf_tg": nrf_tg,
             "nrf_heated": nrf_heated,
-            "an_geg": request.POST.get("an_geg", "6201"),
+            "an_geg": an_geg,
             "building_type": request.POST.get("building_type"),
             "energy_standard": request.POST.get("energy_standard"),
         }
+
         return redirect("scenario")
 
     return render(request, "qngapp/building.html", {
         "building_types": KG300_VALUES.keys(),
         "energy_standards": KG400_SOCKEL_VALUES.keys(),
+        "an_geg_warning": an_geg_warning,
+        "form_data": {
+            "project_name": "Beispielgebäude",
+            "nrf_tg": "0",
+            "nrf_heated": "5282",
+            "an_geg": "6201",
+        }
     })
 
 

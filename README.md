@@ -1,119 +1,208 @@
-# QNG-Check – Abschätzung der Gebäudeökobilanz
+# QNG-Check
+
+Webanwendung zur vereinfachten Abschätzung der Gebäudeökobilanz nach den Anforderungen des Qualitätssiegels Nachhaltiges Gebäude (QNG).
+
+Entwickelt im Rahmen des Moduls Digitalisierungsprojekt an der Technischen Hochschule Augsburg.
+
+---
 
 ## Projektbeschreibung
 
-Dieses Projekt ist ein Web-Tool zur vereinfachten Abschätzung der Gebäudeökobilanz nach dem **QNG-Standard (Qualitätssiegel Nachhaltiges Gebäude)**.
+QNG-Check ermöglicht die schnelle Bewertung verschiedener Gebäudeszenarien hinsichtlich:
 
-Ziel ist es, frühzeitig im Planungsprozess eine Einschätzung zu ermöglichen, ob ein Gebäude die Anforderungen an:
+- Primärenergiebedarf (QP,ne)
+- Treibhauspotenzial (GWP)
+- QNG-PLUS
+- QNG-PREMIUM
 
-* Primärenergiebedarf (QP,ne)
-* Treibhauspotenzial (GWP)
+Die Anwendung unterstützt den Vergleich unterschiedlicher Varianten für:
 
-erfüllt.
+- Bauweise
+- Energiestandard
+- Heizsystem
+- Lüftungssystem
+- Photovoltaikfläche
+- Batteriespeicher
 
 ---
 
-## Beispielansicht
+## Funktionen
 
 ### Gebäudedaten
 
-![Gebäudedaten](qngapp/static/images/building.jpg)
+- Projektname erfassen
+- Bauweise auswählen
+- Energiestandard auswählen
+- Nettogrundflächen eingeben
+- Automatische Berechnung der Gesamt-NRF
 
-### Szenario & Ergebnis
+### Szenarien
 
-![Szenario](qngapp/static/images/scenario.jpg)
+- Heizsystem auswählen
+- Lüftungssystem auswählen
+- PV-Fläche eingeben
+- Batteriespeicher festlegen
+- QNG-Level auswählen
 
----
+### Ergebnisdarstellung
 
-## Ziel des Projekts
+- Berechnung von QP,ne
+- Berechnung von GWP
+- Vergleich mit QNG-Grenzwerten
+- Statusanzeige „erfüllt“ oder „nicht erfüllt“
+- Aufschlüsselung der Teilbeiträge
 
-* Übertragung komplexer Excel-Berechnungen in ein verständliches Webtool
-* Schnelle Szenarioanalyse ermöglichen
-* Transparenz über Einflussfaktoren schaffen
+### Projektverwaltung
 
----
+- Projekte speichern
+- Szenarien speichern
+- Szenarien löschen
+- Projektübersicht anzeigen
 
-## Funktionsumfang
+### Szenariovergleich
 
-### Gebäudedaten
-
-* Eingabe von:
-
-  * Nettogrundfläche (beheizt + Tiefgarage)
-  * Energiebezugsfläche (Aₙ nach GEG)
-  * Bauweise
-  * Energiestandard
-
-### Szenarioanalyse
-
-* Auswahl von:
-
-  * Heizsystem
-  * Lüftungssystem
-  * PV-Fläche
-  * Batteriespeicher
-  * QNG-Level (PLUS / PREMIUM)
-
-### Ergebnis
-
-* Berechnung von:
-
-  * QP,ne
-  * GWP
-* Vergleich mit QNG-Grenzwerten
-* Grafische Darstellung (Balkendiagramm)
-* Aufschlüsselung nach Teilbereichen
+- Mehrere Szenarien auswählen
+- Direkter Vergleich in Tabellenform
+- Beste QP,ne-Werte hervorheben
+- Beste GWP-Werte hervorheben
 
 ---
 
-## Testing (Sprint 3)
+## Verwendete Technologien
 
-Erste Teststrategie wurde definiert:
+### Backend
 
-* Vergleich mit Referenzwerten aus dem Excel-Tool
-* Variation von Parametern (z. B. PV-Fläche)
-* Überprüfung der Grenzwerte (QNG-PLUS / PREMIUM)
-* Plausibilitätsprüfung der Ergebnisse
-* Test der automatischen Flächenberechnung
+- Python
+- Django 5
 
----
+### Frontend
 
-## Technologien
+- HTML
+- CSS
+- JavaScript
 
-* Python / Django
-* HTML / CSS
-* GitHub / GitHub Actions
+### Datenbank
 
----
+- SQLite
 
-## Projektstatus
+### Versionsverwaltung
 
-| Bereich          | Status       |
-| ---------------- | ------------ |
-| GUI              | umgesetzt    |
-| Datenstruktur    | umgesetzt    |
-| Berechnungslogik | erster Stand |
-| Testing          | gestartet    |
-| Validierung      | ausstehend   |
+- Git
+- GitHub
 
----
+### Qualitätssicherung
 
-## Nächste Schritte
-
-* Validierung mit realen QNG-Daten
-* Erweiterung der Berechnungslogik
-* Verbesserung der Benutzerführung
-* Aufbau automatisierter Tests
-
+- Unit Tests
+- GitHub Actions
+- Pull Requests
+- Branch Protection Rules
 
 ---
 
-## Was ist QNG?
+## Installation
 
-Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
+Repository klonen:
 
-Bewertet werden unter anderem:
+```bash
+git clone https://github.com/DBM-THA/Absch-tzung-der-Geb-ude-kobilanz-nach-QNG.git
+```
 
-* Energieeffizienz
-* CO₂-Emissionen
-* Ressourceneinsatz
+Projektordner öffnen:
+
+```bash
+cd Absch-tzung-der-Geb-ude-kobilanz-nach-QNG
+```
+
+Abhängigkeiten installieren:
+
+```bash
+pip install -r requirements.txt
+```
+
+Migrationen ausführen:
+
+```bash
+python manage.py migrate
+```
+
+Server starten:
+
+```bash
+python manage.py runserver
+```
+
+Anwendung öffnen:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Tests ausführen
+
+Alle automatisierten Tests starten:
+
+```bash
+python manage.py test
+```
+
+Getestet werden unter anderem:
+
+- Berechnungslogik
+- QNG-Grenzwerte
+- Projektverwaltung
+- Szenarioverwaltung
+- Fehlerfälle
+- Datenbankbeziehungen
+
+---
+
+## Deployment
+
+Die Anwendung kann lokal mit Django betrieben werden.
+
+Start:
+
+```bash
+python manage.py runserver
+```
+
+Für Produktivumgebungen wird empfohlen:
+
+- Gunicorn
+- Nginx
+- PostgreSQL
+
+---
+
+## Projektstruktur
+
+```text
+qng_project/
+│
+├── qngapp/
+│   ├── models.py
+│   ├── views.py
+│   ├── calculations.py
+│   ├── tests.py
+│   └── templates/
+│
+├── static/
+│
+├── manage.py
+│
+└── requirements.txt
+```
+
+---
+
+## Autoren
+
+Güllühan Bakir
+
+Leon Balliet
+
+Technische Hochschule Augsburg
+
+Studiengang Digitaler Baumeister

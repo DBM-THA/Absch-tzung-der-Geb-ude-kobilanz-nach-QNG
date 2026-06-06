@@ -184,12 +184,6 @@ Start:
 python manage.py runserver
 ```
 
-Für zukünftige Produktivumgebungen sind beispielsweise folgende Technologien geeignet:
-
-* Gunicorn
-* Nginx
-* PostgreSQL
-
 ---
 
 ## Projektstatus (Sprint 5)

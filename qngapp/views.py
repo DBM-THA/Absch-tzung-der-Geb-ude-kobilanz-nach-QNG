@@ -125,14 +125,34 @@ def scenario_view(request):
     )
 
     if request.method == "POST":
-        scenario = Scenario.objects.create(
-            building=building,
-            heating=scenario_data["heating"],
-            ventilation=scenario_data["ventilation"],
-            pv_area=to_float(scenario_data["pv_area"]),
-            battery_storage=scenario_data["battery_storage"],
-            qng_level=scenario_data["qng_level"],
-        )
+        scenario = Scenario.objects.filter(
+                building=building,
+                heating=scenario_data["heating"],
+                ventilation=scenario_data["ventilation"],
+                pv_area=to_float(scenario_data["pv_area"]),
+                battery_storage=scenario_data["battery_storage"],
+                qng_level=scenario_data["qng_level"],
+        ).first()
+
+        if not scenario:
+            scenario = Scenario.objects.create(
+                building=building,
+                heating=scenario_data["heating"],
+                ventilation=scenario_data["ventilation"],
+                pv_area=to_float(scenario_data["pv_area"]),
+                battery_storage=scenario_data["battery_storage"],
+                qng_level=scenario_data["qng_level"],
+            )
+
+            Result.objects.create(
+                scenario=scenario,
+                ac_qp_rel=result["total"]["ac_qp_rel"],
+                ac_gwp_rel=result["total"]["ac_gwp_rel"],
+                qp_limit=result["total"]["qp_limit"],
+                gwp_limit=result["total"]["gwp_limit"],
+                qp_status=result["total"]["qp_status"],
+                gwp_status=result["total"]["gwp_status"],
+            )
 
         Result.objects.create(
             scenario=scenario,

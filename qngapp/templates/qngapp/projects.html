@@ -51,6 +51,7 @@ tr:nth-child(even){
     <th>Energiestandard</th>
     <th>NRF</th>
     <th>Erstellt</th>
+    <th>Aktion</th>
 </tr>
 
 {% for project in projects %}
@@ -60,6 +61,11 @@ tr:nth-child(even){
     <td>{{ project.energy_standard }}</td>
     <td>{{ project.nrf_total }}</td>
     <td>{{ project.created_at }}</td>
+    <td>
+    <a href="{% url 'project_detail' project.id %}">
+        Öffnen
+    </a>
+    </td>
 </tr>
 {% endfor %}
 

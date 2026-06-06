@@ -167,3 +167,11 @@ def project_list_view(request):
             "projects": projects,
         },
     )
+def project_detail_view(request, project_id):
+    building = get_object_or_404(Building, id=project_id)
+    scenarios = building.scenarios.all().order_by("-created_at")
+
+    return render(request, "qngapp/project_detail.html", {
+        "building": building,
+        "scenarios": scenarios,
+    })

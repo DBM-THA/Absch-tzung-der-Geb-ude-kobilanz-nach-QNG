@@ -113,6 +113,30 @@ tr:nth-child(even) {
 .button:hover {
     background: #16633d;
 }
+
+.best-card {
+    border: 2px solid #86efac;
+    background: rgba(220,252,231,0.94);
+}
+
+.best-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 18px;
+}
+
+.best-grid div {
+    background: white;
+    padding: 14px;
+    border-radius: 14px;
+}
+
+@media (max-width: 900px) {
+    .best-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 </head>
 

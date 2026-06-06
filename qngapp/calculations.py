@@ -212,8 +212,15 @@ def calculate_user_electricity(nrf_total):
 # Photovoltaik Bauteile
 # ============================================================
 
-def calculate_pv(pv_area, battery_storage, nrf_total):
-    pv_area = float(pv_area)
+def calculate_pv(
+    pv_area,
+    battery_storage,
+    nrf_total,
+):
+    try:
+        pv_area = float(str(pv_area).replace(",", "."))
+    except (TypeError, ValueError):
+        pv_area = 0
 
     if pv_area <= 0:
         return {

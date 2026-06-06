@@ -170,6 +170,21 @@ tr:nth-child(even){
 
     <div class="card">
         <h1>{{ building.project_name }}</h1>
+        <form
+            method="post"
+            action="{% url 'delete_project' building.id %}"
+            style="margin-bottom:20px;"
+        >
+            {% csrf_token %}
+        
+            <button
+                type="submit"
+                class="delete-btn"
+                onclick="return confirm('Projekt wirklich löschen?')"
+            >
+                🗑 Projekt löschen
+            </button>
+        </form>
 
         <div class="info-grid">
             <div class="info-box">

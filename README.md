@@ -2,14 +2,16 @@
 
 ## Projektbeschreibung
 
-Dieses Projekt ist ein Web-Tool zur vereinfachten Abschätzung der Gebäudeökobilanz nach dem **QNG-Standard (Qualitätssiegel Nachhaltiges Gebäude)**.
+QNG-Check ist eine Webanwendung zur vereinfachten Abschätzung der Gebäudeökobilanz nach den Anforderungen des **Qualitätssiegels Nachhaltiges Gebäude (QNG)**.
 
-Ziel ist es, frühzeitig im Planungsprozess eine Einschätzung zu ermöglichen, ob ein Gebäude die Anforderungen an:
+Die Anwendung unterstützt Planende dabei, bereits in frühen Planungsphasen verschiedene Gebäudeszenarien zu bewerten und hinsichtlich ihrer Nachhaltigkeit zu vergleichen.
+
+Bewertet werden insbesondere:
 
 * Primärenergiebedarf (QP,ne)
 * Treibhauspotenzial (GWP)
 
-erfüllt.
+sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 
 ---
 
@@ -17,19 +19,26 @@ erfüllt.
 
 ### Gebäudedaten
 
-![Gebäudedaten](qngapp/static/images/building.jpg)
+![Gebäudedaten](qngapp/static/images/buildingneu.jpg)
 
 ### Szenario & Ergebnis
 
-![Szenario](qngapp/static/images/scenario.jpg)
+![Szenario](qngapp/static/images/scenarioneu.jpg)
+
+### Projekt & Vergleich
+
+![Projekt](qngapp/static/images/project.jpg)
+![Beispiel](qngapp/static/images/beispiel.jpg)
+![Vergleich](qngapp/static/images/vergleich.jpg)
 
 ---
 
 ## Ziel des Projekts
 
-* Übertragung komplexer Excel-Berechnungen in ein verständliches Webtool
-* Schnelle Szenarioanalyse ermöglichen
-* Transparenz über Einflussfaktoren schaffen
+* Übertragung komplexer Excel-Berechnungen in eine benutzerfreundliche Webanwendung
+* Unterstützung bei der Variantenuntersuchung nachhaltiger Gebäude
+* Transparente Darstellung von Einflussfaktoren auf QP,ne und GWP
+* Vereinfachung der frühen QNG-Bewertung
 
 ---
 
@@ -37,74 +46,175 @@ erfüllt.
 
 ### Gebäudedaten
 
-* Eingabe von:
+Erfassung von:
 
-  * Nettogrundfläche (beheizt + Tiefgarage)
-  * Energiebezugsfläche (Aₙ nach GEG)
-  * Bauweise
-  * Energiestandard
+* Projektname
+* Nettogrundfläche beheizt
+* Nettogrundfläche Tiefgarage
+* Gesamt-Nettogrundfläche (automatisch berechnet)
+* Energiebezugsfläche Aₙ nach GEG
+* Bauweise
+* Energiestandard
 
 ### Szenarioanalyse
 
-* Auswahl von:
+Auswahl von:
 
-  * Heizsystem
-  * Lüftungssystem
-  * PV-Fläche
-  * Batteriespeicher
-  * QNG-Level (PLUS / PREMIUM)
+* Heizsystem
+* Lüftungssystem
+* Photovoltaikfläche
+* Batteriespeicher
+* QNG-Level (PLUS / PREMIUM)
 
-### Ergebnis
+### Ergebnisdarstellung
 
-* Berechnung von:
+* Berechnung von QP,ne
+* Berechnung von GWP
+* Vergleich mit den QNG-Grenzwerten
+* Grafische Ergebnisdarstellung
+* Aufschlüsselung der Teilbeiträge
 
-  * QP,ne
-  * GWP
-* Vergleich mit QNG-Grenzwerten
-* Grafische Darstellung (Balkendiagramm)
-* Aufschlüsselung nach Teilbereichen
+### Projektverwaltung
 
----
+* Projekte speichern
+* Projekte anzeigen
+* Projekte löschen
+* Szenarien speichern
+* Szenarien löschen
 
-## Testing (Sprint 3)
+### Szenariovergleich
 
-Erste Teststrategie wurde definiert:
-
-* Vergleich mit Referenzwerten aus dem Excel-Tool
-* Variation von Parametern (z. B. PV-Fläche)
-* Überprüfung der Grenzwerte (QNG-PLUS / PREMIUM)
-* Plausibilitätsprüfung der Ergebnisse
-* Test der automatischen Flächenberechnung
-
----
-
-## Technologien
-
-* Python / Django
-* HTML / CSS
-* GitHub / GitHub Actions
+* Vergleich mehrerer Szenarien eines Projekts
+* Hervorhebung der besten Variante
+* Ranking der Szenarien
+* Direkte Gegenüberstellung aller Kennwerte
 
 ---
 
-## Projektstatus
+## Automatisierte Tests
 
-| Bereich          | Status       |
-| ---------------- | ------------ |
-| GUI              | umgesetzt    |
-| Datenstruktur    | umgesetzt    |
-| Berechnungslogik | erster Stand |
-| Testing          | gestartet    |
-| Validierung      | ausstehend   |
+Zur Qualitätssicherung wurden automatisierte Tests implementiert.
+
+Getestet werden unter anderem:
+
+* Berechnungslogik für QP,ne und GWP
+* QNG-Grenzwerte
+* Einfluss von Photovoltaik und Tiefgarage
+* Datenbankbeziehungen zwischen Building, Scenario und Result
+* Projekt- und Szenarioverwaltung
+* Fehlerfälle und Weiterleitungen
+* Löschen von Projekten und Szenarien
+
+Tests ausführen:
+
+```bash
+python manage.py test
+```
 
 ---
 
-## Nächste Schritte
+## Verwendete Technologien
 
-* Validierung mit realen QNG-Daten
-* Erweiterung der Berechnungslogik
-* Verbesserung der Benutzerführung
-* Aufbau automatisierter Tests
+### Backend
 
+* Python
+* Django 5
+
+### Frontend
+
+* HTML
+* CSS
+* JavaScript
+
+### Datenbank
+
+* SQLite
+
+### Versionsverwaltung & Qualitätssicherung
+
+* Git
+* GitHub
+* GitHub Actions
+* Pull Requests
+* Branch Protection Rules
+
+---
+
+## Installation
+
+Repository klonen:
+
+```bash
+git clone https://github.com/DBM-THA/Absch-tzung-der-Geb-ude-kobilanz-nach-QNG.git
+```
+
+Projektordner öffnen:
+
+```bash
+cd Absch-tzung-der-Geb-ude-kobilanz-nach-QNG
+```
+
+Abhängigkeiten installieren:
+
+```bash
+pip install -r requirements.txt
+```
+
+Migrationen ausführen:
+
+```bash
+python manage.py migrate
+```
+
+Server starten:
+
+```bash
+python manage.py runserver
+```
+
+Anwendung öffnen:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Deployment
+
+Die Anwendung kann lokal mit Django ausgeführt werden.
+
+Start:
+
+```bash
+python manage.py runserver
+```
+
+---
+
+## Projektstatus (Sprint 5)
+
+| Bereich                 | Status    |
+| ----------------------- | --------- |
+| GUI                     | umgesetzt |
+| Datenstruktur           | umgesetzt |
+| Berechnungslogik        | umgesetzt |
+| Projektverwaltung       | umgesetzt |
+| Szenariovergleich       | umgesetzt |
+| Automatisierte Tests    | umgesetzt |
+| Workflow-Stabilisierung | umgesetzt |
+| Dokumentation           | umgesetzt |
+| PDF-Export              | Sprint 6  |
+
+---
+
+## Nächste Schritte (Sprint 6)
+
+* PDF-Bericht generieren
+* Erweiterte Diagramme
+* Dashboard mit Projektstatistiken
+* Weitere Optimierung der Benutzerführung
+* Erweiterung der Auswertungsmöglichkeiten
 
 ---
 
@@ -117,3 +227,15 @@ Bewertet werden unter anderem:
 * Energieeffizienz
 * CO₂-Emissionen
 * Ressourceneinsatz
+* Lebenszyklusbetrachtung
+
+---
+
+## Autoren
+
+**Güllühan Bakir,**
+**Leon Balliet**
+
+Technische Hochschule Augsburg
+
+Studiengang Digitaler Baumeister

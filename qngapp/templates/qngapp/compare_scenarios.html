@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Szenariovergleich</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    background: #f5f5f5;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+h1 {
+    color: #1f7a4d;
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #1f7a4d;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.status-ok {
+    color: green;
+    font-weight: bold;
+}
+
+.status-bad {
+    color: red;
+    font-weight: bold;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #1f7a4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: none;
+    font-weight: bold;
+}
+
+.button:hover {
+    background: #16633d;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Szenariovergleich</h1>
+    <p><strong>Projekt:</strong> {{ building.project_name }}</p>
+</div>
+
+<div class="card">
+
+{% if scenarios|length < 2 %}
+
+    <p>Bitte mindestens zwei Szenarien auswählen.</p>
+
+{% else %}
+
+<table>
+    <tr>
+        <th>Kennwert</th>
+        {% for scenario in scenarios %}
+            <th>Szenario {{ forloop.counter }}<br>ID {{ scenario.id }}</th>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>Heizung</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.heating }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>Lüftung</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.ventilation }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>PV-Fläche</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.pv_area }} m²</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>Batteriespeicher</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.battery_storage }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>QNG-Level</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.qng_level }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>QP,ne</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.result.ac_qp_rel }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>GWP</td>
+        {% for scenario in scenarios %}
+            <td>{{ scenario.result.ac_gwp_rel }}</td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td>Status</td>
+        {% for scenario in scenarios %}
+            <td>
+                {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
+                    <span class="status-ok">erfüllt</span>
+                {% else %}
+                    <span class="status-bad">nicht erfüllt</span>
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+</table>
+
+{% endif %}
+
+</div>
+
+<a class="button" href="{% url 'project_detail' building.id %}">
+    ← Zurück zum Projekt
+</a>
+
+</body>
+</html>

@@ -157,3 +157,13 @@ def scenario_view(request):
         "qng_levels": QNG_LIMITS.keys(),
         "result": result,
     })
+def project_list_view(request):
+    projects = Building.objects.all().order_by("-created_at")
+
+    return render(
+        request,
+        "qngapp/projects.html",
+        {
+            "projects": projects,
+        },
+    )

@@ -229,3 +229,16 @@ def delete_scenario_view(request, scenario_id):
         scenario.delete()
 
     return redirect("project_detail", project_id=building_id)
+def delete_project_view(request, project_id):
+    project = Building.objects.filter(id=project_id).first()
+
+    if not project:
+        return redirect("projects")
+
+    if request.method == "POST":
+        project.delete()
+
+        request.session.pop("building_id", None)
+        request.session.pop("scenario_data", None)
+
+    return redirect("projects")

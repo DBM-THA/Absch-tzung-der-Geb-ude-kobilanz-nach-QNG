@@ -19,8 +19,12 @@ def to_float(value, default=0):
 
 def building_view(request):
     an_geg_warning = None
+    project_name_warning = None
 
     if request.method == "POST":
+        project_name = request.POST.get("project_name", "Beispielgebäude").strip()
+        building_category = request.POST.get("building_category", "Mehrfamilienhaus")
+
         nrf_heated_raw = request.POST.get("nrf_heated", "5282")
         nrf_tg_raw = request.POST.get("nrf_tg", "0")
         an_geg_raw = request.POST.get("an_geg", "6201")
@@ -30,6 +34,28 @@ def building_view(request):
         an_geg = to_float(an_geg_raw)
 
         nrf_total = nrf_heated + nrf_tg
+
+        if Building.objects.filter(project_name__iexact=project_name).exists():
+            project_name_warning = (
+                "Ein Projekt mit diesem Namen existiert bereits. "
+                "Bitte wählen Sie einen anderen Projektnamen."
+            )
+
+            return render(request, "qngapp/building.html", {
+                "building_types": KG300_VALUES.keys(),
+                "energy_standards": KG400_SOCKEL_VALUES.keys(),
+                "an_geg_warning": an_geg_warning,
+                "project_name_warning": project_name_warning,
+                "form_data": {
+                    "project_name": project_name,
+                    "building_category": building_category,
+                    "nrf_tg": nrf_tg_raw,
+                    "nrf_heated": nrf_heated_raw,
+                    "an_geg": an_geg_raw,
+                    "building_type": request.POST.get("building_type"),
+                    "energy_standard": request.POST.get("energy_standard"),
+                },
+            })
 
         if an_geg < nrf_heated:
             an_geg_warning = (
@@ -41,6 +67,7 @@ def building_view(request):
                 "building_types": KG300_VALUES.keys(),
                 "energy_standards": KG400_SOCKEL_VALUES.keys(),
                 "an_geg_warning": an_geg_warning,
+                "project_name_warning": project_name_warning,
                 "form_data": {
                     "project_name": request.POST.get("project_name", "Beispielgebäude"),
                     "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
@@ -53,8 +80,8 @@ def building_view(request):
             })
 
         building = Building.objects.create(
-            project_name=request.POST.get("project_name", "Beispielgebäude"),
-            building_category=request.POST.get("building_category", "Mehrfamilienhaus"),
+            project_name=project_name,
+            building_category=building_category,
             nrf_total=nrf_total,
             nrf_tg=nrf_tg,
             nrf_heated=nrf_heated,
@@ -71,6 +98,7 @@ def building_view(request):
         "building_types": KG300_VALUES.keys(),
         "energy_standards": KG400_SOCKEL_VALUES.keys(),
         "an_geg_warning": an_geg_warning,
+        "project_name_warning": project_name_warning,
         "form_data": {
             "project_name": "Mehrfamilienhaus Nürnberg",
             "building_category": "Mehrfamilienhaus",
@@ -250,6 +278,18 @@ def compare_scenarios_view(request, project_id):
         "best_scenario": best_scenario,
     })
 
+
+
+def add_scenario_to_project_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
+    request.session["building_id"] = building.id
+    request.session.pop("scenario_data", None)
+
+    return redirect("scenario")
 
 def delete_scenario_view(request, scenario_id):
     scenario = Scenario.objects.filter(id=scenario_id).first()

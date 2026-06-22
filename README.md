@@ -168,7 +168,7 @@ python manage.py test
 
 ---
 
-## Installation
+## Installation & Deployment
 
 Repository klonen:
 
@@ -205,18 +205,6 @@ Anwendung öffnen:
 ```text
 http://127.0.0.1:8000
 ```
-
----
-
-## Deployment
-
-Die Anwendung kann lokal über den Django-Entwicklungsserver gestartet werden.
-
-```bash
-python manage.py runserver
-```
-
-Alle benötigten Abhängigkeiten werden über die Datei `requirements.txt` bereitgestellt.
 
 ---
 

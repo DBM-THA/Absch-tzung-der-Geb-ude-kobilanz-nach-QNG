@@ -2,14 +2,16 @@
 
 ## Projektbeschreibung
 
-Dieses Projekt ist ein Web-Tool zur vereinfachten Abschätzung der Gebäudeökobilanz nach dem **QNG-Standard (Qualitätssiegel Nachhaltiges Gebäude)**.
+QNG-Check ist eine Webanwendung zur vereinfachten Abschätzung der Gebäudeökobilanz nach den Anforderungen des **Qualitätssiegels Nachhaltiges Gebäude (QNG)**.
 
-Ziel ist es, frühzeitig im Planungsprozess eine Einschätzung zu ermöglichen, ob ein Gebäude die Anforderungen an:
+Die Anwendung unterstützt Planende dabei, bereits in frühen Planungsphasen verschiedene Gebäudeszenarien zu bewerten und hinsichtlich ihrer Nachhaltigkeit zu vergleichen.
+
+Bewertet werden insbesondere:
 
 * Primärenergiebedarf (QP,ne)
 * Treibhauspotenzial (GWP)
 
-erfüllt.
+sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 
 ---
 
@@ -17,100 +19,223 @@ erfüllt.
 
 ### Gebäudedaten
 
-![Gebäudedaten](qngapp/static/images/building.jpg)
+![Gebäudedaten](qngapp/static/images/buildingneu.jpg)
 
 ### Szenario & Ergebnis
 
-![Szenario](qngapp/static/images/scenario.jpg)
+![Szenario](qngapp/static/images/scenarioneu.jpg)
+
+### Projekt & Vergleich
+
+![Projekt](qngapp/static/images/project.jpg)
+![Beispiel](qngapp/static/images/beispiel.jpg)
+![Vergleich](qngapp/static/images/vergleich.jpg)
 
 ---
 
 ## Ziel des Projekts
 
-* Übertragung komplexer Excel-Berechnungen in ein verständliches Webtool
-* Schnelle Szenarioanalyse ermöglichen
-* Transparenz über Einflussfaktoren schaffen
+* Übertragung komplexer Excel-Berechnungen in eine benutzerfreundliche Webanwendung
+* Unterstützung bei der Variantenuntersuchung nachhaltiger Gebäude
+* Transparente Darstellung von Einflussfaktoren auf QP,ne und GWP
+* Vereinfachung der frühen QNG-Bewertung
 
 ---
 
-# Aktueller Stand (Sprint 4)
-
-## Umgesetzte Funktionen
+## Funktionsumfang
 
 ### Gebäudedaten
 
-* Eingabe von Projektname, Energiebezugsfläche (Aₙ), beheizter Nettoraumfläche und Tiefgarage
-* Automatische Berechnung der gesamten Nettoraumfläche
-* Auswahl von Bauweise und Energiestandard
+Erfassung von:
 
-### Szenarien
+* Projektname
+* Nettogrundfläche beheizt
+* Nettogrundfläche Tiefgarage
+* Gesamt-Nettogrundfläche (automatisch berechnet)
+* Energiebezugsfläche Aₙ nach GEG
+* Bauweise
+* Energiestandard
 
-* Auswahl verschiedener Heizungs- und Lüftungssysteme
-* Berücksichtigung von Photovoltaikfläche und Batteriespeicher
-* Auswahl der QNG-Zielanforderung (QNG-PLUS oder QNG-PREMIUM)
+### Szenarioanalyse
 
-### Berechnung
+Auswahl von:
 
-* Berechnung des nicht erneuerbaren Primärenergiebedarfs (QP,ne)
-* Berechnung des Treibhauspotenzials (GWP)
-* Vergleich mit den jeweiligen QNG-Grenzwerten
-* Aufschlüsselung der Ergebnisse nach Teilbereichen
+* Heizsystem
+* Lüftungssystem
+* Photovoltaikfläche
+* Batteriespeicher
+* QNG-Level (PLUS / PREMIUM)
 
-### Visualisierung
+### Ergebnisdarstellung
 
-* Grafische Darstellung der Ergebnisse
-* Farbige Balkendiagramme für die einzelnen Ergebnisbestandteile
-* Übersichtliche Darstellung der QNG-Erfüllung
+* Berechnung von QP,ne
+* Berechnung von GWP
+* Vergleich mit den QNG-Grenzwerten
+* Grafische Ergebnisdarstellung
+* Aufschlüsselung der Teilbeiträge
 
-### Testing & Qualitätssicherung
+### Projektverwaltung
 
-* Automatisierte Tests mit Django Test Framework
-* GitHub Actions für Continuous Integration
-* Automatische Ausführung der Tests bei Pull Requests
-* Branch Protection Rules und Status Checks für den Main-Branch
+* Projekte speichern
+* Projekte anzeigen
+* Projekte löschen
+* Szenarien speichern
+* Szenarien löschen
 
-### Datenbank & Adminbereich
+### Szenariovergleich
 
-* Einführung erster Django Models für Building und Scenario
-* Vorbereitung einer relationalen Datenbankstruktur
-* Integration eines Django-Adminbereichs
-* Verwaltung von Gebäuden und Szenarien über das Backend
+* Vergleich mehrerer Szenarien eines Projekts
+* Hervorhebung der besten Variante
+* Ranking der Szenarien
+* Direkte Gegenüberstellung aller Kennwerte
+
+---
+
+## Automatisierte Tests
+
+Zur Qualitätssicherung wurden automatisierte Tests implementiert.
+
+Getestet werden unter anderem:
+
+* Berechnungslogik für QP,ne und GWP
+* QNG-Grenzwerte
+* Einfluss von Photovoltaik und Tiefgarage
+* Datenbankbeziehungen zwischen Building, Scenario und Result
+* Projekt- und Szenarioverwaltung
+* Fehlerfälle und Weiterleitungen
+* Löschen von Projekten und Szenarien
+
+Tests ausführen:
+
+```bash
+python manage.py test
+```
 
 ---
 
 ## Verwendete Technologien
 
+### Backend
+
 * Python
-* Django
-* HTML / CSS
+* Django 5
+
+### Frontend
+
+* HTML
+* CSS
+* JavaScript
+
+### Datenbank
+
 * SQLite
+
+### Versionsverwaltung & Qualitätssicherung
+
+* Git
 * GitHub
 * GitHub Actions
+* Pull Requests
+* Branch Protection Rules
 
 ---
 
-## Projektstatus
+## Installation
 
-| Bereich           | Status           |
-| ----------------- | ---------------- |
-| GUI               | Weiterentwickelt |
-| Berechnungslogik  | Funktionsfähig   |
-| Visualisierung    | Umgesetzt        |
-| Testing           | Automatisiert    |
-| GitHub Workflow   | Implementiert    |
-| Datenbankstruktur | Vorbereitet      |
-| Adminbereich      | Implementiert    |
-| Deployment        | In Vorbereitung  |
+Repository klonen:
+
+```bash
+git clone https://github.com/DBM-THA/Absch-tzung-der-Geb-ude-kobilanz-nach-QNG.git
+```
+
+Projektordner öffnen:
+
+```bash
+cd Absch-tzung-der-Geb-ude-kobilanz-nach-QNG
+```
+
+Abhängigkeiten installieren:
+
+```bash
+pip install -r requirements.txt
+```
+
+Migrationen ausführen:
+
+```bash
+python manage.py migrate
+```
+
+Server starten:
+
+```bash
+python manage.py runserver
+```
+
+Anwendung öffnen:
+
+```text
+http://127.0.0.1:8000
+```
 
 ---
 
-## Nächste Schritte (Sprint 5)
+## Deployment
 
-* Kernfunktionalität abschließen
-* Hauptworkflow weiter stabilisieren
-* Tests erweitern
-* Datenbank stärker mit dem Frontend verknüpfen
-* Technische Schulden reduzieren
-* Dokumentation vervollständigen
-* Deployment vorbereiten
+Die Anwendung kann lokal mit Django ausgeführt werden.
 
+Start:
+
+```bash
+python manage.py runserver
+```
+
+---
+
+## Projektstatus (Sprint 5)
+
+| Bereich                 | Status    |
+| ----------------------- | --------- |
+| GUI                     | umgesetzt |
+| Datenstruktur           | umgesetzt |
+| Berechnungslogik        | umgesetzt |
+| Projektverwaltung       | umgesetzt |
+| Szenariovergleich       | umgesetzt |
+| Automatisierte Tests    | umgesetzt |
+| Workflow-Stabilisierung | umgesetzt |
+| Dokumentation           | umgesetzt |
+| PDF-Export              | Sprint 6  |
+
+---
+
+## Nächste Schritte (Sprint 6)
+
+* PDF-Bericht generieren
+* Erweiterte Diagramme
+* Dashboard mit Projektstatistiken
+* Weitere Optimierung der Benutzerführung
+* Erweiterung der Auswertungsmöglichkeiten
+
+---
+
+## Was ist QNG?
+
+Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
+
+Bewertet werden unter anderem:
+
+* Energieeffizienz
+* CO₂-Emissionen
+* Ressourceneinsatz
+* Lebenszyklusbetrachtung
+
+---
+
+## Autoren
+
+**Güllühan Bakir,**
+**Leon Balliet**
+
+Technische Hochschule Augsburg
+
+Studiengang Digitaler Baumeister

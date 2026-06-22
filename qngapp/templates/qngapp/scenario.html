@@ -1,161 +1,522 @@
-´´{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Szenariovergleich</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szenarien testen | QNG-Check</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 40px 20px;
-    background:
-        linear-gradient(rgba(10,30,25,0.45), rgba(10,30,25,0.45)),
-        url("{% static 'images/hintergrund.jpg' %}");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #1a2e26;
-}
+    <style>
+        .navbar{
+            display:flex;
+            gap:15px;
+            margin-bottom:25px;
+        }
 
-.page {
-    max-width: 1400px;
-    margin: auto;
-}
+        .navbar a{
+            text-decoration:none;
+            padding:10px 16px;
+            border-radius:10px;
+            background:#1f7a4d;
+            color:white;
+            font-weight:600;
+            transition:0.2s;
+        }
+        
+        .navbar a:hover{
+            background:#16633d;
+        }
+    
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 24px 18px;
+            color: #1a2e26;
+            background:
+                linear-gradient(rgba(10, 30, 25, 0.50), rgba(10, 30, 25, 0.50)),
+                url("{% static 'images/hintergrund.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            line-height: 1.45;
+        }
 
-.navbar {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-}
+        .page {
+            max-width: 1350px;
+            margin: auto;
+        }
 
-.navbar a {
-    text-decoration: none;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: #1f7a4d;
-    color: white;
-    font-weight: 600;
-}
+        h1 {
+            color: #ffffff;
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
 
-.navbar a:hover {
-    background: #16633d;
-}
+        .hint {
+            color: rgba(255,255,255,0.9);
+            margin: 0 0 20px 0;
+            font-size: 1rem;
+        }
 
-.card {
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(16px);
-    padding: 25px;
-    border-radius: 24px;
-    margin-bottom: 25px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-}
+        .layout {
+            display: grid;
+            grid-template-columns: 370px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
 
-h1 {
-    color: #1f7a4d;
-    margin-top: 0;
-}
+        .card {
+            background: rgba(255, 255, 255, 0.91);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 22px;
+            border-radius: 22px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.45);
+        }
 
-h2 {
-    color: #0f2f26;
-    margin-top: 0;
-}
+        h2 {
+            color: #0f2f26;
+            margin-top: 0;
+            font-size: 1.18rem;
+            font-weight: 800;
+            border-bottom: 2px solid rgba(31, 122, 77, 0.15);
+            padding-bottom: 9px;
+            margin-bottom: 14px;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-}
+        .small-text {
+            font-size: 0.82rem;
+            color: #64746d;
+            margin-top: -6px;
+            margin-bottom: 12px;
+        }
 
-th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-size: 0.92rem;
-}
+        label {
+            display: block;
+            margin-top: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4a635a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-th {
-    background: #1f7a4d;
-    color: white;
-}
+        input, select {
+            width: 100%;
+            padding: 11px 12px;
+            margin-top: 6px;
+            border-radius: 11px;
+            border: 1.5px solid #dce5e1;
+            background: white;
+            font-size: 0.92rem;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
 
-tr:nth-child(even) {
-    background: #f8f8f8;
-}
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1f7a4d;
+            box-shadow: 0 0 0 4px rgba(31, 122, 77, 0.12);
+        }
 
-.best-value {
-    background: #dcfce7;
-    color: #166534;
-    font-weight: 800;
-}
+        .info-box {
+            background: rgba(31, 122, 77, 0.08);
+            border: 1px solid rgba(31, 122, 77, 0.12);
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a4d35;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
-.status-ok {
-    color: green;
-    font-weight: bold;
-}
+        .info-box span:first-child {
+            color: #64746d;
+            font-weight: 500;
+        }
 
-.status-bad {
-    color: red;
-    font-weight: bold;
-}
+        .project-name {
+            font-size: 1rem;
+            color: #1f7a4d;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: block;
+        }
 
-.button {
-    display: inline-block;
-    padding: 10px 16px;
-    background: #1f7a4d;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-top: 20px;
-    border: none;
-    font-weight: bold;
-}
+        .back-link {
+            display: block;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #1f7a4d;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 700;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 12px rgba(31, 122, 77, 0.2);
+            font-size: 0.92rem;
+        }
 
-.button:hover {
-    background: #16633d;
-}
+        .back-link:hover {
+            background: #165c3a;
+            transform: translateY(-2px);
+        }
 
-.best-card {
-    border: 2px solid #86efac;
-    background: rgba(220,252,231,0.94);
-}
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
 
-.best-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-top: 18px;
-}
+        .result-box {
+            background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.48));
+            border: 1px solid white;
+            padding: 18px;
+            border-radius: 20px;
+            text-align: center;
+        }
 
-.best-grid div {
-    background: white;
-    padding: 14px;
-    border-radius: 14px;
-}
+        .number {
+            font-size: 2.65rem;
+            font-weight: 800;
+            color: #0f2f26;
+            line-height: 1;
+            margin: 8px 0;
+            letter-spacing: -2px;
+        }
 
-.note {
-    color: #4b5563;
-    margin-top: 0;
-}
+        .status-ok,
+        .status-bad {
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+        }
 
-@media (max-width: 900px) {
-    .best-grid {
-        grid-template-columns: 1fr;
-    }
+        .status-ok {
+            color: #166534;
+            background: #dcfce7;
+        }
 
-    table {
-        font-size: 0.8rem;
-    }
-}
-</style>
+        .status-bad {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .chart-row {
+            margin-top: 14px;
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 7px;
+            gap: 16px;
+            font-size: 0.9rem;
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.07);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: #1f7a4d;
+            border-radius: 999px;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .bar-fill.bad {
+            background: #b91c1c;
+        }
+
+        .limit-bar {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.07);
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .limit-green {
+            height: 100%;
+            background: #1f7a4d;
+            border-radius: 999px;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .limit-green.with-overrun {
+            border-radius: 999px 0 0 999px;
+        }
+
+        .limit-red {
+            height: 100%;
+            flex: 1;
+            background: #b91c1c;
+            border-radius: 0 999px 999px 0;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .limit-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #111827;
+            z-index: 5;
+            border-radius: 999px;
+            transform: translateX(-50%);
+        }
+
+        .limit-note {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4b5563;
+        }
+
+        .stacked-bar {
+            display: flex;
+            width: 100%;
+            height: 22px;
+            background: rgba(0,0,0,0.07);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 7px;
+        }
+
+        .segment {
+            height: 100%;
+            min-width: 4px;
+        }
+
+        .color-1 { background: #1f7a4d; }
+        .color-2 { background: #3b82f6; }
+        .color-3 { background: #f59e0b; }
+        .color-4 { background: #8b5cf6; }
+        .color-5 { background: #ef4444; }
+        .color-6 { background: #14b8a6; }
+        .color-7 { background: #ec4899; }
+        .color-8 { background: #64748b; }
+
+        details {
+            margin-top: 0;
+        }
+
+        summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            color: #0f2f26;
+            font-size: 1.18rem;
+            border-bottom: 2px solid rgba(31, 122, 77, 0.15);
+            padding-bottom: 9px;
+            margin-bottom: 14px;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .summary-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            background: rgba(31, 122, 77, 0.10);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #1f7a4d;
+            font-weight: 800;
+            transition: transform 0.2s;
+        }
+
+        details[open] .summary-arrow {
+            transform: rotate(180deg);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px 13px;
+            margin-top: 12px;
+            font-size: 0.78rem;
+            color: #41544d;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 0.86rem;
+        }
+
+        th {
+            text-align: left;
+            font-size: 0.72rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            padding: 8px 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #f3f4f6;
+            font-weight: 600;
+        }
+
+        td:last-child,
+        th:last-child {
+            text-align: right;
+        }
+
+        .component-name {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .mini-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            flex: 0 0 auto;
+        }
+
+        .badge-fixed,
+        .badge-user,
+        .badge-calc,
+        .badge-source {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-left: 6px;
+            vertical-align: middle;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .badge-fixed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-user {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-calc {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-source {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: rgba(31,122,77,0.12);
+            color: #1f7a4d;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: help;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 260px;
+            background: #0f2f26;
+            color: white;
+            text-align: left;
+            border-radius: 12px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 20;
+            bottom: 135%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.76rem;
+            font-weight: 500;
+            line-height: 1.4;
+            text-transform: none;
+            letter-spacing: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            transition: opacity 0.2s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 1000px) {
+            body {
+                padding: 20px 14px;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -163,129 +524,421 @@ tr:nth-child(even) {
 <div class="page">
 
     <div class="navbar">
-        <a href="{% url 'building' %}">🏠 Neues Projekt</a>
-        <a href="{% url 'scenario' %}">⚙️ Szenarien</a>
-        <a href="{% url 'projects' %}">📂 Projekte</a>
+
+        <a href="{% url 'building' %}">
+            🏠 Neues Projekt
+        </a>
+
+        <a href="{% url 'scenario' %}">
+            ⚙️ Szenarien
+        </a>
+
+        <a href="{% url 'projects' %}">
+            📂 Projekte
+        </a>
+
     </div>
 
-    <div class="card">
-        <h1>Szenariovergleich</h1>
-        <p><strong>Projekt:</strong> {{ building.project_name }}</p>
-        <p><strong>Gebäudeart:</strong> {{ building.building_category }}</p>
-        <p class="note">
-            Die Szenarien werden nach den niedrigsten Werten für QP,ne und GWP sortiert.
-            Die besten Einzelwerte werden grün hervorgehoben.
-        </p>
-    </div>
+    <h1>Szenarien testen</h1>
+    <p class="hint">Parameter anpassen und direkt mit den QNG-Grenzwerten vergleichen.</p>
 
-    {% if scenarios|length < 2 %}
+    <div class="layout">
 
-        <div class="card">
-            <p>Bitte mindestens zwei Szenarien auswählen.</p>
-        </div>
+        <aside class="sidebar">
 
-    {% else %}
+            <div class="card">
+                <h2>Szenario-Daten</h2>
+                <p class="small-text">Hier werden die wichtigsten Annahmen für die Berechnung angepasst.</p>
 
-        {% if best_scenario %}
+                <form method="post" id="scenario-form">
+                    {% csrf_token %}
 
-        <div class="card best-card">
-            <h2>Beste Variante</h2>
+                    <label>
+                        Heizungsanlage
+                        <span class="badge-fixed">Datensatz</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                Die Heizungsanlage beeinflusst den Primärenergiebedarf QP,ne und das Treibhauspotenzial GWP.
+                            </span>
+                        </span>
+                    </label>
+                    <select name="heating">
+                        {% for item in heating_systems %}
+                            <option value="{{ item }}" {% if item == scenario.heating %}selected{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
 
-            <p>
-                <strong>Szenario ID {{ best_scenario.id }}</strong>
-                wird aktuell als beste Variante empfohlen.
-            </p>
+                    <label>
+                        Lüftungsanlage
+                        <span class="badge-fixed">Datensatz</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                Die Lüftungsanlage beeinflusst den Energiebedarf und die technischen Anlagen der KG400.
+                            </span>
+                        </span>
+                    </label>
+                    <select name="ventilation">
+                        {% for item in ventilation_systems %}
+                            <option value="{{ item }}" {% if item == scenario.ventilation %}selected{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
 
-            <div class="best-grid">
-                <div>
-                    <strong>QP,ne</strong><br>
-                    {{ best_scenario.result.ac_qp_rel }}
+                    <label>
+                        Photovoltaik-Fläche [m²]
+                        <span class="badge-user">Eingabe</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                Die PV-Fläche verändert Herstellung, Eigenstromnutzung und Energieexport. Dadurch ändern sich QP,ne und GWP.
+                            </span>
+                        </span>
+                    </label>
+                    <input type="number" name="pv_area" value="{{ scenario.pv_area }}">
+
+                    <label>
+                        Batteriespeicher
+                        <span class="badge-user">Eingabe</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                Der Batteriespeicher beeinflusst, wie viel PV-Strom selbst genutzt werden kann.
+                            </span>
+                        </span>
+                    </label>
+                    <select name="battery_storage">
+                        <option value="nein" {% if scenario.battery_storage == "nein" %}selected{% endif %}>Nein</option>
+                        <option value="ja" {% if scenario.battery_storage == "ja" %}selected{% endif %}>Ja</option>
+                    </select>
+
+                    <label>
+                        QNG-Zielanforderung
+                        <span class="badge-fixed">Grenzwert</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                QNG-PREMIUM besitzt strengere Grenzwerte als QNG-PLUS.
+                            </span>
+                        </span>
+                    </label>
+                    <select name="qng_level">
+                        {% for item in qng_levels %}
+                            <option value="{{ item }}" {% if item == scenario.qng_level %}selected{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" style="display:none;"></button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>
+                    Gebäudedaten
+                    <span class="badge-source">Stammdaten</span>
+                </h2>
+                <strong class="project-name">{{ building.project_name }}</strong>
+
+                <div class="info-box">
+                    <span>
+                        Gebäudeart
+                        <span class="badge-user">Eingabe</span>
+                    </span>
+                    <strong>{{ building.building_category }}</strong>
                 </div>
 
-                <div>
-                    <strong>GWP</strong><br>
-                    {{ best_scenario.result.ac_gwp_rel }}
+                <div class="info-box">
+                    <span>
+                        NRF gesamt
+                        <span class="badge-calc">berechnet</span>
+                        <span class="tooltip">?
+                            <span class="tooltip-text">
+                                Wird aus beheizter Nettogrundfläche und Tiefgaragenfläche berechnet.
+                            </span>
+                        </span>
+                    </span>
+                    <strong>{{ building.nrf_total }} m²</strong>
                 </div>
 
-                <div>
-                    <strong>Heizung</strong><br>
-                    {{ best_scenario.heating }}
+                <div class="info-box">
+                    <span>
+                        NRF beheizt
+                        <span class="badge-user">Eingabe</span>
+                    </span>
+                    <strong>{{ building.nrf_heated }} m²</strong>
                 </div>
 
-                <div>
-                    <strong>Lüftung</strong><br>
-                    {{ best_scenario.ventilation }}
+                <div class="info-box">
+                    <span>
+                        Bauweise
+                        <span class="badge-fixed">Datensatz</span>
+                    </span>
+                    <strong>{{ building.building_type }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>
+                        Standard
+                        <span class="badge-fixed">Datensatz</span>
+                    </span>
+                    <strong>{{ building.energy_standard }}</strong>
+                </div>
+
+                <a class="back-link" href="{% url 'building' %}">Stammdaten bearbeiten</a>
+            </div>
+
+        </aside>
+
+        <main>
+            {% if result %}
+
+            <div class="card">
+                <h2>
+                    Ergebnis-Überblick
+                    <span class="badge-calc">berechnet</span>
+                </h2>
+
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div style="font-weight:700; color:#4b5563;">
+                            Primärenergiebedarf
+                            <span class="tooltip">?
+                                <span class="tooltip-text">
+                                    QP,ne beschreibt den nicht erneuerbaren Primärenergiebedarf bezogen auf die NRF.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="number">{{ result.total.ac_qp_rel }}</div>
+                        <div style="font-size:0.82rem; margin-bottom:10px;">
+                            kWh<sub>PEne</sub> / m²<sub>NRF</sub>·a
+                        </div>
+
+                        <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                            QP,NE {{ result.total.qp_status|upper }}
+                        </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.qp_difference_percent > 0 %}
+                                {{ result.total.qp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.qp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="result-box">
+                        <div style="font-weight:700; color:#4b5563;">
+                            Treibhauspotenzial
+                            <span class="tooltip">?
+                                <span class="tooltip-text">
+                                    GWP beschreibt die Treibhausgaswirkung in kg CO₂-Äquivalenten bezogen auf die NRF.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="number">{{ result.total.ac_gwp_rel }}</div>
+                        <div style="font-size:0.82rem; margin-bottom:10px;">
+                            kg CO₂-Äq. / m²<sub>NRF</sub>·a
+                        </div>
+
+                        <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
+                            GWP {{ result.total.gwp_status|upper }}
+                        </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.gwp_difference_percent > 0 %}
+                                {{ result.total.gwp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.gwp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {% endif %}
+            <div class="card">
+                <h2>
+                    Vergleich mit QNG-Grenzwerten
+                    <span class="badge-fixed">Grenzwert</span>
+                    <span class="tooltip">?
+                        <span class="tooltip-text">
+                            Die berechneten Werte werden mit den hinterlegten Grenzwerten für QNG-PLUS oder QNG-PREMIUM verglichen.
+                        </span>
+                    </span>
+                </h2>
 
-        <div class="card">
-            <h2>Ranking und Vergleich der Varianten</h2>
+                <div class="chart-row">
+                    <div class="chart-label">
+                        <span>QP,ne Gesamtwert <span class="badge-calc">berechnet</span></span>
+                        <span>{{ result.total.ac_qp_rel }} / {{ result.total.qp_limit }}</span>
+                    </div>
 
-            <table>
-                <tr>
-                    <th>Platz</th>
-                    <th>ID</th>
-                    <th>Heizung</th>
-                    <th>Lüftung</th>
-                    <th>PV [m²]</th>
-                    <th>Batterie</th>
-                    <th>QNG-Level</th>
-                    <th>QP,ne</th>
-                    <th>GWP</th>
-                    <th>Status</th>
-                </tr>
+                    {% if result.total.qp_status == 'erfüllt' %}
+                        <div class="limit-bar">
+                            <div class="limit-green"
+                                 style="width: {% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%;">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="limit-bar">
+                            <div class="limit-green with-overrun"
+                                 style="width: {% widthratio result.total.qp_limit result.total.ac_qp_rel 100 %}%;">
+                            </div>
 
-                {% for scenario in ranking %}
-                <tr>
-                    <td>
-                        {% if forloop.counter == 1 %}
-                            🥇
-                        {% elif forloop.counter == 2 %}
-                            🥈
-                        {% elif forloop.counter == 3 %}
-                            🥉
-                        {% else %}
-                            {{ forloop.counter }}
-                        {% endif %}
-                    </td>
+                            <div class="limit-red"></div>
 
-                    <td>{{ scenario.id }}</td>
-                    <td>{{ scenario.heating }}</td>
-                    <td>{{ scenario.ventilation }}</td>
-                    <td>{{ scenario.pv_area }}</td>
-                    <td>{{ scenario.battery_storage }}</td>
-                    <td>{{ scenario.qng_level }}</td>
+                            <div class="limit-marker"
+                                 style="left: {% widthratio result.total.qp_limit result.total.ac_qp_rel 100 %}%;">
+                            </div>
+                        </div>
 
-                    <td class="{% if scenario.result.ac_qp_rel == best_qp %}best-value{% endif %}">
-                        {{ scenario.result.ac_qp_rel }}
-                    </td>
+                        <div class="limit-note">
+                            Grenzwert bei {{ result.total.qp_limit }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <td class="{% if scenario.result.ac_gwp_rel == best_gwp %}best-value{% endif %}">
-                        {{ scenario.result.ac_gwp_rel }}
-                    </td>
+                <div class="chart-row">
+                    <div class="chart-label">
+                        <span>GWP Gesamtwert <span class="badge-calc">berechnet</span></span>
+                        <span>{{ result.total.ac_gwp_rel }} / {{ result.total.gwp_limit }}</span>
+                    </div>
 
-                    <td>
-                        {% if scenario.result.qp_status == "erfüllt" and scenario.result.gwp_status == "erfüllt" %}
-                            <span class="status-ok">erfüllt</span>
-                        {% else %}
-                            <span class="status-bad">nicht erfüllt</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+                    {% if result.total.gwp_status == 'erfüllt' %}
+                        <div class="limit-bar">
+                            <div class="limit-green"
+                                 style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %}%;">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="limit-bar">
+                            <div class="limit-green with-overrun"
+                                 style="width: {% widthratio result.total.gwp_limit result.total.ac_gwp_rel 100 %}%;">
+                            </div>
 
-    {% endif %}
+                            <div class="limit-red"></div>
 
-    <a class="button" href="{% url 'project_detail' building.id %}">
-        ← Zurück zum Projekt
-    </a>
+                            <div class="limit-marker"
+                                 style="left: {% widthratio result.total.gwp_limit result.total.ac_gwp_rel 100 %}%;">
+                            </div>
+                        </div>
+
+                        <div class="limit-note">
+                            Grenzwert bei {{ result.total.gwp_limit }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card">
+                <details>
+                    <summary>
+                        Unterkategorien & Aufschlüsselung
+                        <span class="summary-arrow">⌄</span>
+                    </summary>
+
+                    <p class="small-text">Farben und Tabelle zeigen, welche Teilbereiche zum Ergebnis beitragen.</p>
+
+                    <div class="chart-row">
+                        <div class="chart-label">
+                            <span>QP,ne nach Teilbereichen <span class="badge-calc">berechnet</span></span>
+                            <span>{{ result.total.ac_qp_rel }}</span>
+                        </div>
+
+                        <div class="stacked-bar">
+                            {% for part in result.parts %}
+                                <div class="segment color-{{ forloop.counter }}"
+                                     title="{{ part.name }}: {{ part.ac_qp_rel|floatformat:2 }}"
+                                     style="width: {% widthratio part.ac_qp_rel result.total.ac_qp_rel 100 %}%;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="chart-row">
+                        <div class="chart-label">
+                            <span>GWP nach Teilbereichen <span class="badge-calc">berechnet</span></span>
+                            <span>{{ result.total.ac_gwp_rel }}</span>
+                        </div>
+
+                        <div class="stacked-bar">
+                            {% for part in result.parts %}
+                                <div class="segment color-{{ forloop.counter }}"
+                                     title="{{ part.name }}: {{ part.ac_gwp_rel|floatformat:2 }}"
+                                     style="width: {% widthratio part.ac_gwp_rel result.total.ac_gwp_rel 100 %}%;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        {% for part in result.parts %}
+                            <div class="legend-item">
+                                <span class="dot color-{{ forloop.counter }}"></span>
+                                <span>{{ part.name }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Komponente</th>
+                                <th>QP,ne</th>
+                                <th>GWP</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for part in result.parts %}
+                            <tr>
+                                <td>
+                                    <div class="component-name">
+                                        <span class="mini-dot color-{{ forloop.counter }}"></span>
+                                        <span>{{ part.name }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ part.ac_qp_rel|floatformat:2 }}</td>
+                                <td>{{ part.ac_gwp_rel|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
+            </div>
+
+            {% endif %}
+        </main>
+    </div>
 
 </div>
+
+<script>
+    const form = document.getElementById("scenario-form");
+    let timeout = null;
+
+    function saveScrollPosition() {
+        localStorage.setItem("scenarioScrollPosition", window.scrollY);
+    }
+
+    function restoreScrollPosition() {
+        const scrollPosition = localStorage.getItem("scenarioScrollPosition");
+
+        if (scrollPosition !== null) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+    }
+
+    window.addEventListener("load", restoreScrollPosition);
+
+    form.querySelectorAll("input, select").forEach((field) => {
+        field.addEventListener("change", () => {
+            saveScrollPosition();
+            form.submit();
+        });
+
+        field.addEventListener("input", () => {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+                saveScrollPosition();
+                form.submit();
+            }, 800);
+        });
+    });
+</script>
 
 </body>
 </html>

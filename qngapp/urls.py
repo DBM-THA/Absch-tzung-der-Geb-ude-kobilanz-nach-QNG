@@ -10,4 +10,5 @@ urlpatterns = [
     path("project/<int:project_id>/add-scenario/", views.add_scenario_to_project_view, name="add_scenario_to_project"),
     path("project/<int:project_id>/delete/", views.delete_project_view, name="delete_project"),
     path("scenario/<int:scenario_id>/delete/", views.delete_scenario_view, name="delete_scenario"),
+    path("project/<int:project_id>/pdf/", views.export_project_pdf_view, name="export_project_pdf"),
 ]

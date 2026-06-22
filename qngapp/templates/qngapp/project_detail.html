@@ -217,6 +217,10 @@ tr:nth-child(even){
     <div class="card">
         <h2>Gespeicherte Szenarien</h2>
 
+        <a class="button" href="{% url 'add_scenario_to_project' building.id %}">
+            + Neues Szenario hinzufügen
+        </a>
+
         <form method="get" action="{% url 'compare_scenarios' building.id %}" id="compare-form"></form>
 
         <table>

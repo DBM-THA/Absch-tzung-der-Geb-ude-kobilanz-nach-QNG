@@ -43,6 +43,7 @@ def building_view(request):
                 "an_geg_warning": an_geg_warning,
                 "form_data": {
                     "project_name": request.POST.get("project_name", "Beispielgebäude"),
+                    "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
                     "nrf_tg": nrf_tg_raw,
                     "nrf_heated": nrf_heated_raw,
                     "an_geg": an_geg_raw,
@@ -53,6 +54,7 @@ def building_view(request):
 
         building = Building.objects.create(
             project_name=request.POST.get("project_name", "Beispielgebäude"),
+            building_category=request.POST.get("building_category", "Mehrfamilienhaus"),
             nrf_total=nrf_total,
             nrf_tg=nrf_tg,
             nrf_heated=nrf_heated,
@@ -70,7 +72,8 @@ def building_view(request):
         "energy_standards": KG400_SOCKEL_VALUES.keys(),
         "an_geg_warning": an_geg_warning,
         "form_data": {
-            "project_name": "Beispielgebäude",
+            "project_name": "Mehrfamilienhaus Nürnberg",
+            "building_category": "Mehrfamilienhaus",
             "nrf_tg": "0",
             "nrf_heated": "5282",
             "an_geg": "6201",
@@ -158,6 +161,7 @@ def scenario_view(request):
 
     building_data = {
         "project_name": building.project_name,
+        "building_category": building.building_category,
         "nrf_total": building.nrf_total,
         "nrf_tg": building.nrf_tg,
         "nrf_heated": building.nrf_heated,
@@ -245,6 +249,8 @@ def compare_scenarios_view(request, project_id):
         "ranking": ranking,
         "best_scenario": best_scenario,
     })
+
+
 def delete_scenario_view(request, scenario_id):
     scenario = Scenario.objects.filter(id=scenario_id).first()
 
@@ -257,6 +263,8 @@ def delete_scenario_view(request, scenario_id):
         scenario.delete()
 
     return redirect("project_detail", project_id=building_id)
+
+
 def delete_project_view(request, project_id):
     project = Building.objects.filter(id=project_id).first()
 

@@ -422,6 +422,16 @@ def calculate_qng_result(
     qp_limit = QNG_LIMITS[qng_level]["qp"]
     gwp_limit = QNG_LIMITS[qng_level]["gwp"]
 
+    qp_difference_percent = round(
+        ((total_ac_qp_rel - qp_limit) / qp_limit) * 100,
+        1
+    )
+
+    gwp_difference_percent = round(
+        ((total_ac_gwp_rel - gwp_limit) / gwp_limit) * 100,
+        1
+    )
+
     return {
         "parts": parts,
         "total": {
@@ -431,6 +441,8 @@ def calculate_qng_result(
             "d_gwp_rel": round(total_d_gwp_rel, 2),
             "qp_limit": qp_limit,
             "gwp_limit": gwp_limit,
+            "qp_difference_percent": qp_difference_percent,
+            "gwp_difference_percent": gwp_difference_percent,
             "qp_status": (
                 "erfüllt"
                 if total_ac_qp_rel <= qp_limit

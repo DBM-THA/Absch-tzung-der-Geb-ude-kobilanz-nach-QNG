@@ -3,6 +3,7 @@ from django.db import models
 
 class Building(models.Model):
     project_name = models.CharField(max_length=200, default="Beispielgebäude")
+    building_category = models.CharField(max_length=100, default="Mehrfamilienhaus")
     nrf_total = models.FloatField(default=0)
     nrf_tg = models.FloatField(default=0)
     nrf_heated = models.FloatField(default=0)

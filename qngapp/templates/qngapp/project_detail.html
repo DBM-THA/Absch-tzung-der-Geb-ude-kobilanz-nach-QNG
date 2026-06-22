@@ -176,7 +176,7 @@ tr:nth-child(even){
             style="margin-bottom:20px;"
         >
             {% csrf_token %}
-        
+
             <button
                 type="submit"
                 class="delete-btn"
@@ -187,6 +187,11 @@ tr:nth-child(even){
         </form>
 
         <div class="info-grid">
+            <div class="info-box">
+                <strong>Gebäudeart</strong><br>
+                {{ building.building_category }}
+            </div>
+
             <div class="info-box">
                 <strong>Bauweise</strong><br>
                 {{ building.building_type }}

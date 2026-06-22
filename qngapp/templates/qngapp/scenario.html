@@ -655,6 +655,13 @@
                         <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
                             QP,NE {{ result.total.qp_status|upper }}
                         </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.qp_difference_percent > 0 %}
+                                {{ result.total.qp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.qp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div class="result-box">
@@ -674,6 +681,13 @@
                         <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
                             GWP {{ result.total.gwp_status|upper }}
                         </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.gwp_difference_percent > 0 %}
+                                {{ result.total.gwp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.gwp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

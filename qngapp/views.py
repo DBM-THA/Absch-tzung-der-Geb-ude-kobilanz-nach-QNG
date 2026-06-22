@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 from .calculations import calculate_qng_result
+from .models import Building, Scenario, Result
 from .qng_data import (
     KG300_VALUES,
     KG400_SOCKEL_VALUES,
@@ -20,25 +21,17 @@ def building_view(request):
     an_geg_warning = None
 
     if request.method == "POST":
-        nrf_heated = request.POST.get("nrf_heated", "5282")
-        nrf_tg = request.POST.get("nrf_tg", "0")
-        an_geg = request.POST.get("an_geg", "")
+        nrf_heated_raw = request.POST.get("nrf_heated", "5282")
+        nrf_tg_raw = request.POST.get("nrf_tg", "0")
+        an_geg_raw = request.POST.get("an_geg", "6201")
 
-        nrf_heated_float = to_float(nrf_heated)
-        nrf_tg_float = to_float(nrf_tg)
+        nrf_heated = to_float(nrf_heated_raw)
+        nrf_tg = to_float(nrf_tg_raw)
+        an_geg = to_float(an_geg_raw)
 
-        # NRF gesamt wird automatisch aus beheizter NRF + Tiefgarage berechnet
-        nrf_total = nrf_heated_float + nrf_tg_float
+        nrf_total = nrf_heated + nrf_tg
 
-        # Wenn A_n leer ist, wird automatisch ein Vorschlag gesetzt
-        if an_geg == "":
-            an_geg_float = round(nrf_heated_float * 1.2, 2)
-            an_geg = str(an_geg_float)
-        else:
-            an_geg_float = to_float(an_geg)
-
-        # Plausibilitätsprüfung: A_n sollte normalerweise größer als beheizte NRF sein
-        if an_geg_float < nrf_heated_float:
+        if an_geg < nrf_heated:
             an_geg_warning = (
                 "Die Energiebezugsfläche Aₙ sollte normalerweise größer "
                 "als die beheizte Nettogrundfläche sein."
@@ -50,24 +43,25 @@ def building_view(request):
                 "an_geg_warning": an_geg_warning,
                 "form_data": {
                     "project_name": request.POST.get("project_name", "Beispielgebäude"),
-                    "nrf_total": str(nrf_total),
-                    "nrf_tg": nrf_tg,
-                    "nrf_heated": nrf_heated,
-                    "an_geg": an_geg,
+                    "nrf_tg": nrf_tg_raw,
+                    "nrf_heated": nrf_heated_raw,
+                    "an_geg": an_geg_raw,
                     "building_type": request.POST.get("building_type"),
                     "energy_standard": request.POST.get("energy_standard"),
-                }
+                },
             })
 
-        request.session["building_data"] = {
-            "project_name": request.POST.get("project_name", "Beispielgebäude"),
-            "nrf_total": str(nrf_total),
-            "nrf_tg": nrf_tg,
-            "nrf_heated": nrf_heated,
-            "an_geg": an_geg,
-            "building_type": request.POST.get("building_type"),
-            "energy_standard": request.POST.get("energy_standard"),
-        }
+        building = Building.objects.create(
+            project_name=request.POST.get("project_name", "Beispielgebäude"),
+            nrf_total=nrf_total,
+            nrf_tg=nrf_tg,
+            nrf_heated=nrf_heated,
+            an_geg=an_geg,
+            building_type=request.POST.get("building_type"),
+            energy_standard=request.POST.get("energy_standard"),
+        )
+
+        request.session["building_id"] = building.id
 
         return redirect("scenario")
 
@@ -80,14 +74,21 @@ def building_view(request):
             "nrf_tg": "0",
             "nrf_heated": "5282",
             "an_geg": "6201",
-        }
+        },
     })
 
 
 def scenario_view(request):
-    building_data = request.session.get("building_data")
+    building_id = request.session.get("building_id")
 
-    if not building_data:
+    if not building_id:
+        return redirect("building")
+
+    building = Building.objects.filter(id=building_id).first()
+
+    if not building:
+        request.session.pop("building_id", None)
+        request.session.pop("scenario_data", None)
         return redirect("building")
 
     scenario_data = request.session.get("scenario_data", {
@@ -106,21 +107,64 @@ def scenario_view(request):
             "battery_storage": request.POST.get("battery_storage", "nein"),
             "qng_level": request.POST.get("qng_level"),
         }
+
         request.session["scenario_data"] = scenario_data
 
     result = calculate_qng_result(
-        nrf_total=building_data["nrf_total"],
-        nrf_tg=building_data["nrf_tg"],
-        nrf_heated=building_data["nrf_heated"],
-        an_geg=building_data["an_geg"],
-        building_type=building_data["building_type"],
-        energy_standard=building_data["energy_standard"],
+        nrf_total=building.nrf_total,
+        nrf_tg=building.nrf_tg,
+        nrf_heated=building.nrf_heated,
+        an_geg=building.an_geg,
+        building_type=building.building_type,
+        energy_standard=building.energy_standard,
         heating=scenario_data["heating"],
         ventilation=scenario_data["ventilation"],
         qng_level=scenario_data["qng_level"],
         pv_area=scenario_data["pv_area"],
         battery_storage=scenario_data["battery_storage"],
     )
+
+    if request.method == "POST":
+        scenario = Scenario.objects.filter(
+            building=building,
+            heating=scenario_data["heating"],
+            ventilation=scenario_data["ventilation"],
+            pv_area=to_float(scenario_data["pv_area"]),
+            battery_storage=scenario_data["battery_storage"],
+            qng_level=scenario_data["qng_level"],
+        ).first()
+
+        if not scenario:
+            scenario = Scenario.objects.create(
+                building=building,
+                heating=scenario_data["heating"],
+                ventilation=scenario_data["ventilation"],
+                pv_area=to_float(scenario_data["pv_area"]),
+                battery_storage=scenario_data["battery_storage"],
+                qng_level=scenario_data["qng_level"],
+            )
+
+        Result.objects.update_or_create(
+            scenario=scenario,
+            defaults={
+                "ac_qp_rel": result["total"]["ac_qp_rel"],
+                "ac_gwp_rel": result["total"]["ac_gwp_rel"],
+                "qp_limit": result["total"]["qp_limit"],
+                "gwp_limit": result["total"]["gwp_limit"],
+                "qp_status": result["total"]["qp_status"],
+                "gwp_status": result["total"]["gwp_status"],
+            }
+        )
+
+    building_data = {
+        "project_name": building.project_name,
+        "nrf_total": building.nrf_total,
+        "nrf_tg": building.nrf_tg,
+        "nrf_heated": building.nrf_heated,
+        "an_geg": building.an_geg,
+        "building_type": building.building_type,
+        "energy_standard": building.energy_standard,
+    }
 
     return render(request, "qngapp/scenario.html", {
         "building": building_data,
@@ -130,3 +174,99 @@ def scenario_view(request):
         "qng_levels": QNG_LIMITS.keys(),
         "result": result,
     })
+
+
+def project_list_view(request):
+    projects = Building.objects.all().order_by("-created_at")
+
+    return render(request, "qngapp/projects.html", {
+        "projects": projects,
+    })
+
+
+def project_detail_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
+    scenarios = building.scenarios.all().order_by("-created_at")
+
+    return render(request, "qngapp/project_detail.html", {
+        "building": building,
+        "scenarios": scenarios,
+    })
+
+
+def compare_scenarios_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
+    scenario_ids = request.GET.getlist("scenario_ids")
+
+    scenarios = (
+        Scenario.objects
+        .filter(id__in=scenario_ids, building=building)
+        .select_related("result")
+        .order_by("created_at")
+    )
+
+    valid_scenarios = [
+        scenario for scenario in scenarios
+        if hasattr(scenario, "result")
+    ]
+
+    best_qp = min(
+        [scenario.result.ac_qp_rel for scenario in valid_scenarios],
+        default=None
+    )
+
+    best_gwp = min(
+        [scenario.result.ac_gwp_rel for scenario in valid_scenarios],
+        default=None
+    )
+
+    ranking = sorted(
+        valid_scenarios,
+        key=lambda scenario: (
+            scenario.result.ac_qp_rel + scenario.result.ac_gwp_rel
+        )
+    )
+
+    best_scenario = ranking[0] if ranking else None
+
+    return render(request, "qngapp/compare_scenarios.html", {
+        "building": building,
+        "scenarios": scenarios,
+        "best_qp": best_qp,
+        "best_gwp": best_gwp,
+        "ranking": ranking,
+        "best_scenario": best_scenario,
+    })
+def delete_scenario_view(request, scenario_id):
+    scenario = Scenario.objects.filter(id=scenario_id).first()
+
+    if not scenario:
+        return redirect("projects")
+
+    building_id = scenario.building.id
+
+    if request.method == "POST":
+        scenario.delete()
+
+    return redirect("project_detail", project_id=building_id)
+def delete_project_view(request, project_id):
+    project = Building.objects.filter(id=project_id).first()
+
+    if not project:
+        return redirect("projects")
+
+    if request.method == "POST":
+        project.delete()
+
+        request.session.pop("building_id", None)
+        request.session.pop("scenario_data", None)
+
+    return redirect("projects")

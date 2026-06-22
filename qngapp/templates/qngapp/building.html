@@ -249,6 +249,12 @@ button:hover {
 
             <input type="text" name="project_name" value="{{ form_data.project_name }}">
 
+            {% if project_name_warning %}
+                <div class="warning-box">
+                    {{ project_name_warning }}
+                </div>
+            {% endif %}
+
             <label>
                 Gebäudeart
                 <span class="badge-user">Eingabe</span>

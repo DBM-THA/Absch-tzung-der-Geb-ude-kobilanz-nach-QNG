@@ -15,6 +15,21 @@ sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 
 ---
 
+## Was ist QNG?
+
+Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
+
+Bewertet werden unter anderem:
+
+* Energieeffizienz
+* CO₂-Emissionen
+* Ressourceneinsatz
+* Lebenszyklusbetrachtung
+
+Die Einhaltung der QNG-Anforderungen ist unter anderem Voraussetzung für verschiedene Förderprogramme im nachhaltigen Bauen.
+
+---
+
 ## Beispielansicht
 
 ### Gebäudedaten
@@ -28,7 +43,9 @@ sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 ### Projekt & Vergleich
 
 ![Projekt](qngapp/static/images/project.jpg)
+
 ![Beispiel](qngapp/static/images/beispiel.jpg)
+
 ![Vergleich](qngapp/static/images/vergleich.jpg)
 
 ---
@@ -49,6 +66,7 @@ sowie deren Einhaltung der QNG-Grenzwerte für **QNG-PLUS** und **QNG-PREMIUM**.
 Erfassung von:
 
 * Projektname
+* Gebäudeart (Einfamilienhaus / Mehrfamilienhaus)
 * Nettogrundfläche beheizt
 * Nettogrundfläche Tiefgarage
 * Gesamt-Nettogrundfläche (automatisch berechnet)
@@ -73,21 +91,26 @@ Auswahl von:
 * Vergleich mit den QNG-Grenzwerten
 * Grafische Ergebnisdarstellung
 * Aufschlüsselung der Teilbeiträge
+* Automatische Hervorhebung der besten Werte
+* PDF-Bericht exportieren
 
 ### Projektverwaltung
 
 * Projekte speichern
 * Projekte anzeigen
 * Projekte löschen
+* Doppelte Projektnamen verhindern
+* Weitere Szenarien zu bestehenden Projekten hinzufügen
 * Szenarien speichern
 * Szenarien löschen
 
 ### Szenariovergleich
 
 * Vergleich mehrerer Szenarien eines Projekts
+* Ranking der Varianten
 * Hervorhebung der besten Variante
-* Ranking der Szenarien
 * Direkte Gegenüberstellung aller Kennwerte
+* Automatische Bewertung der Szenarien
 
 ---
 
@@ -98,12 +121,13 @@ Zur Qualitätssicherung wurden automatisierte Tests implementiert.
 Getestet werden unter anderem:
 
 * Berechnungslogik für QP,ne und GWP
-* QNG-Grenzwerte
-* Einfluss von Photovoltaik und Tiefgarage
+* Einfluss von Photovoltaikflächen
+* Einfluss von Tiefgaragenflächen
+* QNG-Grenzwerte für PLUS und PREMIUM
+* Statusermittlung erfüllt / nicht erfüllt
 * Datenbankbeziehungen zwischen Building, Scenario und Result
 * Projekt- und Szenarioverwaltung
 * Fehlerfälle und Weiterleitungen
-* Löschen von Projekten und Szenarien
 
 Tests ausführen:
 
@@ -130,6 +154,10 @@ python manage.py test
 
 * SQLite
 
+### Reporting
+
+* ReportLab (PDF-Export)
+
 ### Versionsverwaltung & Qualitätssicherung
 
 * Git
@@ -140,7 +168,7 @@ python manage.py test
 
 ---
 
-## Installation
+## Installation & Deployment
 
 Repository klonen:
 
@@ -180,19 +208,7 @@ http://127.0.0.1:8000
 
 ---
 
-## Deployment
-
-Die Anwendung kann lokal mit Django ausgeführt werden.
-
-Start:
-
-```bash
-python manage.py runserver
-```
-
----
-
-## Projektstatus (Sprint 5)
+## Projektstatus (Sprint 6)
 
 | Bereich                 | Status    |
 | ----------------------- | --------- |
@@ -200,40 +216,19 @@ python manage.py runserver
 | Datenstruktur           | umgesetzt |
 | Berechnungslogik        | umgesetzt |
 | Projektverwaltung       | umgesetzt |
+| Szenarioverwaltung      | umgesetzt |
 | Szenariovergleich       | umgesetzt |
 | Automatisierte Tests    | umgesetzt |
 | Workflow-Stabilisierung | umgesetzt |
 | Dokumentation           | umgesetzt |
-| PDF-Export              | Sprint 6  |
+| PDF-Export              | umgesetzt |
 
 ---
 
-## Nächste Schritte (Sprint 6)
-
-* PDF-Bericht generieren
-* Erweiterte Diagramme
-* Dashboard mit Projektstatistiken
-* Weitere Optimierung der Benutzerführung
-* Erweiterung der Auswertungsmöglichkeiten
-
----
-
-## Was ist QNG?
-
-Das Qualitätssiegel Nachhaltiges Gebäude (QNG) ist ein staatlicher Standard zur Bewertung der Nachhaltigkeit von Gebäuden.
-
-Bewertet werden unter anderem:
-
-* Energieeffizienz
-* CO₂-Emissionen
-* Ressourceneinsatz
-* Lebenszyklusbetrachtung
-
----
 
 ## Autoren
 
-**Güllühan Bakir,**
+**Güllühan Bakir**
 **Leon Balliet**
 
 Technische Hochschule Augsburg

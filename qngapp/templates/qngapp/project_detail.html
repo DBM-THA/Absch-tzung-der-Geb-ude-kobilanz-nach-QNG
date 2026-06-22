@@ -185,7 +185,11 @@ tr:nth-child(even){
                 🗑 Projekt löschen
             </button>
         </form>
-
+        
+        <a class="button" href="{% url 'export_project_pdf' building.id %}">
+            PDF-Bericht exportieren
+        </a>
+        
         <div class="info-grid">
             <div class="info-box">
                 <strong>Gebäudeart</strong><br>

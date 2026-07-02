@@ -422,6 +422,35 @@ def calculate_qng_result(
     qp_limit = QNG_LIMITS[qng_level]["qp"]
     gwp_limit = QNG_LIMITS[qng_level]["gwp"]
 
+    qp_difference_percent = round(
+        ((total_ac_qp_rel - qp_limit) / qp_limit) * 100,
+        1
+    )
+
+    gwp_difference_percent = round(
+        ((total_ac_gwp_rel - gwp_limit) / gwp_limit) * 100,
+        1
+    )
+    qp_scale = max(total_ac_qp_rel, qp_limit)
+    gwp_scale = max(total_ac_gwp_rel, gwp_limit)
+    
+    qp_limit_marker_percent = round((qp_limit / qp_scale) * 100, 1)
+    gwp_limit_marker_percent = round((gwp_limit / gwp_scale) * 100, 1)
+    
+    if total_ac_qp_rel <= qp_limit:
+        qp_green_percent = round((total_ac_qp_rel / qp_scale) * 100, 1)
+        qp_red_percent = 0
+    else:
+        qp_green_percent = qp_limit_marker_percent
+        qp_red_percent = round(100 - qp_limit_marker_percent, 1)
+    
+    if total_ac_gwp_rel <= gwp_limit:
+        gwp_green_percent = round((total_ac_gwp_rel / gwp_scale) * 100, 1)
+        gwp_red_percent = 0
+    else:
+        gwp_green_percent = gwp_limit_marker_percent
+        gwp_red_percent = round(100 - gwp_limit_marker_percent, 1)
+
     return {
         "parts": parts,
         "total": {
@@ -431,6 +460,14 @@ def calculate_qng_result(
             "d_gwp_rel": round(total_d_gwp_rel, 2),
             "qp_limit": qp_limit,
             "gwp_limit": gwp_limit,
+            "qp_difference_percent": qp_difference_percent,
+            "gwp_difference_percent": gwp_difference_percent,
+            "qp_green_percent": qp_green_percent,
+            "qp_red_percent": qp_red_percent,
+            "qp_limit_marker_percent": qp_limit_marker_percent,
+            "gwp_green_percent": gwp_green_percent,
+            "gwp_red_percent": gwp_red_percent,
+            "gwp_limit_marker_percent": gwp_limit_marker_percent,
             "qp_status": (
                 "erfüllt"
                 if total_ac_qp_rel <= qp_limit

@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 from .calculations import calculate_qng_result
 from .models import Building, Scenario, Result
@@ -19,8 +22,12 @@ def to_float(value, default=0):
 
 def building_view(request):
     an_geg_warning = None
+    project_name_warning = None
 
     if request.method == "POST":
+        project_name = request.POST.get("project_name", "Beispielgebäude").strip()
+        building_category = request.POST.get("building_category", "Mehrfamilienhaus")
+
         nrf_heated_raw = request.POST.get("nrf_heated", "5282")
         nrf_tg_raw = request.POST.get("nrf_tg", "0")
         an_geg_raw = request.POST.get("an_geg", "6201")
@@ -30,6 +37,28 @@ def building_view(request):
         an_geg = to_float(an_geg_raw)
 
         nrf_total = nrf_heated + nrf_tg
+
+        if Building.objects.filter(project_name__iexact=project_name).exists():
+            project_name_warning = (
+                "Ein Projekt mit diesem Namen existiert bereits. "
+                "Bitte wählen Sie einen anderen Projektnamen."
+            )
+
+            return render(request, "qngapp/building.html", {
+                "building_types": KG300_VALUES.keys(),
+                "energy_standards": KG400_SOCKEL_VALUES.keys(),
+                "an_geg_warning": an_geg_warning,
+                "project_name_warning": project_name_warning,
+                "form_data": {
+                    "project_name": project_name,
+                    "building_category": building_category,
+                    "nrf_tg": nrf_tg_raw,
+                    "nrf_heated": nrf_heated_raw,
+                    "an_geg": an_geg_raw,
+                    "building_type": request.POST.get("building_type"),
+                    "energy_standard": request.POST.get("energy_standard"),
+                },
+            })
 
         if an_geg < nrf_heated:
             an_geg_warning = (
@@ -41,8 +70,10 @@ def building_view(request):
                 "building_types": KG300_VALUES.keys(),
                 "energy_standards": KG400_SOCKEL_VALUES.keys(),
                 "an_geg_warning": an_geg_warning,
+                "project_name_warning": project_name_warning,
                 "form_data": {
                     "project_name": request.POST.get("project_name", "Beispielgebäude"),
+                    "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
                     "nrf_tg": nrf_tg_raw,
                     "nrf_heated": nrf_heated_raw,
                     "an_geg": an_geg_raw,
@@ -52,7 +83,8 @@ def building_view(request):
             })
 
         building = Building.objects.create(
-            project_name=request.POST.get("project_name", "Beispielgebäude"),
+            project_name=project_name,
+            building_category=building_category,
             nrf_total=nrf_total,
             nrf_tg=nrf_tg,
             nrf_heated=nrf_heated,
@@ -69,8 +101,10 @@ def building_view(request):
         "building_types": KG300_VALUES.keys(),
         "energy_standards": KG400_SOCKEL_VALUES.keys(),
         "an_geg_warning": an_geg_warning,
+        "project_name_warning": project_name_warning,
         "form_data": {
-            "project_name": "Beispielgebäude",
+            "project_name": "Mehrfamilienhaus Nürnberg",
+            "building_category": "Mehrfamilienhaus",
             "nrf_tg": "0",
             "nrf_heated": "5282",
             "an_geg": "6201",
@@ -158,6 +192,7 @@ def scenario_view(request):
 
     building_data = {
         "project_name": building.project_name,
+        "building_category": building.building_category,
         "nrf_total": building.nrf_total,
         "nrf_tg": building.nrf_tg,
         "nrf_heated": building.nrf_heated,
@@ -245,6 +280,20 @@ def compare_scenarios_view(request, project_id):
         "ranking": ranking,
         "best_scenario": best_scenario,
     })
+
+
+
+def add_scenario_to_project_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("building")
+
+    request.session["building_id"] = building.id
+    request.session.pop("scenario_data", None)
+
+    return redirect("scenario")
+
 def delete_scenario_view(request, scenario_id):
     scenario = Scenario.objects.filter(id=scenario_id).first()
 
@@ -257,6 +306,8 @@ def delete_scenario_view(request, scenario_id):
         scenario.delete()
 
     return redirect("project_detail", project_id=building_id)
+
+
 def delete_project_view(request, project_id):
     project = Building.objects.filter(id=project_id).first()
 
@@ -270,3 +321,90 @@ def delete_project_view(request, project_id):
         request.session.pop("scenario_data", None)
 
     return redirect("projects")
+
+def export_project_pdf_view(request, project_id):
+    building = Building.objects.filter(id=project_id).first()
+
+    if not building:
+        return redirect("projects")
+
+    scenarios = building.scenarios.all().select_related("result")
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{building.project_name}_QNG_Bericht.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, y, "QNG-Check Bericht")
+
+    y -= 35
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Projektdaten")
+
+    y -= 25
+    p.setFont("Helvetica", 10)
+    p.drawString(50, y, f"Projektname: {building.project_name}")
+    y -= 18
+    p.drawString(50, y, f"Gebäudeart: {building.building_category}")
+    y -= 18
+    p.drawString(50, y, f"Bauweise: {building.building_type}")
+    y -= 18
+    p.drawString(50, y, f"Energiestandard: {building.energy_standard}")
+    y -= 18
+    p.drawString(50, y, f"NRF gesamt: {building.nrf_total} m²")
+    y -= 18
+    p.drawString(50, y, f"A_n nach GEG: {building.an_geg} m²")
+
+    y -= 35
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Gespeicherte Szenarien")
+
+    y -= 25
+    p.setFont("Helvetica-Bold", 9)
+    p.drawString(50, y, "ID")
+    p.drawString(80, y, "Heizung")
+    p.drawString(220, y, "PV")
+    p.drawString(270, y, "QNG")
+    p.drawString(350, y, "QP,ne")
+    p.drawString(410, y, "GWP")
+    p.drawString(470, y, "Status")
+
+    y -= 15
+    p.setFont("Helvetica", 8)
+
+    for scenario in scenarios:
+        if y < 60:
+            p.showPage()
+            y = height - 50
+            p.setFont("Helvetica", 8)
+
+        result = getattr(scenario, "result", None)
+
+        qp = result.ac_qp_rel if result else "-"
+        gwp = result.ac_gwp_rel if result else "-"
+        status = (
+            f"{result.qp_status} / {result.gwp_status}"
+            if result
+            else "kein Ergebnis"
+        )
+
+        heating = scenario.heating[:22]
+
+        p.drawString(50, y, str(scenario.id))
+        p.drawString(80, y, heating)
+        p.drawString(220, y, str(scenario.pv_area))
+        p.drawString(270, y, scenario.qng_level)
+        p.drawString(350, y, str(qp))
+        p.drawString(410, y, str(gwp))
+        p.drawString(470, y, status[:18])
+
+        y -= 16
+
+    p.showPage()
+    p.save()
+
+    return response

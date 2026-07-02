@@ -249,6 +249,36 @@ button:hover {
 
             <input type="text" name="project_name" value="{{ form_data.project_name }}">
 
+            {% if project_name_warning %}
+                <div class="warning-box">
+                    {{ project_name_warning }}
+                </div>
+            {% endif %}
+
+            <label>
+                Gebäudeart
+                <span class="badge-user">Eingabe</span>
+                <span class="tooltip">?
+                    <span class="tooltip-text">
+                        Auswahl eines Referenzgebäudes. Die Werte für Projektname, NRF und Aₙ werden automatisch vorbelegt.
+                    </span>
+                </span>
+            </label>
+
+            <select name="building_category" id="building_category">
+                <option value="Mehrfamilienhaus" {% if form_data.building_category == "Mehrfamilienhaus" %}selected{% endif %}>
+                    Mehrfamilienhaus Nürnberg
+                </option>
+
+                <option value="Einfamilienhaus" {% if form_data.building_category == "Einfamilienhaus" %}selected{% endif %}>
+                    Einfamilienhaus Beispiel
+                </option>
+            </select>
+
+            <div class="small">
+                Die Auswahl dient als Referenzgebäude für die Vorbelegung der Stammdaten.
+            </div>
+
             <label>
                 Nettogrundfläche Tiefgarage [m²]
                 <span class="badge-user">Eingabe</span>
@@ -314,9 +344,9 @@ button:hover {
                 </span>
             </label>
 
-            <select name="building_type">
+            <select name="building_type" id="building_type">
                 {% for item in building_types %}
-                    <option value="{{ item }}">
+                    <option value="{{ item }}" {% if item == form_data.building_type %}selected{% endif %}>
                         {{ item }}
                     </option>
                 {% endfor %}
@@ -330,9 +360,9 @@ button:hover {
                 </span>
             </label>
 
-            <select name="energy_standard">
+            <select name="energy_standard" id="energy_standard">
                 {% for item in energy_standards %}
-                    <option value="{{ item }}">
+                    <option value="{{ item }}" {% if item == form_data.energy_standard %}selected{% endif %}>
                         {{ item }}
                     </option>
                 {% endfor %}
@@ -352,6 +382,11 @@ button:hover {
 const tg = document.getElementById("nrf_tg");
 const heated = document.getElementById("nrf_heated");
 const total = document.getElementById("nrf_total");
+const category = document.getElementById("building_category");
+const projectName = document.querySelector('input[name="project_name"]');
+const anGeg = document.querySelector('input[name="an_geg"]');
+const buildingType = document.getElementById("building_type");
+const energyStandard = document.getElementById("energy_standard");
 
 function updateNRF() {
     const value =
@@ -361,8 +396,54 @@ function updateNRF() {
     total.innerText = value.toFixed(0);
 }
 
+function setSelectIfOptionExists(selectElement, value) {
+    if (!selectElement) {
+        return;
+    }
+
+    const optionExists = Array.from(selectElement.options).some(
+        option => option.value === value
+    );
+
+    if (optionExists) {
+        selectElement.value = value;
+    }
+}
+
+function applyReferenceBuilding() {
+    if (!category) {
+        return;
+    }
+
+    if (category.value === "Mehrfamilienhaus") {
+        projectName.value = "Mehrfamilienhaus Nürnberg";
+        heated.value = 5282;
+        tg.value = 0;
+        anGeg.value = 6201;
+
+        setSelectIfOptionExists(buildingType, "Massivbauweise (KS + WDVS)");
+        setSelectIfOptionExists(energyStandard, "Effizienzhaus 40");
+    }
+
+    if (category.value === "Einfamilienhaus") {
+        projectName.value = "Einfamilienhaus Beispiel";
+        heated.value = 180;
+        tg.value = 0;
+        anGeg.value = 210;
+
+        setSelectIfOptionExists(buildingType, "Massivbauweise (KS + WDVS)");
+        setSelectIfOptionExists(energyStandard, "Effizienzhaus 40");
+    }
+
+    updateNRF();
+}
+
 tg.addEventListener("input", updateNRF);
 heated.addEventListener("input", updateNRF);
+
+if (category) {
+    category.addEventListener("change", applyReferenceBuilding);
+}
 
 window.addEventListener("load", updateNRF);
 </script>

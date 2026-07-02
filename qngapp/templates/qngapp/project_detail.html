@@ -176,7 +176,7 @@ tr:nth-child(even){
             style="margin-bottom:20px;"
         >
             {% csrf_token %}
-        
+
             <button
                 type="submit"
                 class="delete-btn"
@@ -185,8 +185,17 @@ tr:nth-child(even){
                 🗑 Projekt löschen
             </button>
         </form>
-
+        
+        <a class="button" href="{% url 'export_project_pdf' building.id %}">
+            PDF-Bericht exportieren
+        </a>
+        
         <div class="info-grid">
+            <div class="info-box">
+                <strong>Gebäudeart</strong><br>
+                {{ building.building_category }}
+            </div>
+
             <div class="info-box">
                 <strong>Bauweise</strong><br>
                 {{ building.building_type }}
@@ -211,6 +220,10 @@ tr:nth-child(even){
 
     <div class="card">
         <h2>Gespeicherte Szenarien</h2>
+
+        <a class="button" href="{% url 'add_scenario_to_project' building.id %}">
+            + Neues Szenario hinzufügen
+        </a>
 
         <form method="get" action="{% url 'compare_scenarios' building.id %}" id="compare-form"></form>
 

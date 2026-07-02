@@ -247,6 +247,55 @@
             background: #b91c1c;
         }
 
+        .limit-bar {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.07);
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .limit-green {
+            height: 100%;
+            background: #1f7a4d;
+            border-radius: 999px;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .limit-green.with-overrun {
+            border-radius: 999px 0 0 999px;
+        }
+
+        .limit-red {
+            height: 100%;
+            flex: 1;
+            background: #b91c1c;
+            border-radius: 0 999px 999px 0;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .limit-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #111827;
+            z-index: 5;
+            border-radius: 999px;
+            transform: translateX(-50%);
+        }
+
+        .limit-note {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4b5563;
+        }
+
         .stacked-bar {
             display: flex;
             width: 100%;
@@ -490,7 +539,6 @@
 
     </div>
 
-<div class="page">
     <h1>Szenarien testen</h1>
     <p class="hint">Parameter anpassen und direkt mit den QNG-Grenzwerten vergleichen.</p>
 
@@ -588,6 +636,14 @@
 
                 <div class="info-box">
                     <span>
+                        Gebäudeart
+                        <span class="badge-user">Eingabe</span>
+                    </span>
+                    <strong>{{ building.building_category }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>
                         NRF gesamt
                         <span class="badge-calc">berechnet</span>
                         <span class="tooltip">?
@@ -655,6 +711,13 @@
                         <span class="{% if result.total.qp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
                             QP,NE {{ result.total.qp_status|upper }}
                         </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.qp_difference_percent > 0 %}
+                                {{ result.total.qp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.qp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div class="result-box">
@@ -674,6 +737,13 @@
                         <span class="{% if result.total.gwp_status == 'erfüllt' %}status-ok{% else %}status-bad{% endif %}">
                             GWP {{ result.total.gwp_status|upper }}
                         </span>
+                        <div style="font-size:0.8rem; margin-top:8px; color:#64746d;">
+                            {% if result.total.gwp_difference_percent > 0 %}
+                                {{ result.total.gwp_difference_percent }} % über Grenzwert
+                            {% else %}
+                                {{ result.total.gwp_difference_percent|floatformat:1 }} % unter Grenzwert
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -695,11 +765,29 @@
                         <span>{{ result.total.ac_qp_rel }} / {{ result.total.qp_limit }}</span>
                     </div>
 
-                    <div class="bar-bg">
-                        <div class="bar-fill {% if result.total.qp_status != 'erfüllt' %}bad{% endif %}"
-                             style="width: {% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%;">
+                    {% if result.total.qp_status == 'erfüllt' %}
+                        <div class="limit-bar">
+                            <div class="limit-green"
+                                 style="width: {% widthratio result.total.ac_qp_rel result.total.qp_limit 100 %}%;">
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="limit-bar">
+                            <div class="limit-green with-overrun"
+                                 style="width: {% widthratio result.total.qp_limit result.total.ac_qp_rel 100 %}%;">
+                            </div>
+
+                            <div class="limit-red"></div>
+
+                            <div class="limit-marker"
+                                 style="left: {% widthratio result.total.qp_limit result.total.ac_qp_rel 100 %}%;">
+                            </div>
+                        </div>
+
+                        <div class="limit-note">
+                            Grenzwert bei {{ result.total.qp_limit }}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="chart-row">
@@ -708,11 +796,29 @@
                         <span>{{ result.total.ac_gwp_rel }} / {{ result.total.gwp_limit }}</span>
                     </div>
 
-                    <div class="bar-bg">
-                        <div class="bar-fill {% if result.total.gwp_status != 'erfüllt' %}bad{% endif %}"
-                             style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %}%;">
+                    {% if result.total.gwp_status == 'erfüllt' %}
+                        <div class="limit-bar">
+                            <div class="limit-green"
+                                 style="width: {% widthratio result.total.ac_gwp_rel result.total.gwp_limit 100 %}%;">
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="limit-bar">
+                            <div class="limit-green with-overrun"
+                                 style="width: {% widthratio result.total.gwp_limit result.total.ac_gwp_rel 100 %}%;">
+                            </div>
+
+                            <div class="limit-red"></div>
+
+                            <div class="limit-marker"
+                                 style="left: {% widthratio result.total.gwp_limit result.total.ac_gwp_rel 100 %}%;">
+                            </div>
+                        </div>
+
+                        <div class="limit-note">
+                            Grenzwert bei {{ result.total.gwp_limit }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 

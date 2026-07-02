@@ -131,6 +131,7 @@ tr:nth-child(even){
 
             <tr>
                 <th>Projekt</th>
+                <th>Gebäudeart</th>
                 <th>Bauweise</th>
                 <th>Energiestandard</th>
                 <th>NRF</th>
@@ -141,6 +142,7 @@ tr:nth-child(even){
             {% for project in projects %}
             <tr>
                 <td>{{ project.project_name }}</td>
+                <td>{{ project.building_category }}</td>
                 <td>{{ project.building_type }}</td>
                 <td>{{ project.energy_standard }}</td>
                 <td>{{ project.nrf_total }}</td>
@@ -155,7 +157,7 @@ tr:nth-child(even){
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     Noch keine Projekte gespeichert.
                 </td>
             </tr>

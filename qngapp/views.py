@@ -34,7 +34,7 @@ def building_view(request):
     project_name_warning = None
 
     if request.method == "POST":
-        project_name = request.POST.get("project_name", "Beispielgebäude").strip()
+        project_name = request.POST.get("project_name", "Beispielgebaeude").strip()
         building_category = request.POST.get("building_category", "Mehrfamilienhaus")
 
         nrf_heated_raw = request.POST.get("nrf_heated", "5282")
@@ -50,7 +50,7 @@ def building_view(request):
         if Building.objects.filter(project_name__iexact=project_name).exists():
             project_name_warning = (
                 "Ein Projekt mit diesem Namen existiert bereits. "
-                "Bitte wählen Sie einen anderen Projektnamen."
+                "Bitte waehlen Sie einen anderen Projektnamen."
             )
 
             return render(request, "qngapp/building.html", {
@@ -71,8 +71,8 @@ def building_view(request):
 
         if an_geg < nrf_heated:
             an_geg_warning = (
-                "Die Energiebezugsfläche Aₙ sollte normalerweise größer "
-                "als die beheizte Nettogrundfläche sein."
+                "Die Energiebezugsflaeche A_n sollte normalerweise groesser "
+                "als die beheizte Nettogrundflaeche sein."
             )
 
             return render(request, "qngapp/building.html", {
@@ -81,7 +81,7 @@ def building_view(request):
                 "an_geg_warning": an_geg_warning,
                 "project_name_warning": project_name_warning,
                 "form_data": {
-                    "project_name": request.POST.get("project_name", "Beispielgebäude"),
+                    "project_name": request.POST.get("project_name", "Beispielgebaeude"),
                     "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
                     "nrf_tg": nrf_tg_raw,
                     "nrf_heated": nrf_heated_raw,
@@ -112,7 +112,7 @@ def building_view(request):
         "an_geg_warning": an_geg_warning,
         "project_name_warning": project_name_warning,
         "form_data": {
-            "project_name": "Mehrfamilienhaus Nürnberg",
+            "project_name": "Mehrfamilienhaus Nuernberg",
             "building_category": "Mehrfamilienhaus",
             "nrf_tg": "0",
             "nrf_heated": "5282",
@@ -135,7 +135,7 @@ def scenario_view(request):
         return redirect("building")
 
     scenario_data = request.session.get("scenario_data", {
-        "heating": "Nahwärme, Pelletkessel",
+        "heating": "Nahwaerme, Pelletkessel",
         "ventilation": "Zu-/Abluftanlage mit WRG",
         "pv_area": "300",
         "battery_storage": "nein",
@@ -426,17 +426,17 @@ def export_project_pdf_view(request, project_id):
     story = []
 
     story.append(Paragraph("QNG-Check", title_style))
-    story.append(Paragraph("Projektbericht zur Abschätzung der Gebäudeökobilanz", subtitle_style))
+    story.append(Paragraph("Projektbericht zur Abschaetzung der Gebaeudeoekobilanz", subtitle_style))
 
     intro_data = [
         ["Projekt", building.project_name],
-        ["Gebäudeart", building.building_category],
+        ["Gebaeudeart", building.building_category],
         ["Bauweise", building.building_type],
         ["Energiestandard", building.energy_standard],
-        ["NRF gesamt", f"{building.nrf_total:.2f} m²"],
-        ["NRF beheizt", f"{building.nrf_heated:.2f} m²"],
-        ["Tiefgarage", f"{building.nrf_tg:.2f} m²"],
-        ["Aₙ nach GEG", f"{building.an_geg:.2f} m²"],
+        ["NRF gesamt", f"{building.nrf_total:.2f} m2"],
+        ["NRF beheizt", f"{building.nrf_heated:.2f} m2"],
+        ["Tiefgarage", f"{building.nrf_tg:.2f} m2"],
+        ["A_n nach GEG", f"{building.an_geg:.2f} m2"],
     ]
 
     project_table = Table(
@@ -463,10 +463,10 @@ def export_project_pdf_view(request, project_id):
 
     if best_scenario:
         best_status = (
-            "erfüllt"
-            if best_scenario.result.qp_status == "erfüllt"
-            and best_scenario.result.gwp_status == "erfüllt"
-            else "nicht erfüllt"
+            "erfuellt"
+            if best_scenario.result.qp_status == "erfuellt"
+            and best_scenario.result.gwp_status == "erfuellt"
+            else "nicht erfuellt"
         )
 
         story.append(Paragraph("Beste Variante", heading_style))
@@ -487,7 +487,7 @@ def export_project_pdf_view(request, project_id):
             [
                 Paragraph("<b>Heizung</b>", normal_style),
                 Paragraph(best_scenario.heating, normal_style),
-                Paragraph("<b>Lüftung</b>", normal_style),
+                Paragraph("<b>Lueftung</b>", normal_style),
                 Paragraph(best_scenario.ventilation, normal_style),
             ],
         ]
@@ -515,7 +515,7 @@ def export_project_pdf_view(request, project_id):
         story.append(best_table)
         story.append(Spacer(1, 12))
 
-    story.append(Paragraph("Szenarioübersicht", heading_style))
+    story.append(Paragraph("Szenariouebersicht", heading_style))
 
     if scenarios:
         scenario_data = [
@@ -523,7 +523,7 @@ def export_project_pdf_view(request, project_id):
                 "Rang",
                 "ID",
                 "Heizung",
-                "Lüftung",
+                "Lueftung",
                 "PV",
                 "Batterie",
                 "QNG",
@@ -538,10 +538,10 @@ def export_project_pdf_view(request, project_id):
 
             if result:
                 status = (
-                    "erfüllt"
-                    if result.qp_status == "erfüllt"
-                    and result.gwp_status == "erfüllt"
-                    else "nicht erfüllt"
+                    "erfuellt"
+                    if result.qp_status == "erfuellt"
+                    and result.gwp_status == "erfuellt"
+                    else "nicht erfuellt"
                 )
 
                 scenario_data.append([
@@ -611,14 +611,14 @@ def export_project_pdf_view(request, project_id):
         story.append(scenario_table)
 
     else:
-        story.append(Paragraph("Für dieses Projekt wurden noch keine Szenarien gespeichert.", normal_style))
+        story.append(Paragraph("Fuer dieses Projekt wurden noch keine Szenarien gespeichert.", normal_style))
 
     story.append(Spacer(1, 14))
     story.append(Paragraph("Kurzfazit", heading_style))
 
     if best_scenario:
         story.append(Paragraph(
-            f"Für das Projekt wurden {len(valid_scenarios)} Szenarien mit Ergebniswerten untersucht. "
+            f"Fuer das Projekt wurden {len(valid_scenarios)} Szenarien mit Ergebniswerten untersucht. "
             f"Die aktuell beste Variante ist Szenario ID {best_scenario.id}. "
             f"Sie erreicht einen QP,ne-Wert von {best_scenario.result.ac_qp_rel:.2f} "
             f"und einen GWP-Wert von {best_scenario.result.ac_gwp_rel:.2f}.",
@@ -626,7 +626,7 @@ def export_project_pdf_view(request, project_id):
         ))
     else:
         story.append(Paragraph(
-            "Für dieses Projekt liegen noch keine auswertbaren Szenarioergebnisse vor.",
+            "Fuer dieses Projekt liegen noch keine auswertbaren Szenarioergebnisse vor.",
             normal_style,
         ))
 

@@ -1,3 +1,4 @@
+from io import BytesIO
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from reportlab.lib import colors
@@ -358,13 +359,10 @@ def export_project_pdf_view(request, project_id):
 
     best_scenario = ranking[0] if ranking else None
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = (
-        f'attachment; filename="{building.project_name}_QNG_Bericht.pdf"'
-    )
+    buffer = BytesIO()
 
     document = SimpleDocTemplate(
-        response,
+        buffer,
         pagesize=A4,
         rightMargin=1.6 * cm,
         leftMargin=1.6 * cm,
@@ -464,8 +462,8 @@ def export_project_pdf_view(request, project_id):
     if best_scenario:
         best_status = (
             "erfuellt"
-            if best_scenario.result.qp_status == "erfuellt"
-            and best_scenario.result.gwp_status == "erfuellt"
+            if best_scenario.result.qp_status == "erfüllt"
+            and best_scenario.result.gwp_status == "erfüllt"
             else "nicht erfuellt"
         )
 
@@ -515,103 +513,99 @@ def export_project_pdf_view(request, project_id):
         story.append(best_table)
         story.append(Spacer(1, 12))
 
-    story.append(Paragraph("Szenariouebersicht", heading_style))
+    story.append(Paragraph("Szenarioueberblick", heading_style))
 
-    if scenarios:
-        scenario_data = [
-            [
-                "Rang",
-                "ID",
-                "Heizung",
-                "Lueftung",
-                "PV",
-                "Batterie",
-                "QNG",
-                "QP,ne",
-                "GWP",
-                "Status",
-            ]
+    scenario_data = [
+        [
+            "Rang",
+            "ID",
+            "Heizung",
+            "Lueftung",
+            "PV",
+            "Batterie",
+            "QNG",
+            "QP,ne",
+            "GWP",
+            "Status",
         ]
+    ]
 
-        for index, scenario in enumerate(ranking, start=1):
-            result = getattr(scenario, "result", None)
+    for index, scenario in enumerate(ranking, start=1):
+        result = getattr(scenario, "result", None)
 
-            if result:
-                status = (
-                    "erfuellt"
-                    if result.qp_status == "erfuellt"
-                    and result.gwp_status == "erfuellt"
-                    else "nicht erfuellt"
-                )
+        if result:
+            status = (
+                "erfuellt"
+                if result.qp_status == "erfüllt"
+                and result.gwp_status == "erfüllt"
+                else "nicht erfuellt"
+            )
 
-                scenario_data.append([
-                    str(index),
-                    str(scenario.id),
-                    Paragraph(scenario.heating, small_style),
-                    Paragraph(scenario.ventilation, small_style),
-                    f"{scenario.pv_area:.0f}",
-                    scenario.battery_storage,
-                    scenario.qng_level,
-                    f"{result.ac_qp_rel:.2f}",
-                    f"{result.ac_gwp_rel:.2f}",
-                    status,
-                ])
+            scenario_data.append([
+                str(index),
+                str(scenario.id),
+                Paragraph(scenario.heating, small_style),
+                Paragraph(scenario.ventilation, small_style),
+                f"{scenario.pv_area:.0f}",
+                scenario.battery_storage,
+                scenario.qng_level,
+                f"{result.ac_qp_rel:.2f}",
+                f"{result.ac_gwp_rel:.2f}",
+                status,
+            ])
 
-        if len(scenario_data) == 1:
-            scenario_data.append(["-", "-", "kein Ergebnis", "-", "-", "-", "-", "-", "-", "-"])
+    if len(scenario_data) == 1:
+        scenario_data.append(["-", "-", "kein Ergebnis", "-", "-", "-", "-", "-", "-", "-"])
 
-        scenario_table = Table(
-            scenario_data,
-            colWidths=[
-                1.0 * cm,
-                0.9 * cm,
-                3.0 * cm,
-                3.0 * cm,
-                1.0 * cm,
-                1.4 * cm,
-                1.7 * cm,
-                1.3 * cm,
-                1.3 * cm,
-                1.8 * cm,
-            ],
-            repeatRows=1,
-            hAlign="LEFT",
+    scenario_table = Table(
+        scenario_data,
+        colWidths=[
+            1.0 * cm,
+            0.9 * cm,
+            3.0 * cm,
+            3.0 * cm,
+            1.0 * cm,
+            1.4 * cm,
+            1.7 * cm,
+            1.3 * cm,
+            1.3 * cm,
+            1.8 * cm,
+        ],
+        repeatRows=1,
+        hAlign="LEFT",
+    )
+
+    table_style = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f7a4d")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 0), (-1, -1), 7),
+        ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#d1d5db")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]
+
+    for row_index in range(1, len(scenario_data)):
+        if row_index % 2 == 0:
+            table_style.append(
+                ("BACKGROUND", (0, row_index), (-1, row_index), colors.HexColor("#f9fafb"))
+            )
+
+    if len(scenario_data) > 1:
+        table_style.append(
+            ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#dcfce7"))
+        )
+        table_style.append(
+            ("TEXTCOLOR", (0, 1), (-1, 1), colors.HexColor("#166534"))
+        )
+        table_style.append(
+            ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold")
         )
 
-        table_style = [
-            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f7a4d")),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-            ("FONTSIZE", (0, 0), (-1, -1), 7),
-            ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#d1d5db")),
-            ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-        ]
-
-        for row_index in range(1, len(scenario_data)):
-            if row_index % 2 == 0:
-                table_style.append(
-                    ("BACKGROUND", (0, row_index), (-1, row_index), colors.HexColor("#f9fafb"))
-                )
-
-        if len(scenario_data) > 1:
-            table_style.append(
-                ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#dcfce7"))
-            )
-            table_style.append(
-                ("TEXTCOLOR", (0, 1), (-1, 1), colors.HexColor("#166534"))
-            )
-            table_style.append(
-                ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold")
-            )
-
-        scenario_table.setStyle(TableStyle(table_style))
-        story.append(scenario_table)
-
-    else:
-        story.append(Paragraph("Fuer dieses Projekt wurden noch keine Szenarien gespeichert.", normal_style))
+    scenario_table.setStyle(TableStyle(table_style))
+    story.append(scenario_table)
 
     story.append(Spacer(1, 14))
     story.append(Paragraph("Kurzfazit", heading_style))
@@ -632,10 +626,17 @@ def export_project_pdf_view(request, project_id):
 
     story.append(Spacer(1, 18))
     story.append(Paragraph(
-        "Erstellt mit QNG-Check · Technische Hochschule Augsburg · Digitaler Baumeister",
+        "Erstellt mit QNG-Check - Technische Hochschule Augsburg - Digitaler Baumeister",
         small_style,
     ))
 
     document.build(story)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="qng_bericht.pdf"'
+    response["Content-Length"] = str(len(pdf))
 
     return response

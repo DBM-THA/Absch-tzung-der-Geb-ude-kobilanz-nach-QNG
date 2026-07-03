@@ -1,7 +1,17 @@
+from io import BytesIO
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 from .calculations import calculate_qng_result
 from .models import Building, Scenario, Result
@@ -25,7 +35,7 @@ def building_view(request):
     project_name_warning = None
 
     if request.method == "POST":
-        project_name = request.POST.get("project_name", "Beispielgebäude").strip()
+        project_name = request.POST.get("project_name", "Beispielgebaeude").strip()
         building_category = request.POST.get("building_category", "Mehrfamilienhaus")
 
         nrf_heated_raw = request.POST.get("nrf_heated", "5282")
@@ -41,7 +51,7 @@ def building_view(request):
         if Building.objects.filter(project_name__iexact=project_name).exists():
             project_name_warning = (
                 "Ein Projekt mit diesem Namen existiert bereits. "
-                "Bitte wählen Sie einen anderen Projektnamen."
+                "Bitte waehlen Sie einen anderen Projektnamen."
             )
 
             return render(request, "qngapp/building.html", {
@@ -62,8 +72,8 @@ def building_view(request):
 
         if an_geg < nrf_heated:
             an_geg_warning = (
-                "Die Energiebezugsfläche Aₙ sollte normalerweise größer "
-                "als die beheizte Nettogrundfläche sein."
+                "Die Energiebezugsflaeche A_n sollte normalerweise groesser "
+                "als die beheizte Nettogrundflaeche sein."
             )
 
             return render(request, "qngapp/building.html", {
@@ -72,7 +82,7 @@ def building_view(request):
                 "an_geg_warning": an_geg_warning,
                 "project_name_warning": project_name_warning,
                 "form_data": {
-                    "project_name": request.POST.get("project_name", "Beispielgebäude"),
+                    "project_name": request.POST.get("project_name", "Beispielgebaeude"),
                     "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
                     "nrf_tg": nrf_tg_raw,
                     "nrf_heated": nrf_heated_raw,
@@ -103,7 +113,7 @@ def building_view(request):
         "an_geg_warning": an_geg_warning,
         "project_name_warning": project_name_warning,
         "form_data": {
-            "project_name": "Mehrfamilienhaus Nürnberg",
+            "project_name": "Mehrfamilienhaus Nuernberg",
             "building_category": "Mehrfamilienhaus",
             "nrf_tg": "0",
             "nrf_heated": "5282",
@@ -126,7 +136,7 @@ def scenario_view(request):
         return redirect("building")
 
     scenario_data = request.session.get("scenario_data", {
-        "heating": "Nahwärme, Pelletkessel",
+        "heating": "Nahwaerme, Pelletkessel",
         "ventilation": "Zu-/Abluftanlage mit WRG",
         "pv_area": "300",
         "battery_storage": "nein",
@@ -328,83 +338,305 @@ def export_project_pdf_view(request, project_id):
     if not building:
         return redirect("projects")
 
-    scenarios = building.scenarios.all().select_related("result")
+    scenarios = (
+        building.scenarios
+        .all()
+        .select_related("result")
+        .order_by("created_at")
+    )
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="{building.project_name}_QNG_Bericht.pdf"'
+    valid_scenarios = [
+        scenario for scenario in scenarios
+        if hasattr(scenario, "result")
+    ]
 
-    p = canvas.Canvas(response, pagesize=A4)
-    width, height = A4
+    ranking = sorted(
+        valid_scenarios,
+        key=lambda scenario: (
+            scenario.result.ac_qp_rel + scenario.result.ac_gwp_rel
+        )
+    )
 
-    y = height - 50
+    best_scenario = ranking[0] if ranking else None
 
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, y, "QNG-Check Bericht")
+    buffer = BytesIO()
 
-    y -= 35
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y, "Projektdaten")
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=1.6 * cm,
+        leftMargin=1.6 * cm,
+        topMargin=1.5 * cm,
+        bottomMargin=1.5 * cm,
+    )
 
-    y -= 25
-    p.setFont("Helvetica", 10)
-    p.drawString(50, y, f"Projektname: {building.project_name}")
-    y -= 18
-    p.drawString(50, y, f"Gebäudeart: {building.building_category}")
-    y -= 18
-    p.drawString(50, y, f"Bauweise: {building.building_type}")
-    y -= 18
-    p.drawString(50, y, f"Energiestandard: {building.energy_standard}")
-    y -= 18
-    p.drawString(50, y, f"NRF gesamt: {building.nrf_total} m²")
-    y -= 18
-    p.drawString(50, y, f"A_n nach GEG: {building.an_geg} m²")
+    styles = getSampleStyleSheet()
 
-    y -= 35
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y, "Gespeicherte Szenarien")
+    title_style = ParagraphStyle(
+        "TitleStyle",
+        parent=styles["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=22,
+        leading=28,
+        textColor=colors.HexColor("#0f2f26"),
+        spaceAfter=10,
+    )
 
-    y -= 25
-    p.setFont("Helvetica-Bold", 9)
-    p.drawString(50, y, "ID")
-    p.drawString(80, y, "Heizung")
-    p.drawString(220, y, "PV")
-    p.drawString(270, y, "QNG")
-    p.drawString(350, y, "QP,ne")
-    p.drawString(410, y, "GWP")
-    p.drawString(470, y, "Status")
+    subtitle_style = ParagraphStyle(
+        "SubtitleStyle",
+        parent=styles["Normal"],
+        fontName="Helvetica",
+        fontSize=11,
+        leading=16,
+        textColor=colors.HexColor("#4b5563"),
+        spaceAfter=18,
+    )
 
-    y -= 15
-    p.setFont("Helvetica", 8)
+    heading_style = ParagraphStyle(
+        "HeadingStyle",
+        parent=styles["Heading2"],
+        fontName="Helvetica-Bold",
+        fontSize=14,
+        leading=18,
+        textColor=colors.HexColor("#1f7a4d"),
+        spaceBefore=12,
+        spaceAfter=8,
+    )
 
-    for scenario in scenarios:
-        if y < 60:
-            p.showPage()
-            y = height - 50
-            p.setFont("Helvetica", 8)
+    normal_style = ParagraphStyle(
+        "NormalStyle",
+        parent=styles["Normal"],
+        fontName="Helvetica",
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor("#1a2e26"),
+    )
 
-        result = getattr(scenario, "result", None)
+    small_style = ParagraphStyle(
+        "SmallStyle",
+        parent=styles["Normal"],
+        fontName="Helvetica",
+        fontSize=8,
+        leading=11,
+        textColor=colors.HexColor("#4b5563"),
+    )
 
-        qp = result.ac_qp_rel if result else "-"
-        gwp = result.ac_gwp_rel if result else "-"
-        status = (
-            f"{result.qp_status} / {result.gwp_status}"
-            if result
-            else "kein Ergebnis"
+    story = []
+
+    story.append(Paragraph("QNG-Check", title_style))
+    story.append(Paragraph("Projektbericht zur Abschaetzung der Gebaeudeoekobilanz", subtitle_style))
+
+    intro_data = [
+        ["Projekt", building.project_name],
+        ["Gebaeudeart", building.building_category],
+        ["Bauweise", building.building_type],
+        ["Energiestandard", building.energy_standard],
+        ["NRF gesamt", f"{building.nrf_total:.2f} m2"],
+        ["NRF beheizt", f"{building.nrf_heated:.2f} m2"],
+        ["Tiefgarage", f"{building.nrf_tg:.2f} m2"],
+        ["A_n nach GEG", f"{building.an_geg:.2f} m2"],
+    ]
+
+    project_table = Table(
+        intro_data,
+        colWidths=[4.2 * cm, 12.0 * cm],
+        hAlign="LEFT",
+    )
+
+    project_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#dcfce7")),
+        ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#166534")),
+        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("FONTNAME", (1, 0), (1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#d1d5db")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 7),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+    ]))
+
+    story.append(Paragraph("Projektdaten", heading_style))
+    story.append(project_table)
+    story.append(Spacer(1, 12))
+
+    if best_scenario:
+        best_status = (
+            "erfuellt"
+            if best_scenario.result.qp_status == "erfüllt"
+            and best_scenario.result.gwp_status == "erfüllt"
+            else "nicht erfuellt"
         )
 
-        heating = scenario.heating[:22]
+        story.append(Paragraph("Beste Variante", heading_style))
 
-        p.drawString(50, y, str(scenario.id))
-        p.drawString(80, y, heating)
-        p.drawString(220, y, str(scenario.pv_area))
-        p.drawString(270, y, scenario.qng_level)
-        p.drawString(350, y, str(qp))
-        p.drawString(410, y, str(gwp))
-        p.drawString(470, y, status[:18])
+        best_data = [
+            [
+                Paragraph("<b>Szenario</b>", normal_style),
+                Paragraph("<b>QP,ne</b>", normal_style),
+                Paragraph("<b>GWP</b>", normal_style),
+                Paragraph("<b>Status</b>", normal_style),
+            ],
+            [
+                f"ID {best_scenario.id}",
+                f"{best_scenario.result.ac_qp_rel:.2f}",
+                f"{best_scenario.result.ac_gwp_rel:.2f}",
+                best_status,
+            ],
+            [
+                Paragraph("<b>Heizung</b>", normal_style),
+                Paragraph(best_scenario.heating, normal_style),
+                Paragraph("<b>Lueftung</b>", normal_style),
+                Paragraph(best_scenario.ventilation, normal_style),
+            ],
+        ]
 
-        y -= 16
+        best_table = Table(
+            best_data,
+            colWidths=[3.2 * cm, 3.2 * cm, 3.2 * cm, 6.8 * cm],
+            hAlign="LEFT",
+        )
 
-    p.showPage()
-    p.save()
+        best_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f7a4d")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#dcfce7")),
+            ("BACKGROUND", (0, 2), (-1, 2), colors.HexColor("#f9fafb")),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#d1d5db")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("TOPPADDING", (0, 0), (-1, -1), 7),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+        ]))
+
+        story.append(best_table)
+        story.append(Spacer(1, 12))
+
+    story.append(Paragraph("Szenarioueberblick", heading_style))
+
+    scenario_data = [
+        [
+            "Rang",
+            "ID",
+            "Heizung",
+            "Lueftung",
+            "PV",
+            "Batterie",
+            "QNG",
+            "QP,ne",
+            "GWP",
+            "Status",
+        ]
+    ]
+
+    for index, scenario in enumerate(ranking, start=1):
+        result = getattr(scenario, "result", None)
+
+        if result:
+            status = (
+                "erfuellt"
+                if result.qp_status == "erfüllt"
+                and result.gwp_status == "erfüllt"
+                else "nicht erfuellt"
+            )
+
+            scenario_data.append([
+                str(index),
+                str(scenario.id),
+                Paragraph(scenario.heating, small_style),
+                Paragraph(scenario.ventilation, small_style),
+                f"{scenario.pv_area:.0f}",
+                scenario.battery_storage,
+                scenario.qng_level,
+                f"{result.ac_qp_rel:.2f}",
+                f"{result.ac_gwp_rel:.2f}",
+                status,
+            ])
+
+    if len(scenario_data) == 1:
+        scenario_data.append(["-", "-", "kein Ergebnis", "-", "-", "-", "-", "-", "-", "-"])
+
+    scenario_table = Table(
+        scenario_data,
+        colWidths=[
+            1.0 * cm,
+            0.9 * cm,
+            3.0 * cm,
+            3.0 * cm,
+            1.0 * cm,
+            1.4 * cm,
+            1.7 * cm,
+            1.3 * cm,
+            1.3 * cm,
+            1.8 * cm,
+        ],
+        repeatRows=1,
+        hAlign="LEFT",
+    )
+
+    table_style = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f7a4d")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 0), (-1, -1), 7),
+        ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#d1d5db")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]
+
+    for row_index in range(1, len(scenario_data)):
+        if row_index % 2 == 0:
+            table_style.append(
+                ("BACKGROUND", (0, row_index), (-1, row_index), colors.HexColor("#f9fafb"))
+            )
+
+    if len(scenario_data) > 1:
+        table_style.append(
+            ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#dcfce7"))
+        )
+        table_style.append(
+            ("TEXTCOLOR", (0, 1), (-1, 1), colors.HexColor("#166534"))
+        )
+        table_style.append(
+            ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold")
+        )
+
+    scenario_table.setStyle(TableStyle(table_style))
+    story.append(scenario_table)
+
+    story.append(Spacer(1, 14))
+    story.append(Paragraph("Kurzfazit", heading_style))
+
+    if best_scenario:
+        story.append(Paragraph(
+            f"Fuer das Projekt wurden {len(valid_scenarios)} Szenarien mit Ergebniswerten untersucht. "
+            f"Die aktuell beste Variante ist Szenario ID {best_scenario.id}. "
+            f"Sie erreicht einen QP,ne-Wert von {best_scenario.result.ac_qp_rel:.2f} "
+            f"und einen GWP-Wert von {best_scenario.result.ac_gwp_rel:.2f}.",
+            normal_style,
+        ))
+    else:
+        story.append(Paragraph(
+            "Fuer dieses Projekt liegen noch keine auswertbaren Szenarioergebnisse vor.",
+            normal_style,
+        ))
+
+    story.append(Spacer(1, 18))
+    story.append(Paragraph(
+        "Erstellt mit QNG-Check - Technische Hochschule Augsburg - Digitaler Baumeister",
+        small_style,
+    ))
+
+    document.build(story)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="qng_bericht.pdf"'
+    response["Content-Length"] = str(len(pdf))
 
     return response

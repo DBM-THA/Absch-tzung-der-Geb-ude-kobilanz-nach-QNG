@@ -279,3 +279,124 @@ class QNGWorkflowTests(TestCase):
         self.assertEqual(Building.objects.count(), 0)
         self.assertEqual(Scenario.objects.count(), 0)
         self.assertEqual(Result.objects.count(), 0)
+    def test_project_detail_shows_building_category(self):
+        response = self.client.get(
+            reverse("project_detail", args=[self.building.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Mehrfamilienhaus")
+
+
+    def test_add_scenario_to_project_sets_session(self):
+        response = self.client.get(
+            reverse("add_scenario_to_project", args=[self.building.id])
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("scenario"))
+        self.assertEqual(self.client.session["building_id"], self.building.id)
+
+
+    def test_duplicate_project_name_shows_warning(self):
+        response = self.client.post(
+            reverse("building"),
+            {
+                "project_name": "Workflow-Testgebäude",
+                "building_category": "Mehrfamilienhaus",
+                "nrf_tg": "0",
+                "nrf_heated": "1000",
+                "an_geg": "1200",
+                "building_type": "Massivbauweise (KS + WDVS)",
+                "energy_standard": "Effizienzhaus 40",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ein Projekt mit diesem Namen existiert bereits")
+        self.assertEqual(Building.objects.count(), 1)
+
+
+    def test_new_project_can_be_created_through_building_view(self):
+        response = self.client.post(
+            reverse("building"),
+            {
+                "project_name": "Neues Testprojekt",
+                "building_category": "Einfamilienhaus",
+                "nrf_tg": "0",
+                "nrf_heated": "180",
+                "an_geg": "210",
+                "building_type": "Massivbauweise (KS + WDVS)",
+                "energy_standard": "Effizienzhaus 40",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Building.objects.count(), 2)
+        self.assertTrue(
+            Building.objects.filter(project_name="Neues Testprojekt").exists()
+        )
+
+
+    def test_compare_scenarios_ranking_loads_with_two_scenarios(self):
+        second_scenario = Scenario.objects.create(
+            building=self.building,
+            heating="Nahwärme, Pelletkessel",
+            ventilation="Zu-/Abluftanlage mit WRG",
+            pv_area=100,
+            battery_storage="nein",
+            qng_level="QNG-PLUS",
+        )
+
+        Result.objects.create(
+            scenario=second_scenario,
+            ac_qp_rel=70,
+            ac_gwp_rel=22,
+            qp_limit=96,
+            gwp_limit=24,
+            qp_status="erfüllt",
+            gwp_status="erfüllt",
+        )
+
+        response = self.client.get(
+            reverse("compare_scenarios", args=[self.building.id]),
+            {"scenario_ids": [self.scenario.id, second_scenario.id]},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ranking der Varianten")
+        self.assertContains(response, "Beste Variante")
+
+
+    def test_pdf_export_returns_pdf_response(self):
+        response = self.client.get(
+            reverse("export_project_pdf", args=[self.building.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/pdf")
+        self.assertIn("attachment", response["Content-Disposition"])
+
+
+    def test_pdf_export_missing_project_redirects(self):
+        response = self.client.get(
+            reverse("export_project_pdf", args=[9999])
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("projects"))
+
+
+    def test_building_category_can_be_saved(self):
+        building = Building.objects.create(
+            project_name="Einfamilienhaus Test",
+            building_category="Einfamilienhaus",
+            nrf_total=180,
+            nrf_tg=0,
+            nrf_heated=180,
+            an_geg=210,
+            building_type="Massivbauweise (KS + WDVS)",
+            energy_standard="Effizienzhaus 40",
+        )
+
+        self.assertEqual(building.building_category, "Einfamilienhaus")

@@ -8,6 +8,7 @@ from .qng_data import (
     KG400_SOCKEL_VALUES,
     KG400_GROSSGERAETE_VALUES,
     QNG_LIMITS,
+    QNG_LIMITS_BY_BUILDING_CATEGORY,
     END_ENERGY_BASE_AN_GEG,
     END_ENERGY_DEMANDS,
     ENERGY_FACTORS,
@@ -346,6 +347,7 @@ def calculate_qng_result(
     qng_level,
     pv_area,
     battery_storage,
+    building_category="Mehrfamilienhaus",
 ):
     nrf_total = float(nrf_total)
 
@@ -419,8 +421,13 @@ def calculate_qng_result(
         for part in parts
     )
 
-    qp_limit = QNG_LIMITS[qng_level]["qp"]
-    gwp_limit = QNG_LIMITS[qng_level]["gwp"]
+    category_limits = QNG_LIMITS_BY_BUILDING_CATEGORY.get(
+        building_category,
+        QNG_LIMITS_BY_BUILDING_CATEGORY["Mehrfamilienhaus"],
+    )
+
+    qp_limit = category_limits[qng_level]["qp"]
+    gwp_limit = category_limits[qng_level]["gwp"]
 
     qp_difference_percent = round(
         ((total_ac_qp_rel - qp_limit) / qp_limit) * 100,
@@ -454,6 +461,7 @@ def calculate_qng_result(
     return {
         "parts": parts,
         "total": {
+            "building_category": building_category,
             "ac_qp_rel": round(total_ac_qp_rel, 2),
             "ac_gwp_rel": round(total_ac_gwp_rel, 2),
             "d_qp_rel": round(total_d_qp_rel, 2),

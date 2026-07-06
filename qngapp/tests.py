@@ -10,6 +10,7 @@ DEFAULT_INPUTS = {
     "nrf_tg": 0,
     "nrf_heated": 1000,
     "an_geg": 1000,
+    "building_category": "Mehrfamilienhaus",
     "building_type": "Massivbauweise (KS + WDVS)",
     "energy_standard": "Effizienzhaus 40",
     "heating": "Luft-Wasser-Wärmepumpe",
@@ -107,11 +108,39 @@ class QNGCalculationTests(TestCase):
         self.assertIn("total", result)
 
 
+    def test_mehrfamilienhaus_limits_are_used(self):
+        result = calculate_qng_result(
+            **{
+                **DEFAULT_INPUTS,
+                "building_category": "Mehrfamilienhaus",
+                "qng_level": "QNG-PLUS",
+            }
+        )
+
+        self.assertEqual(result["total"]["building_category"], "Mehrfamilienhaus")
+        self.assertEqual(result["total"]["qp_limit"], 96)
+        self.assertEqual(result["total"]["gwp_limit"], 24)
+
+    def test_einfamilienhaus_limits_are_used(self):
+        result = calculate_qng_result(
+            **{
+                **DEFAULT_INPUTS,
+                "building_category": "Einfamilienhaus",
+                "qng_level": "QNG-PLUS",
+            }
+        )
+
+        self.assertEqual(result["total"]["building_category"], "Einfamilienhaus")
+        self.assertEqual(result["total"]["qp_limit"], 96)
+        self.assertEqual(result["total"]["gwp_limit"], 24)
+
+
 class QNGDatabaseTests(TestCase):
 
     def test_building_can_be_created(self):
         building = Building.objects.create(
             project_name="Testgebäude",
+            building_category="Mehrfamilienhaus",
             nrf_total=1000,
             nrf_tg=0,
             nrf_heated=1000,
@@ -126,6 +155,7 @@ class QNGDatabaseTests(TestCase):
     def test_scenario_and_result_can_be_created(self):
         building = Building.objects.create(
             project_name="Testgebäude",
+            building_category="Mehrfamilienhaus",
             nrf_total=1000,
             nrf_tg=0,
             nrf_heated=1000,
@@ -160,6 +190,7 @@ class QNGDatabaseTests(TestCase):
     def test_deleting_building_deletes_scenarios_and_results(self):
         building = Building.objects.create(
             project_name="Testgebäude",
+            building_category="Mehrfamilienhaus",
             nrf_total=1000,
             nrf_tg=0,
             nrf_heated=1000,
@@ -199,6 +230,7 @@ class QNGWorkflowTests(TestCase):
     def setUp(self):
         self.building = Building.objects.create(
             project_name="Workflow-Testgebäude",
+            building_category="Mehrfamilienhaus",
             nrf_total=1000,
             nrf_tg=0,
             nrf_heated=1000,

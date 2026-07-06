@@ -159,6 +159,7 @@ def scenario_view(request):
         nrf_tg=building.nrf_tg,
         nrf_heated=building.nrf_heated,
         an_geg=building.an_geg,
+        building_category=building.building_category,
         building_type=building.building_type,
         energy_standard=building.energy_standard,
         heating=scenario_data["heating"],

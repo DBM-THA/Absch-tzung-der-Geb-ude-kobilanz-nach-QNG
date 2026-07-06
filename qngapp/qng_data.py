@@ -17,16 +17,33 @@ Wichtig:
 # QNG-Grenzwerte
 # ============================================================
 
-QNG_LIMITS = {
-    "QNG-PLUS": {
-        "qp": 96,
-        "gwp": 24,
+QNG_LIMITS_BY_BUILDING_CATEGORY = {
+    "Mehrfamilienhaus": {
+        "QNG-PLUS": {
+            "qp": 96,
+            "gwp": 24,
+        },
+        "QNG-PREMIUM": {
+            "qp": 64,
+            "gwp": 20,
+        },
     },
-    "QNG-PREMIUM": {
-        "qp": 64,
-        "gwp": 20,
+    "Einfamilienhaus": {
+        "QNG-PLUS": {
+            "qp": 96,
+            "gwp": 24,
+        },
+        "QNG-PREMIUM": {
+            "qp": 64,
+            "gwp": 20,
+        },
     },
 }
+
+# Rückwärtskompatibilität:
+# Wird weiterhin für Dropdowns und bestehende Views genutzt.
+# Die eigentliche Berechnung verwendet QNG_LIMITS_BY_BUILDING_CATEGORY.
+QNG_LIMITS = QNG_LIMITS_BY_BUILDING_CATEGORY["Mehrfamilienhaus"]
 
 
 # ============================================================

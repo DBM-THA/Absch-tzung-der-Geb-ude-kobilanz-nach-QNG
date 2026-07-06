@@ -35,7 +35,7 @@ def building_view(request):
     project_name_warning = None
 
     if request.method == "POST":
-        project_name = request.POST.get("project_name", "Beispielgebaeude").strip()
+        project_name = request.POST.get("project_name", "Beispielgebäude").strip()
         building_category = request.POST.get("building_category", "Mehrfamilienhaus")
 
         nrf_heated_raw = request.POST.get("nrf_heated", "5282")
@@ -51,7 +51,7 @@ def building_view(request):
         if Building.objects.filter(project_name__iexact=project_name).exists():
             project_name_warning = (
                 "Ein Projekt mit diesem Namen existiert bereits. "
-                "Bitte waehlen Sie einen anderen Projektnamen."
+                "Bitte wählen Sie einen anderen Projektnamen."
             )
 
             return render(request, "qngapp/building.html", {
@@ -72,8 +72,8 @@ def building_view(request):
 
         if an_geg < nrf_heated:
             an_geg_warning = (
-                "Die Energiebezugsflaeche A_n sollte normalerweise groesser "
-                "als die beheizte Nettogrundflaeche sein."
+                "Die Energiebezugsfläche Aₙ sollte normalerweise größer "
+                "als die beheizte Nettogrundfläche sein."
             )
 
             return render(request, "qngapp/building.html", {
@@ -82,7 +82,7 @@ def building_view(request):
                 "an_geg_warning": an_geg_warning,
                 "project_name_warning": project_name_warning,
                 "form_data": {
-                    "project_name": request.POST.get("project_name", "Beispielgebaeude"),
+                    "project_name": request.POST.get("project_name", "Beispielgebäude"),
                     "building_category": request.POST.get("building_category", "Mehrfamilienhaus"),
                     "nrf_tg": nrf_tg_raw,
                     "nrf_heated": nrf_heated_raw,
@@ -113,7 +113,7 @@ def building_view(request):
         "an_geg_warning": an_geg_warning,
         "project_name_warning": project_name_warning,
         "form_data": {
-            "project_name": "Mehrfamilienhaus Nuernberg",
+            "project_name": "Mehrfamilienhaus Nürnberg",
             "building_category": "Mehrfamilienhaus",
             "nrf_tg": "0",
             "nrf_heated": "5282",
@@ -136,7 +136,7 @@ def scenario_view(request):
         return redirect("building")
 
     scenario_data = request.session.get("scenario_data", {
-        "heating": "Nahwaerme, Pelletkessel",
+        "heating": "Nahwärme, Pelletkessel",
         "ventilation": "Zu-/Abluftanlage mit WRG",
         "pv_area": "300",
         "battery_storage": "nein",

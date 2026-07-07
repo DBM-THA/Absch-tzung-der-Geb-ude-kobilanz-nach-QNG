@@ -241,24 +241,18 @@ http://127.0.0.1:8000
 
 Die Anwendung kann sowohl lokal als auch innerhalb einer Docker-Umgebung ausgeführt werden.
 
-### Docker
+## Docker
 
-Docker-Image erstellen:
+Das Docker-Image kann direkt von Docker Hub heruntergeladen werden:
 
 ```bash
-docker build -t qng-check .
+docker pull gonzo2907/qng-check:latest
 ```
 
-Docker-Container starten:
+Anschließend den Container starten:
 
 ```bash
-docker run -p 8000:8000 qng-check
-```
-
-Alternativ kann die Anwendung mit Docker Compose gestartet werden:
-
-```bash
-docker compose up --build
+docker run -p 8000:8000 gonzo2907/qng-check:latest
 ```
 
 Nach dem Start ist die Anwendung erreichbar unter:
@@ -267,7 +261,7 @@ Nach dem Start ist die Anwendung erreichbar unter:
 http://localhost:8000
 ```
 
-Das Docker-Image kann außerdem auf Docker Hub veröffentlicht und von dort auf einen Server heruntergeladen und gestartet werden.
+Voraussetzung ist lediglich eine installierte Docker-Umgebung (z. B. Docker Desktop). Ein lokaler Build des Projekts ist nicht erforderlich.
 
 ---
 
